@@ -25,52 +25,49 @@ export class DragService {
     }
 
     startDrag(x, y, event) {
-        if (!this._tile) {
-            this._tile = event.target;
-            this._tile.style.zIndex = this._lastZindex++;
-            this._tileStartPos = $(this._tile).position();
+        if (!this._element) {
+            this._element = event.target;
             this._dragStartPos = this.getClientPos(event);
+            this._dragPreviousPos = this._dragStartPos;
 
-            let tile = {
-                element: this._tile,
+            let element = {
+                element: this._element,
                 left: x,
                 top: y
             };
 
-            this._eventAggregator.publish('startDrag', tile);
+            this._eventAggregator.publish('startDrag', element);
         }
         return false;
     }
 
     doDrag(event) {
         let clientPos = this.getClientPos(event);
-        if (this._tile) {
-            let dx = clientPos.left - this._dragStartPos.left;
-            let dy = clientPos.top - this._dragStartPos.top;
+        if (this._element) {
+            let dx = clientPos.left - this._dragPreviousPos.left;
+            let dy = clientPos.top - this._dragPreviousPos.top;
+            this._dragPreviousPos = clientPos;
 
-            let tile = {
-                element: this._tile,
+            let element = {
+                element: this._element,
                 left: dx,
                 top: dy
             };
 
-            this._eventAggregator.publish('doDrag', tile);
+            this._eventAggregator.publish('doDrag', element);
         }
     }
 
     stopDrag(event) {
-        if (this._tile) {
-            let tile = {
-                element: this._tile,
+        if (this._element) {
+            let element = {
+                element: this._element,
             };
 
-            this._eventAggregator.publish('stopDrag', tile);
+            this._eventAggregator.publish('stopDrag', element);
         }
 
-        this._tile = undefined;
+        this._element = undefined;
     }
 
-    // isDragged() {
-    //     return ((Math.abs(this.dragEndPos.x - this.dragStartPos.x) > 19) || (Math.abs(this.dragEndPos.y - this.dragStartPos.y) > 19));
-    // }
 }

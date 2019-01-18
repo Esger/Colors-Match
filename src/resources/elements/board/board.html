@@ -1,2 +1,8 @@
 <template>
+    <require from="resources/elements/tile/tile"></require>
+    <div class="row"
+         repeat.for="row of board">
+        <tile repeat.for="tile of row"
+              innerhtml.bind="tile"></tile>
+    </div>
 </template>

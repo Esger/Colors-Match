@@ -1,22 +1,6 @@
-board {
-  position: relative;
-  display: block;
-  background-color: white;
-  width: 70vmin;
-  height: 70vmin;
-  overflow: hidden;
-  border-radius: 3vmin;
-  -webkit-box-shadow: inset 0 0 10px 0 rgba(0, 0, 0, 0.5);
-          box-shadow: inset 0 0 10px 0 rgba(0, 0, 0, 0.5);
-  cursor: pointer;
-  -webkit-user-select: none;
-     -moz-user-select: none;
-      -ms-user-select: none;
-          user-select: none;
-}
 game {
   position: relative;
-  width: calc(70vmin + 2 * 3vmin);
+  width: calc(70vmin + 2 * 2.5vmin);
   display: -webkit-box;
   display: -ms-flexbox;
   display: flex;
@@ -27,8 +11,8 @@ game {
   -webkit-box-align: center;
       -ms-flex-align: center;
           align-items: center;
-  padding-bottom: 3vmin;
-  border-radius: calc(2 * 3vmin);
+  padding-bottom: 2.5vmin;
+  border-radius: calc(2 * 2.5vmin);
   background: -webkit-gradient(linear, left top, left bottom, from(rgba(226, 226, 226, 0.9)), to(rgba(137, 137, 137, 0.9)));
   background: linear-gradient(top, rgba(226, 226, 226, 0.9) 0%, rgba(137, 137, 137, 0.9) 100%);
   -webkit-box-shadow: 0 3px 4px #222;
@@ -39,7 +23,59 @@ game h1 {
   font-size: 5vmin;
   line-height: 5vmin;
   text-shadow: 0 1px 1px #fff;
-  margin: calc(3vmin / 2) 0;
+  margin: calc(2.5vmin / 2) 0;
+}
+board {
+  background-color: white;
+  border-radius: 2.5vmin;
+  -webkit-box-shadow: inset 0 0 10px 0 rgba(0, 0, 0, 0.5);
+          box-shadow: inset 0 0 10px 0 rgba(0, 0, 0, 0.5);
+  cursor: pointer;
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-orient: vertical;
+  -webkit-box-direction: normal;
+      -ms-flex-direction: column;
+          flex-direction: column;
+  height: 70vmin;
+  -webkit-box-pack: space-evenly;
+      -ms-flex-pack: space-evenly;
+          justify-content: space-evenly;
+  overflow: hidden;
+  position: relative;
+  -webkit-user-select: none;
+     -moz-user-select: none;
+      -ms-user-select: none;
+          user-select: none;
+  width: 70vmin;
+}
+.row {
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-pack: space-evenly;
+      -ms-flex-pack: space-evenly;
+          justify-content: space-evenly;
+}
+tile {
+  background-color: LemonChiffon;
+  border: 0 solid #666;
+  border-radius: 1vmin;
+  -webkit-box-shadow: 0 2px 2px #aaa;
+          box-shadow: 0 2px 2px #aaa;
+  color: #333;
+  cursor: pointer;
+  display: block;
+  -webkit-box-flex: 0;
+      -ms-flex: 0 0 8vmin;
+          flex: 0 0 8vmin;
+  font: normal 3vmin/8vmin "Trebuchet MS", Arial, Helvetica, sans-serif;
+  height: 8vmin;
+  overflow: hidden;
+  text-align: center;
+  text-decoration: none;
+  text-shadow: 0 1px 1px #ccc;
 }
 body,
 html {
@@ -47,14 +83,14 @@ html {
   height: 100vh;
 }
 body {
-  margin: 0;
-  display: -webkit-box;
-  display: -ms-flexbox;
-  display: flex;
   -webkit-box-align: center;
       -ms-flex-align: center;
           align-items: center;
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
   -webkit-box-pack: center;
       -ms-flex-pack: center;
           justify-content: center;
+  margin: 0;
 }

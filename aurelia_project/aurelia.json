@@ -118,6 +118,7 @@
                     "aurelia-task-queue",
                     "aurelia-templating",
                     "aurelia-templating-binding",
+                    "jquery",
                     "text",
                     {
                         "name": "aurelia-templating-resources",
@@ -134,6 +135,13 @@
                         "path": "../node_modules/aurelia-testing/dist/amd",
                         "main": "aurelia-testing",
                         "env": "dev"
+                    },
+                    {
+                        "name": "jquery",
+                        "path": "../node_modules/jquery/dist",
+                        "main": "jquery.min.js",
+                        "exports": "$",
+                        "map": "jquery.min.map"
                     }
                 ]
             }

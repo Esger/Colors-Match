@@ -9,89 +9,66 @@ import { EventAggregator } from 'aurelia-event-aggregator';
 export class DragService {
 
     constructor(eventAggregator) {
-        this.ea = eventAggregator;
-        this.dragStartPos = {};
-        this.dragEndPos = {};
-        this.lastZindex = 1;
+        this._eventAggregator = eventAggregator;
+        this._dragStartPos = undefined;
+        this._dragEndPos = undefined;
+        this._lastZindex = 1;
     }
 
-    // getClientPos(event) {
-    //     let clientX = (event.touches) ? event.touches[0].clientX : event.clientX;
-    //     let clientY = (event.touches) ? event.touches[0].clientY : event.clientY;
-    //     return {
-    //         x: clientX,
-    //         y: clientY
-    //     };
-    // }
+    getClientPos(event) {
+        let clientX = (event.touches) ? event.touches[0].clientX : event.clientX;
+        let clientY = (event.touches) ? event.touches[0].clientY : event.clientY;
+        return {
+            left: clientX,
+            top: clientY
+        };
+    }
 
-    // startDrag(pentomino, partIndex, event) {
-    //     if (this.container == null) {
-    //         let clientPos = this.getClientPos(event);
-    //         this.ps.setActivePentomino(pentomino, partIndex);
-    //         this.ps.registerPiece(pentomino, -1);
-    //         this.container = event.target.offsetParent.offsetParent;
-    //         this.container.style.zIndex = this.lastZindex++;
-    //         this.startX = clientPos.x - this.container.offsetLeft;
-    //         this.startY = clientPos.y - this.container.offsetTop;
-    //         this.x = clientPos.x - this.startX;
-    //         this.y = clientPos.y - this.startY;
-    //         this.dragStartPos.x = this.x;
-    //         this.dragStartPos.y = this.y;
-    //     }
-    //     return false;
-    // }
+    startDrag(x, y, event) {
+        if (!this._tile) {
+            this._tile = event.target;
+            this._tile.style.zIndex = this._lastZindex++;
+            this._tileStartPos = $(this._tile).position();
+            this._dragStartPos = this.getClientPos(event);
 
-    // doDrag(event) {
-    //     let clientPos = this.getClientPos(event);
-    //     if (this.ps.getActivePentomino()) {
-    //         this.x = clientPos.x - this.startX;
-    //         this.y = clientPos.y - this.startY;
-    //         this.container.style.left = this.x + 'px';
-    //         this.container.style.top = this.y + 'px';
-    //     }
-    // }
+            let tile = {
+                element: this._tile,
+                left: x,
+                top: y
+            };
 
-    // stopDrag(event) {
-    //     this.dragEndPos.x = this.x;
-    //     this.dragEndPos.y = this.y;
-    //     let pentomino = this.ps.getActivePentomino();
-    //     if (pentomino) {
-    //         this.alignToGrid();
-    //         if (!this.isDragged()) {
-    //             // todo no if here; compensate in prms
-    //             if (((pentomino.type == 4) && (pentomino.activePart < 1)) ||
-    //                 ((pentomino.type == 3) && (pentomino.activePart < 3)) ||
-    //                 ((pentomino.type == 2) && (pentomino.activePart < 3)) ||
-    //                 (pentomino.type < 3)) {
-    //                 let oldActivePartPosition = this.ps.getActivePartPosition();
-    //                 this.prms.flipRotate(pentomino);
-    //                 let newActivePartPosition = this.ps.getActivePartPosition();
-    //                 this.prms.adjustPosition(pentomino, oldActivePartPosition, newActivePartPosition);
-    //                 this.ea.publish('move', 1);
-    //             }
-    //         } else {
-    //             this.ea.publish('move', 1);
-    //         }
-    //         this.ps.registerPiece(pentomino, 1);
-    //         this.ps.isSolved();
-    //     }
-    //     this.releasePentomino();
-    // }
+            this._eventAggregator.publish('startDrag', tile);
+        }
+        return false;
+    }
 
-    // releasePentomino() {
-    //     if (this.container) {
-    //         this.container = null;
-    //     }
-    //     this.ps.resetActivePentomino();
-    // }
+    doDrag(event) {
+        let clientPos = this.getClientPos(event);
+        if (this._tile) {
+            let dx = clientPos.left - this._dragStartPos.left;
+            let dy = clientPos.top - this._dragStartPos.top;
 
-    // alignToGrid() {
-    //     let newX = Math.round(this.x / this.ss.partSize);
-    //     let newY = Math.round(this.y / this.ss.partSize);
-    //     this.ps.setActivePentominoPosition(newX, newY);
-    //     this.container.style.left = newX * this.ss.partSize + 'px';
-    //     this.container.style.top = newY * this.ss.partSize + 'px';
-    // }
+            let tile = {
+                element: this._tile,
+                left: dx,
+                top: dy
+            };
+
+            this._eventAggregator.publish('doDrag', tile);
+        }
+    }
+
+    stopDrag(event) {
+        if (this._tile) {
+            let tile = {
+                element: this._tile,
+            };
+
+            this._eventAggregator.publish('stopDrag', tile);
+        }
+
+        this._tile = undefined;
+    }
 
     // isDragged() {
     //     return ((Math.abs(this.dragEndPos.x - this.dragStartPos.x) > 19) || (Math.abs(this.dragEndPos.y - this.dragStartPos.y) > 19));

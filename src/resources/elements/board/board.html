@@ -3,6 +3,9 @@
     <template repeat.for="y of board">
         <tile repeat.for="x of y"
               innerhtml.bind="x"
-              css="transform: translate(${$index * distance}vmin, ${$parent.$index * distance}vmin)"></tile>
+              mousedown.delegate="dragService.startDrag($index, $parent.$index, $event)"
+              touchstart.delegate="dragService.startDrag($index, $parent.$index, $event)"
+              css="left: ${$index * distance + offset}vmin; top: ${$parent.$index * distance + offset}vmin;"></tile>
         </div>
     </template>
+</template>

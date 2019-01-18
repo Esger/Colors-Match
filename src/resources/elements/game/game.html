@@ -1,5 +1,8 @@
 <template>
     <require from="resources/elements/board/board"></require>
     <h1>${title}</h1>
-    <board></board>
+    <board mousemove.delegate="dragService.doDrag($event)"
+           touchmove.delegate="dragService.doDrag($event)"
+           mouseup.delegate="dragService.stopDrag($event)"
+           touchend.delegate="dragService.stopDrag($event)"></board>
 </template>

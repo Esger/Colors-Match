@@ -1,8 +1,8 @@
 <template>
     <require from="resources/elements/tile/tile"></require>
-    <div class="row"
-         repeat.for="row of board">
-        <tile repeat.for="tile of row"
-              innerhtml.bind="tile"></tile>
-    </div>
-</template>
+    <template repeat.for="y of board">
+        <tile repeat.for="x of y"
+              innerhtml.bind="x"
+              css="transform: translate(${$index * distance}vmin, ${$parent.$index * distance}vmin)"></tile>
+        </div>
+    </template>

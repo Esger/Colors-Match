@@ -1,19 +1,19 @@
 game {
-    position      : relative;
-    width         : calc(~ '@{boardSize} + 2 * @{gameBorder}');
+    align-items   : center;
+    background    : linear-gradient(top, rgba(226,226,226,0.9) 0%,rgba(137,137,137,0.9) 100%);
+    border-radius : calc(~ '2 * @{gameBorder}');
+    box-shadow    : 0 3px 4px #222;
     display       : flex;
     flex-direction: column;
-    align-items   : center;
     padding-bottom: @gameBorder;
-    border-radius : calc(~ '2 * @{gameBorder}');
-    background    : linear-gradient(top, rgba(226,226,226,0.9) 0%,rgba(137,137,137,0.9) 100%);
-    box-shadow    : 0 3px 4px #222;
+    position      : relative;
+    width         : calc(~ '@{boardSize} + 2 * @{gameBorder}');
 
     h1 {
         font       : bold 18px/24px "Courier New", Courier, monospace;
         font-size  : 5vmin;
         line-height: 5vmin;
-        text-shadow: 0 1px 1px #fff;
         margin     : calc(~'@{gameBorder} / 2') 0;
+        text-shadow: 0 1px 1px #fff;
     }
 }

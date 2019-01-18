@@ -3,6 +3,7 @@ export class BoardCustomElement {
 
     constructor() {
         this.boardSize = 7;
+        this.distance = 9.666;
         this.row = [];
         this.board = [];
         for (let x = 0; x < this.boardSize; x++) {

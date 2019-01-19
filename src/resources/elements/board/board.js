@@ -2,12 +2,14 @@
 import { inject } from 'aurelia-framework';
 import { DragService } from 'resources/services/drag-service';
 import { EventAggregator } from 'aurelia-event-aggregator';
-@inject(DragService, EventAggregator)
+import { BindingSignaler } from 'aurelia-templating-resources';
+@inject(DragService, EventAggregator, BindingSignaler)
 
 export class BoardCustomElement {
 
-    constructor(dragService, eventAggregator) {
+    constructor(dragService, eventAggregator, bindingSignaler) {
         this.dragService = dragService;
+        this._bindingSignaler = bindingSignaler;
         this._eventAggregator = eventAggregator;
         this._boardSize = 7;
         this._highestValue = 1;
@@ -62,12 +64,14 @@ export class BoardCustomElement {
         });
 
         this.stopDragListener = this._eventAggregator.subscribe('stopDrag', tile => {
-            if (this._underTreshold(this._delta[1]) && this._underTreshold(this._delta[0])) {
+            if (this._underTreshold(this._oneDelta)) {
                 this._$tile.addClass('retracted');
                 this._moveTile(0, 0);
             }
             this._releaseTile = true;
-            this._$tile.removeClass('dragging');
+            setTimeout(() => {
+                this._$tile.removeClass('dragging retracted');
+            }, 300);
             console.table(this.board);
         });
     }
@@ -79,6 +83,7 @@ export class BoardCustomElement {
         this._highestValue = (pos[0] == pos[1] && pos[0] == 3) ? Math.max(this._highestValue, this.board[pos[0]][pos[1]]) : this._highestValue;
         this._eventAggregator.publish('score', value);
         this._eventAggregator.publish('high', this._highestValue);
+        this._bindingSignaler.signal('update');
     }
 
     _redrawBoard() {

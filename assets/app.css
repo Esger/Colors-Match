@@ -1,3 +1,44 @@
+game {
+  -webkit-box-align: center;
+      -ms-flex-align: center;
+          align-items: center;
+  background: -webkit-gradient(linear, left top, left bottom, from(rgba(226, 226, 226, 0.9)), to(rgba(137, 137, 137, 0.9)));
+  background: linear-gradient(to bottom, rgba(226, 226, 226, 0.9) 0%, rgba(137, 137, 137, 0.9) 100%);
+  border-radius: calc(2 * 2.5vmin);
+  -webkit-box-shadow: 0 3px 4px #222;
+          box-shadow: 0 3px 4px #222;
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-orient: vertical;
+  -webkit-box-direction: normal;
+      -ms-flex-direction: column;
+          flex-direction: column;
+  padding-bottom: 2.5vmin;
+  position: relative;
+  width: calc(70vmin + 2 * 2.5vmin);
+}
+game .score {
+  font: inherit;
+}
+game .title {
+  font-size: 5vmin;
+  line-height: 5vmin;
+}
+game header {
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  font-family: 'Courier New', Courier, monospace;
+  font-size: 4vmin;
+  -webkit-box-pack: justify;
+      -ms-flex-pack: justify;
+          justify-content: space-between;
+  line-height: 5vmin;
+  margin: calc(2.5vmin / 2) 0;
+  text-shadow: 0 1px 1px #fff;
+  width: 70vmin;
+}
 board {
   -webkit-box-align: center;
       -ms-flex-align: center;
@@ -39,47 +80,6 @@ board::before {
   -webkit-box-pack: space-evenly;
       -ms-flex-pack: space-evenly;
           justify-content: space-evenly;
-}
-game {
-  -webkit-box-align: center;
-      -ms-flex-align: center;
-          align-items: center;
-  background: -webkit-gradient(linear, left top, left bottom, from(rgba(226, 226, 226, 0.9)), to(rgba(137, 137, 137, 0.9)));
-  background: linear-gradient(to bottom, rgba(226, 226, 226, 0.9) 0%, rgba(137, 137, 137, 0.9) 100%);
-  border-radius: calc(2 * 2.5vmin);
-  -webkit-box-shadow: 0 3px 4px #222;
-          box-shadow: 0 3px 4px #222;
-  display: -webkit-box;
-  display: -ms-flexbox;
-  display: flex;
-  -webkit-box-orient: vertical;
-  -webkit-box-direction: normal;
-      -ms-flex-direction: column;
-          flex-direction: column;
-  padding-bottom: 2.5vmin;
-  position: relative;
-  width: calc(70vmin + 2 * 2.5vmin);
-}
-game .score {
-  font: inherit;
-}
-game .title {
-  font-size: 5vmin;
-  line-height: 5vmin;
-}
-game header {
-  display: -webkit-box;
-  display: -ms-flexbox;
-  display: flex;
-  font-family: 'Courier New', Courier, monospace;
-  font-size: 4vmin;
-  -webkit-box-pack: justify;
-      -ms-flex-pack: justify;
-          justify-content: space-between;
-  line-height: 5vmin;
-  margin: calc(2.5vmin / 2) 0;
-  text-shadow: 0 1px 1px #fff;
-  width: 70vmin;
 }
 tile {
   background-color: LemonChiffon;

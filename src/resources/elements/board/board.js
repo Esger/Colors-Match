@@ -54,7 +54,6 @@ export class BoardCustomElement {
                     if (this._draggedValue == targetValue) {
                         this._moveTile(signs[1] * this._tileWidth, signs[0] * this._tileWidth);
                         this._doubleTile(target);
-                        this._removeTile();
                     } else {
                         this._resetTile();
                     }
@@ -72,25 +71,23 @@ export class BoardCustomElement {
             setTimeout(() => {
                 this._$tile.removeClass('dragging retracted');
             }, 300);
-            console.table(this.board);
         });
     }
 
     _doubleTile(pos) {
+        this._$tile.addClass('correct');
         let value = this.board[pos[0]][pos[1]];
         this._score += value;
         this.board[pos[0]][pos[1]] *= 2;
         this._highestValue = (pos[0] == pos[1] && pos[0] == 3) ? Math.max(this._highestValue, this.board[pos[0]][pos[1]]) : this._highestValue;
+        setTimeout(() => {
+            this._$tile.remove();
+            this.board[this._dragTileIndex[0]][this._dragTileIndex[1]] = undefined;
+            console.table(this.board);
+        }, 500);
         this._eventAggregator.publish('score', value);
         this._eventAggregator.publish('high', this._highestValue);
         this._bindingSignaler.signal('update');
-    }
-
-    _redrawBoard() {
-        this.showBoard = false;
-        setTimeout(() => {
-            this.showBoard = true;
-        });
     }
 
     _resetTile() {
@@ -98,15 +95,6 @@ export class BoardCustomElement {
         this._moveTile(0, 0);
         setTimeout(() => {
             this._$tile.removeClass('dragging attracted retracted incorrect');
-        }, 500);
-    }
-
-    _removeTile() {
-        this._$tile.addClass('correct');
-        setTimeout(() => {
-            this._$tile.remove();
-            this.board[this._dragTileIndex[0]][this._dragTileIndex[1]] = undefined;
-            this._redrawBoard();
         }, 500);
     }
 

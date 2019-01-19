@@ -1,11 +1,14 @@
 <template>
     <require from="resources/elements/tile/tile"></require>
-    <template repeat.for="y of board">
-        <tile repeat.for="x of y"
-              innerhtml="${x}"
-              mousedown.delegate="dragService.startDrag($index, $parent.$index, $event)"
-              touchstart.delegate="dragService.startDrag($index, $parent.$index, $event)"
-              css="left: ${$index * distance + offset}vmin; top: ${$parent.$index * distance + offset}vmin;"></tile>
-        </div>
+    <template if.bind="showBoard">
+        <template repeat.for="y of board">
+            <template repeat.for="x of y">
+                <tile show.bind="x"
+                      innerhtml="${x}"
+                      mousedown.delegate="dragService.startDrag($index, $parent.$index, $event)"
+                      touchstart.delegate="dragService.startDrag($index, $parent.$index, $event)"
+                      css="left: ${$index * distance + offset}vmin; top: ${$parent.$index * distance + offset}vmin;"></tile>
+            </template>
+        </template>
     </template>
 </template>

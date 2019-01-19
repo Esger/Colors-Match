@@ -9,6 +9,7 @@ export class BoardCustomElement {
     constructor(dragService, eventAggregator) {
         this.dragService = dragService;
         this._eventAggregator = eventAggregator;
+        this.showBoard = true;
         this.boardSize = 7;
         this.distance = 9.666;
         this.offset = 2;
@@ -51,10 +52,11 @@ export class BoardCustomElement {
                     } else {
                         let sign = Math.sign(this._displacement.left);
                         targetX += sign;
-                        let targetTileValue = this.board[targetX][targetY];
+                        let targetTileValue = this.board[targetY][targetX];
                         this._releaseTile = true;
                         if (this._draggedTileValue == targetTileValue) {
                             this._moveTile(sign * this._tileWidth, 0);
+                            this.board[this._draggedTileCoordinates.y][this._draggedTileCoordinates.x + sign] += this._draggedTileValue;
                             this._removeTile();
                         } else {
                             this._resetTile();
@@ -66,10 +68,11 @@ export class BoardCustomElement {
                     } else {
                         let sign = Math.sign(this._displacement.top);
                         targetY += sign;
-                        let targetTileValue = this.board[targetX][targetY];
+                        let targetTileValue = this.board[targetY][targetX];
                         this._releaseTile = true;
                         if (this._draggedTileValue == targetTileValue) {
                             this._moveTile(0, sign * this._tileWidth);
+                            this.board[this._draggedTileCoordinates.y + sign][this._draggedTileCoordinates.x] += this._draggedTileValue;
                             this._removeTile();
                         } else {
                             this._resetTile();
@@ -89,6 +92,14 @@ export class BoardCustomElement {
             }
             this._releaseTile = true;
             this._$tile.removeClass('dragging');
+            console.table(this.board);
+        });
+    }
+
+    _redrawBoard() {
+        this.showBoard = false;
+        setTimeout(() => {
+            this.showBoard = true;
         });
     }
 
@@ -102,6 +113,8 @@ export class BoardCustomElement {
     _removeTile() {
         setTimeout(() => {
             this._$tile.remove();
+            this.board[this._draggedTileCoordinates.y][this._draggedTileCoordinates.x] = undefined;
+            this._redrawBoard();
         }, 500);
     }
 

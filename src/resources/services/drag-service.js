@@ -32,8 +32,10 @@ export class DragService {
 
             let element = {
                 element: this._element,
-                left: x,
-                top: y
+                left: this._dragStartPos.left,
+                top: this._dragStartPos.top,
+                x: x,
+                y: y
             };
 
             this._eventAggregator.publish('startDrag', element);

@@ -17,9 +17,19 @@ tile {
     top             : @pieceGutter;
     width           : @pieceSize;
 
+    &.attracted {
+        transition: transform .3s ease-out;
+        z-index   : 100;
+    }
+
     &.dragging {
         box-shadow: 0 3px 5px #aaa;
         cursor    : -webkit-grabbing;
+        z-index   : 100;
+    }
+
+    &.retracted {
+        transition: transform .3s ease-out;
         z-index   : 100;
     }
 }

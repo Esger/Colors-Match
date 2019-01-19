@@ -9,13 +9,14 @@ export class BoardCustomElement {
     constructor(dragService, eventAggregator) {
         this.dragService = dragService;
         this._eventAggregator = eventAggregator;
+        this._boardSize = 7;
+        this._highestValue = 1;
+        this._score = 0;
+        this._row = new Array(this._boardSize).fill().map(t => 1);
+        this.board = new Array(this._boardSize).fill().map(r => this._row.slice());
         this.showBoard = true;
-        this.boardSize = 7;
         this.distance = 9.666;
         this.offset = 2;
-        this._highestValue = 1;
-        this.row = new Array(this.boardSize).fill().map(t => 1);
-        this.board = new Array(this.boardSize).fill().map(r => this.row.slice());
     }
 
     attached() {
@@ -72,8 +73,12 @@ export class BoardCustomElement {
     }
 
     _doubleTile(pos) {
-        let value = this.board[pos[0]][pos[1]] *= 2;
-        this._highestValue = Math.max(this._highestValue, value);
+        let value = this.board[pos[0]][pos[1]];
+        this._score += value;
+        this.board[pos[0]][pos[1]] *= 2;
+        this._highestValue = (pos[0] == pos[1] && pos[0] == 3) ? Math.max(this._highestValue, this.board[pos[0]][pos[1]]) : this._highestValue;
+        this._eventAggregator.publish('score', value);
+        this._eventAggregator.publish('high', this._highestValue);
     }
 
     _redrawBoard() {

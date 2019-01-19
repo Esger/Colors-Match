@@ -1,6 +1,10 @@
 <template>
     <require from="resources/elements/board/board"></require>
-    <h1>${title}</h1>
+    <header>
+        <h2></h2>
+        <h1 class="title">${title}</h1>
+        <h2 class="score">${score}</h2>
+    </header>
     <board mousemove.delegate="dragService.doDrag($event)"
            touchmove.delegate="dragService.doDrag($event)"
            mouseup.delegate="dragService.stopDrag($event)"

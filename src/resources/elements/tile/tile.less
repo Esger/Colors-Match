@@ -1,21 +1,21 @@
 tile {
     background-color: LemonChiffon;
     border          : 0 solid #666;
-    border-radius   : @pieceCornerRadius;
+    border-radius   : @tileCornerRadius;
     box-shadow      : 0 2px 2px #aaa;
     color           : #333;
     cursor          : grab;
     display         : block;
-    font            : normal @pieceFontSize/@pieceSize "Trebuchet MS", Arial, Helvetica, sans-serif;
-    height          : @pieceSize;
-    left            : @pieceGutter;
+    font            : normal @tileFontSize/@tileSize "Trebuchet MS", Arial, Helvetica, sans-serif;
+    height          : @tileSize;
+    left            : @tileGutterSize;
     overflow        : hidden;
     position        : absolute;
     text-align      : center;
     text-decoration : none;
     text-shadow     : 0 1px 1px #ccc;
-    top             : @pieceGutter;
-    width           : @pieceSize;
+    top             : @tileGutterSize;
+    width           : @tileSize;
 
     &.attracted {
         transition: transform .3s ease-out;

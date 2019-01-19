@@ -13,10 +13,13 @@ board {
     width           : @boardSize;
 
     &::before {
-        content: '';
-        display: block;
-        flex   : 0 0 @tileSize;
-        height : calc(~ '@{tileSize} + @{tileGutterSize}');
+        border       : 4px solid #00ff0080;
+        border-radius: calc(~'@{tileCornerRadius} + 2px');
+        content      : '';
+        display      : block;
+        flex         : 0 0 calc(~ '@{tileSize} + @{tileGutterSize} / 2');
+        height       : calc(~ '@{tileSize} + @{tileGutterSize} / 2');
+        margin-top   : 2px;
     }
 }
 

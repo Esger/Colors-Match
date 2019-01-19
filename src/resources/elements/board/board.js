@@ -12,6 +12,7 @@ export class BoardCustomElement {
         this._bindingSignaler = bindingSignaler;
         this._eventAggregator = eventAggregator;
         this._boardSize = 7;
+        this._center = Math.floor(this._boardSize / 2);
         this._highestValue = 1;
         this._score = 0;
         this._row = new Array(this._boardSize).fill().map(t => 1);
@@ -35,6 +36,7 @@ export class BoardCustomElement {
                 top: tile.top
             };
             this._delta = [0, 0];
+            this._oneDelta = [0, 0];
         });
 
         this.doDragListener = this._eventAggregator.subscribe('doDrag', tile => {
@@ -54,6 +56,10 @@ export class BoardCustomElement {
                     if (this._draggedValue == targetValue) {
                         this._moveTile(signs[1] * this._tileWidth, signs[0] * this._tileWidth);
                         this._doubleTile(target);
+                        setTimeout(() => {
+                            this._shiftTiles(signs);
+                        }, 500);
+
                     } else {
                         this._resetTile();
                     }
@@ -74,20 +80,54 @@ export class BoardCustomElement {
         });
     }
 
+    _shiftTiles(signs) {
+        this._$tile.remove();
+        let offset = signs.slice();
+        let dataId = 'tile_' + (this._dragTileIndex[0] - offset[0]) + '-' + (this._dragTileIndex[1] - offset[1]);
+        let $tiles = [];
+        let $tile = $('[data-id=' + dataId + ']');
+        let toIndex = this._dragTileIndex.slice();
+        let fromIndex = toIndex.slice();
+        fromIndex[0] = toIndex[0] - signs[0];
+        fromIndex[1] = toIndex[1] - signs[1];
+        while ($tile.length) {
+            this.board[toIndex[0]][toIndex[1]] = this.board[fromIndex[0]][fromIndex[1]];
+            $tiles.push($tile);
+            fromIndex[0] = toIndex[0] - signs[0];
+            fromIndex[1] = toIndex[1] - signs[1];
+            offset[0] += signs[0];
+            offset[1] += signs[1];
+            dataId = 'tile_' + (this._dragTileIndex[0] - offset[0]) + '-' + (this._dragTileIndex[1] - offset[1]);
+            $tile = $('[data-id=' + dataId + ']');
+        }
+        this.board[toIndex[0]][toIndex[1]] = Math.ceil(Math.random() * this._highestValue);
+        let dx = signs[1] * this._tileWidth;
+        let dy = signs[0] * this._tileWidth;
+        let dt = 50;
+        $tiles.forEach($t => {
+            $t.addClass('follow');
+            setTimeout(() => {
+                // $t.animate({ top: dx, left: dy }, 100, 'easeOutBounce');
+                $t.css({
+                    transform: 'translate(' + dx + 'px, ' + dy + 'px)'
+                });
+            }, dt);
+            dt += 50;
+        });
+        this._bindingSignaler.signal('update-id');
+        this._bindingSignaler.signal('update-value');
+        console.table(this.board);
+    }
+
     _doubleTile(pos) {
         this._$tile.addClass('correct');
         let value = this.board[pos[0]][pos[1]];
         this._score += value;
         this.board[pos[0]][pos[1]] *= 2;
-        this._highestValue = (pos[0] == pos[1] && pos[0] == 3) ? Math.max(this._highestValue, this.board[pos[0]][pos[1]]) : this._highestValue;
-        setTimeout(() => {
-            this._$tile.remove();
-            this.board[this._dragTileIndex[0]][this._dragTileIndex[1]] = undefined;
-            console.table(this.board);
-        }, 500);
+        this._highestValue = (pos[0] == pos[1] && pos[0] == this._center) ? Math.max(this._highestValue, this.board[pos[0]][pos[1]]) : this._highestValue;
         this._eventAggregator.publish('score', value);
         this._eventAggregator.publish('high', this._highestValue);
-        this._bindingSignaler.signal('update');
+        this._bindingSignaler.signal('update-value');
     }
 
     _resetTile() {

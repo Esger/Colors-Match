@@ -1,3 +1,48 @@
+board {
+  -webkit-box-align: center;
+      -ms-flex-align: center;
+          align-items: center;
+  background-color: white;
+  border-radius: 2.5vmin;
+  -webkit-box-shadow: inset 0 0 10px 0 rgba(0, 0, 0, 0.5);
+          box-shadow: inset 0 0 10px 0 rgba(0, 0, 0, 0.5);
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  height: 70vmin;
+  -webkit-box-pack: center;
+      -ms-flex-pack: center;
+          justify-content: center;
+  -webkit-box-pack: space-evenly;
+      -ms-flex-pack: space-evenly;
+          justify-content: space-evenly;
+  overflow: hidden;
+  position: relative;
+  -webkit-user-select: none;
+     -moz-user-select: none;
+      -ms-user-select: none;
+          user-select: none;
+  width: 70vmin;
+}
+board::before {
+  border: 4px solid #00ff0080;
+  border-radius: calc(1vmin + 2px);
+  content: '';
+  display: block;
+  -webkit-box-flex: 0;
+      -ms-flex: 0 0 calc(8vmin + 2vmin / 2);
+          flex: 0 0 calc(8vmin + 2vmin / 2);
+  height: calc(8vmin + 2vmin / 2);
+  margin-top: 2px;
+}
+.row {
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-pack: space-evenly;
+      -ms-flex-pack: space-evenly;
+          justify-content: space-evenly;
+}
 game {
   -webkit-box-align: center;
       -ms-flex-align: center;
@@ -39,48 +84,6 @@ game header {
   text-shadow: 0 1px 1px #fff;
   width: 70vmin;
 }
-board {
-  -webkit-box-align: center;
-      -ms-flex-align: center;
-          align-items: center;
-  background-color: white;
-  border-radius: 2.5vmin;
-  -webkit-box-shadow: inset 0 0 10px 0 rgba(0, 0, 0, 0.5);
-          box-shadow: inset 0 0 10px 0 rgba(0, 0, 0, 0.5);
-  display: -webkit-box;
-  display: -ms-flexbox;
-  display: flex;
-  height: 70vmin;
-  -webkit-box-pack: center;
-      -ms-flex-pack: center;
-          justify-content: center;
-  -webkit-box-pack: space-evenly;
-      -ms-flex-pack: space-evenly;
-          justify-content: space-evenly;
-  overflow: hidden;
-  position: relative;
-  -webkit-user-select: none;
-     -moz-user-select: none;
-      -ms-user-select: none;
-          user-select: none;
-  width: 70vmin;
-}
-board::before {
-  content: '';
-  display: block;
-  -webkit-box-flex: 0;
-      -ms-flex: 0 0 8vmin;
-          flex: 0 0 8vmin;
-  height: calc(8vmin + 2vmin);
-}
-.row {
-  display: -webkit-box;
-  display: -ms-flexbox;
-  display: flex;
-  -webkit-box-pack: space-evenly;
-      -ms-flex-pack: space-evenly;
-          justify-content: space-evenly;
-}
 tile {
   background-color: LemonChiffon;
   border: 0 solid #666;
@@ -117,6 +120,12 @@ tile.dragging {
           box-shadow: 0 3px 5px #aaa;
   cursor: -webkit-grabbing;
   z-index: 100;
+}
+tile.follow {
+  -webkit-transition: -webkit-transform 0.2s ease-in;
+  transition: -webkit-transform 0.2s ease-in;
+  transition: transform 0.2s ease-in;
+  transition: transform 0.2s ease-in, -webkit-transform 0.2s ease-in;
 }
 tile.incorrect {
   background-color: lightcoral;

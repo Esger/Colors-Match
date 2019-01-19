@@ -22,10 +22,18 @@ tile {
         z-index   : 100;
     }
 
+    &.correct {
+        background-color: lightgreen;
+    }
+
     &.dragging {
         box-shadow: 0 3px 5px #aaa;
         cursor    : -webkit-grabbing;
         z-index   : 100;
+    }
+
+    &.incorrect {
+        background-color: lightcoral;
     }
 
     &.retracted {

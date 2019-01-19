@@ -48,7 +48,7 @@ export class BoardCustomElement {
                 let targetY = this._draggedTileCoordinates.y;
                 if (this._displacement && Math.abs(this._displacement.left) > Math.abs(this._displacement.top)) {
                     if (this._underTreshold(this._displacement.left)) {
-                        this._moveTile(this._displacement.left / 2, 0);
+                        this._moveTile(this._displacement.left / 1.6, 0);
                     } else {
                         let sign = Math.sign(this._displacement.left);
                         targetX += sign;
@@ -64,7 +64,7 @@ export class BoardCustomElement {
                     }
                 } else {
                     if (this._underTreshold(this._displacement.top)) {
-                        this._moveTile(0, this._displacement.top / 2);
+                        this._moveTile(0, this._displacement.top / 1.6);
                     } else {
                         let sign = Math.sign(this._displacement.top);
                         targetY += sign;
@@ -77,8 +77,6 @@ export class BoardCustomElement {
                         } else {
                             this._resetTile();
                         }
-                        this._moveTile(0, Math.sign(this._displacement.top) * this._tileWidth);
-                        this._removeTile();
                     }
                 }
             }
@@ -104,13 +102,15 @@ export class BoardCustomElement {
     }
 
     _resetTile() {
+        this._$tile.addClass('incorrect');
         this._moveTile(0, 0);
         setTimeout(() => {
-            this._$tile.removeClass('dragging attracted retracted');
+            this._$tile.removeClass('dragging attracted retracted incorrect');
         }, 500);
     }
 
     _removeTile() {
+        this._$tile.addClass('correct');
         setTimeout(() => {
             this._$tile.remove();
             this.board[this._draggedTileCoordinates.y][this._draggedTileCoordinates.x] = undefined;

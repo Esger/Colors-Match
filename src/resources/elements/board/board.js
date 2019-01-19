@@ -13,18 +13,17 @@ export class BoardCustomElement {
         this.boardSize = 7;
         this.distance = 9.666;
         this.offset = 2;
+        this._highestValue = 1;
         this.row = new Array(this.boardSize).fill().map(t => 1);
         this.board = new Array(this.boardSize).fill().map(r => this.row.slice());
     }
 
     attached() {
+        this._tileWidth = $('tile').width() / 9.666 * 11.666;
 
         this.startDragListener = this._eventAggregator.subscribe('startDrag', tile => {
-            this._draggedTileValue = this.board[tile.y][tile.x];
-            this._draggedTileCoordinates = {
-                x: tile.x,
-                y: tile.y
-            };
+            this._draggedValue = this.board[tile.y][tile.x];
+            this._dragTileIndex = [tile.y, tile.x];
             this._releaseTile = false;
             this._$tile = $(tile.element);
             this._$tile.addClass('dragging');
@@ -32,51 +31,29 @@ export class BoardCustomElement {
                 left: tile.left,
                 top: tile.top
             };
-            this._displacement = {
-                left: 0,
-                top: 0
-            };
+            this._delta = [0, 0];
         });
 
         this.doDragListener = this._eventAggregator.subscribe('doDrag', tile => {
 
             if (!this._releaseTile) {
-                this._displacement.left += tile.left;
-                this._displacement.top += tile.top;
-                this._tileWidth = this._$tile.width() / 9.666 * 11.666;
-                let targetX = this._draggedTileCoordinates.x;
-                let targetY = this._draggedTileCoordinates.y;
-                if (this._displacement && Math.abs(this._displacement.left) > Math.abs(this._displacement.top)) {
-                    if (this._underTreshold(this._displacement.left)) {
-                        this._moveTile(this._displacement.left / 1.6, 0);
-                    } else {
-                        let sign = Math.sign(this._displacement.left);
-                        targetX += sign;
-                        let targetTileValue = this.board[targetY][targetX];
-                        this._releaseTile = true;
-                        if (this._draggedTileValue == targetTileValue) {
-                            this._moveTile(sign * this._tileWidth, 0);
-                            this.board[this._draggedTileCoordinates.y][this._draggedTileCoordinates.x + sign] += this._draggedTileValue;
-                            this._removeTile();
-                        } else {
-                            this._resetTile();
-                        }
-                    }
+                this._delta[1] += tile.left;
+                this._delta[0] += tile.top;
+                let absDelta = [Math.abs(this._delta[0]), Math.abs(this._delta[1])];
+                this._oneDelta = (absDelta[1] > absDelta[0]) ? [0, this._delta[1]] : [this._delta[0], 0];
+                let signs = [Math.sign(this._oneDelta[0]), Math.sign(this._oneDelta[1])];
+                let target = [this._dragTileIndex[0] + signs[0], this._dragTileIndex[1] + signs[1]];
+                if (this._underTreshold(this._oneDelta)) {
+                    this._moveTile(this._oneDelta[1] / 1.6, this._oneDelta[0] / 1.6);
                 } else {
-                    if (this._underTreshold(this._displacement.top)) {
-                        this._moveTile(0, this._displacement.top / 1.6);
+                    let targetValue = this.board[target[0]][target[1]];
+                    this._releaseTile = true;
+                    if (this._draggedValue == targetValue) {
+                        this._moveTile(signs[1] * this._tileWidth, signs[0] * this._tileWidth);
+                        this._doubleTile(target);
+                        this._removeTile();
                     } else {
-                        let sign = Math.sign(this._displacement.top);
-                        targetY += sign;
-                        let targetTileValue = this.board[targetY][targetX];
-                        this._releaseTile = true;
-                        if (this._draggedTileValue == targetTileValue) {
-                            this._moveTile(0, sign * this._tileWidth);
-                            this.board[this._draggedTileCoordinates.y + sign][this._draggedTileCoordinates.x] += this._draggedTileValue;
-                            this._removeTile();
-                        } else {
-                            this._resetTile();
-                        }
+                        this._resetTile();
                     }
                 }
             }
@@ -84,7 +61,7 @@ export class BoardCustomElement {
         });
 
         this.stopDragListener = this._eventAggregator.subscribe('stopDrag', tile => {
-            if (this._underTreshold(this._displacement.left) && this._underTreshold(this._displacement.top)) {
+            if (this._underTreshold(this._delta[1]) && this._underTreshold(this._delta[0])) {
                 this._$tile.addClass('retracted');
                 this._moveTile(0, 0);
             }
@@ -92,6 +69,11 @@ export class BoardCustomElement {
             this._$tile.removeClass('dragging');
             console.table(this.board);
         });
+    }
+
+    _doubleTile(pos) {
+        let value = this.board[pos[0]][pos[1]] *= 2;
+        this._highestValue = Math.max(this._highestValue, value);
     }
 
     _redrawBoard() {
@@ -113,7 +95,7 @@ export class BoardCustomElement {
         this._$tile.addClass('correct');
         setTimeout(() => {
             this._$tile.remove();
-            this.board[this._draggedTileCoordinates.y][this._draggedTileCoordinates.x] = undefined;
+            this.board[this._dragTileIndex[0]][this._dragTileIndex[1]] = undefined;
             this._redrawBoard();
         }, 500);
     }
@@ -124,9 +106,10 @@ export class BoardCustomElement {
         });
     }
 
-    _underTreshold(distance) {
-        let thresholdDistance = this._tileWidth / 2;
-        return Math.abs(distance) < thresholdDistance;
+    _underTreshold(constrainedDistance) {
+        let value = Math.max(Math.abs(constrainedDistance[0]), Math.abs(constrainedDistance[1]));
+        let thresholdDelta = this._tileWidth / 2;
+        return value < thresholdDelta;
     }
 
     detached() {

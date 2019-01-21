@@ -15,18 +15,27 @@ export class BoardCustomElement {
         this._center = Math.floor(this._boardSize / 2);
         this._highestValue = 1;
         this._score = 0;
-        this._row = new Array(this._boardSize).fill().map(t => 1);
-        this.board = new Array(this._boardSize).fill().map(r => this._row.slice());
+        this.board = [];
         this.showBoard = true;
         this.distance = 9.666;
         this.offset = 2;
     }
 
+    _tile() {
+        return { value: 1 };
+    }
+
     attached() {
         this._tileWidth = $('tile').width() / 9.666 * 11.666;
-
+        for (let y = 0; y < this._boardSize; y++) {
+            let row = [];
+            for (let x = 0; x < this._boardSize; x++) {
+                row.push(this._tile());
+            }
+            this.board.push(row);
+        }
         this.startDragListener = this._eventAggregator.subscribe('startDrag', tile => {
-            this._draggedValue = this.board[tile.y][tile.x];
+            this._draggedValue = this.board[tile.y][tile.x].value;
             this._dragTileIndex = [tile.y, tile.x];
             this._releaseTile = false;
             this._$tile = $(tile.element);
@@ -51,7 +60,7 @@ export class BoardCustomElement {
                 if (this._underTreshold(this._oneDelta)) {
                     this._moveTile(this._oneDelta[1] / 1.6, this._oneDelta[0] / 1.6);
                 } else {
-                    let targetValue = this.board[target[0]][target[1]];
+                    let targetValue = this.board[target[0]][target[1]].value;
                     this._releaseTile = true;
                     if (this._draggedValue == targetValue) {
                         this._moveTile(signs[1] * this._tileWidth, signs[0] * this._tileWidth);
@@ -66,7 +75,6 @@ export class BoardCustomElement {
                     }
                 }
             }
-
         });
 
         this.stopDragListener = this._eventAggregator.subscribe('stopDrag', tile => {
@@ -92,7 +100,7 @@ export class BoardCustomElement {
         fromIndex[0] = toIndex[0] - signs[0];
         fromIndex[1] = toIndex[1] - signs[1];
         while ($tile.length) {
-            this.board[toIndex[0]][toIndex[1]] = this.board[fromIndex[0]][fromIndex[1]];
+            this.board[toIndex[0]][toIndex[1]].value = this.board[fromIndex[0]][fromIndex[1]].value;
             $tiles.push($tile);
             fromIndex[0] = toIndex[0] - signs[0];
             fromIndex[1] = toIndex[1] - signs[1];
@@ -121,11 +129,11 @@ export class BoardCustomElement {
     }
 
     getTile(pos) {
-        return this.board[pos[1]][pos[0]];
+        return this.board[pos[1]][pos[0]].value;
     }
 
     setTile(pos, value) {
-        this.board[pos[1]][pos[0]] = value;
+        this.board[pos[1]][pos[0]].value = value;
     }
 
     _shiftBoardTiles(directions) {
@@ -153,23 +161,23 @@ export class BoardCustomElement {
         return tilesBehind;
     }
 
-    // shift the tiles behind 1 place in same direction as target and fill outermost tile with random value.
+    // shift the tiles behind 1 place in same direction as target and fill outermost tile with random power of 2 smaller than highestValue.
     _shiftTilesBehind(tiles, directions) {
         let last = tiles.length - 1;
         for (let i = 0; i < last; i++) {
-            this.board[tiles[i][0]][tiles[i][1]] = this.board[tiles[i + 1][0]][tiles[i + 1][1]];
+            this.board[tiles[i][0]][tiles[i][1]].value = this.board[tiles[i + 1][0]][tiles[i + 1][1]].value;
         }
-        this.board[tiles[last][0]][tiles[last][1]] = Math.ceil(Math.random() * this._highestValue);
+        this.board[tiles[last][0]][tiles[last][1]].value = Math.ceil(Math.random() * this._highestValue);
         this._bindingSignaler.signal('update-value');
         console.table(this.board);
     }
 
     _doubleTile(pos) {
         this._$tile.addClass('correct');
-        let value = this.board[pos[0]][pos[1]];
+        let value = this.board[pos[0]][pos[1]].value;
         this._score += value;
-        this.board[pos[0]][pos[1]] *= 2;
-        this._highestValue = (pos[0] == pos[1] && pos[0] == this._center) ? Math.max(this._highestValue, this.board[pos[0]][pos[1]]) : this._highestValue;
+        this.board[pos[0]][pos[1]].value *= 2;
+        this._highestValue = (pos[0] == pos[1] && pos[0] == this._center) ? Math.max(this._highestValue, this.board[pos[0]][pos[1]].value) : this._highestValue;
         this._eventAggregator.publish('score', value);
         this._eventAggregator.publish('high', this._highestValue);
         this._bindingSignaler.signal('update-value');

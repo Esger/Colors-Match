@@ -3,8 +3,8 @@ import { inject } from 'aurelia-framework';
 import { DragService } from 'resources/services/drag-service';
 import { EventAggregator } from 'aurelia-event-aggregator';
 import { BindingSignaler } from 'aurelia-templating-resources';
-@inject(DragService, EventAggregator, BindingSignaler)
 
+@inject(DragService, EventAggregator, BindingSignaler)
 export class BoardCustomElement {
 
     constructor(dragService, eventAggregator, bindingSignaler) {
@@ -57,7 +57,8 @@ export class BoardCustomElement {
                         this._moveTile(signs[1] * this._tileWidth, signs[0] * this._tileWidth);
                         this._doubleTile(target);
                         setTimeout(() => {
-                            this._shiftTiles(signs);
+                            // this._shiftTiles(signs);
+                            this._shiftBoardTiles(signs);
                         }, 500);
 
                     } else {
@@ -100,7 +101,7 @@ export class BoardCustomElement {
             dataId = 'tile_' + (this._dragTileIndex[0] - offset[0]) + '-' + (this._dragTileIndex[1] - offset[1]);
             $tile = $('[data-id=' + dataId + ']');
         }
-        this.board[toIndex[0]][toIndex[1]] = Math.ceil(Math.random() * this._highestValue);
+        // this.board[toIndex[0]][toIndex[1]] = Math.ceil(Math.random() * this._highestValue);
         let dx = signs[1] * this._tileWidth;
         let dy = signs[0] * this._tileWidth;
         let dt = 50;
@@ -115,6 +116,50 @@ export class BoardCustomElement {
             dt += 50;
         });
         this._bindingSignaler.signal('update-id');
+        this._bindingSignaler.signal('update-value');
+        console.table(this.board);
+    }
+
+    getTile(pos) {
+        return this.board[pos[1]][pos[0]];
+    }
+
+    setTile(pos, value) {
+        this.board[pos[1]][pos[0]] = value;
+    }
+
+    _shiftBoardTiles(directions) {
+        let tilesBehind = this._findTilesBehind(directions);
+        this._shiftTilesBehind(tilesBehind);
+    }
+
+    _withinBoundaries(target) {
+        let inRow = target[1] >= 0 && target[1] < this._boardSize;
+        let inCol = target[0] >= 0 && target[0] < this._boardSize;
+        return inRow && inCol;
+    }
+
+    // find the tiles behind the moved tile from the empty place to the wall
+    _findTilesBehind(directions) {
+        let t = this._dragTileIndex.slice();
+        let tilesBehind = [];
+        let step = directions.some(v => { return v > 0; }) ? -1 : 1;
+        let max = (step > 0) ? this._boardSize : -1;
+        let start = (directions[0] == 0) ? t[1] : t[0];
+        for (let i = start; i != max; i += step) {
+            tilesBehind.push(t);
+            t = t.map((pos, j) => { return pos - directions[j]; });
+        }
+        return tilesBehind;
+    }
+
+    // shift the tiles behind 1 place in same direction as target and fill outermost tile with random value.
+    _shiftTilesBehind(tiles, directions) {
+        let last = tiles.length - 1;
+        for (let i = 0; i < last; i++) {
+            this.board[tiles[i][0]][tiles[i][1]] = this.board[tiles[i + 1][0]][tiles[i + 1][1]];
+        }
+        this.board[tiles[last][0]][tiles[last][1]] = Math.ceil(Math.random() * this._highestValue);
         this._bindingSignaler.signal('update-value');
         console.table(this.board);
     }

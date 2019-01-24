@@ -7,16 +7,8 @@ game {
     flex-direction: column;
     padding-bottom: @gameBorder;
     position      : relative;
+    transform     : scale(1.4);
     width         : calc(~ '@{boardSize} + 2 * @{gameBorder}');
-
-    .score {
-        font: inherit;
-    }
-
-    .title {
-        font-size  : 5vmin;
-        line-height: 5vmin;
-    }
 
     header {
         display        : flex;
@@ -27,5 +19,18 @@ game {
         margin         : calc(~'@{gameBorder} / 2') 0;
         text-shadow    : 0 1px 1px #fff;
         width          : @boardSize;
+
+        .dummy {
+            opacity: 0;
+        }
+
+        .dummy, .score {
+            font: inherit;
+        }
+
+        .title {
+            font-size  : 5vmin;
+            line-height: 5vmin;
+        }
     }
 }

@@ -2,14 +2,12 @@
 import { inject } from 'aurelia-framework';
 import { DragService } from 'resources/services/drag-service';
 import { EventAggregator } from 'aurelia-event-aggregator';
-import { BindingSignaler } from 'aurelia-templating-resources';
 
-@inject(DragService, EventAggregator, BindingSignaler)
+@inject(DragService, EventAggregator)
 export class BoardCustomElement {
 
-    constructor(dragService, eventAggregator, bindingSignaler) {
+    constructor(dragService, eventAggregator) {
         this.dragService = dragService;
-        this._bindingSignaler = bindingSignaler;
         this._eventAggregator = eventAggregator;
         this._boardSize = 5; // / @boardSize
         this._tileSize = 8;
@@ -18,9 +16,9 @@ export class BoardCustomElement {
         this._score = 0;
         this.board = [];
         this.showBoard = true;
-        // this.distance = 9.666;
         this.offset = this._boardSize * 2 / (this._boardSize + 1);
         this.distance = this._tileSize + this.offset;
+        this._newValues = [1];
     }
 
     _tile(x, y) {
@@ -155,14 +153,25 @@ export class BoardCustomElement {
         for (let i = 0; i < last; i++) {
             this.board[tiles[i][0]][tiles[i][1]].value = this.board[tiles[i + 1][0]][tiles[i + 1][1]].value;
         }
-        let power = 0;
-        let high = this._highestValue;
-        while (high > 1) {
-            high /= 2;
-            power++;
+        this.board[tiles[last][0]][tiles[last][1]].value = this._getRandomPowerOf2();
+    }
+
+    // Probability of lower number is higher
+    _getRandomPowerOf2() {
+        if (this._highestValue > this._newValues[this._newValues.length - 1]) {
+            this._newValues = [];
+            let max = this._highestValue;
+            let val = 1;
+            while (max > 1) {
+                for (let i = 0; i < max; i++) {
+                    this._newValues.push(val);
+                }
+                max /= 2;
+                val *= 2;
+            }
+            this._newValues.push(val);
         }
-        this.board[tiles[last][0]][tiles[last][1]].value = Math.pow(2, Math.ceil(Math.random() * power));
-        this._bindingSignaler.signal('update-value');
+        return this._newValues[Math.floor(Math.random() * (this._newValues.length - 1))];
     }
 
     _doubleTile(pos) {
@@ -173,7 +182,6 @@ export class BoardCustomElement {
         this._highestValue = (pos[0] == pos[1] && pos[0] == this._center) ? Math.max(this._highestValue, this.board[pos[0]][pos[1]].value) : this._highestValue;
         this._eventAggregator.publish('score', value);
         this._eventAggregator.publish('high', this._highestValue);
-        this._bindingSignaler.signal('update-value');
     }
 
     _resetTile() {

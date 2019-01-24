@@ -106,14 +106,9 @@ game {
           flex-direction: column;
   padding-bottom: 2.5vmin;
   position: relative;
+  -webkit-transform: scale(1.4);
+          transform: scale(1.4);
   width: calc(50vmin + 2 * 2.5vmin);
-}
-game .score {
-  font: inherit;
-}
-game .title {
-  font-size: 5vmin;
-  line-height: 5vmin;
 }
 game header {
   display: -webkit-box;
@@ -129,10 +124,24 @@ game header {
   text-shadow: 0 1px 1px #fff;
   width: 50vmin;
 }
+game header .dummy {
+  opacity: 0;
+}
+game header .dummy,
+game header .score {
+  font: inherit;
+}
+game header .title {
+  font-size: 5vmin;
+  line-height: 5vmin;
+}
 body,
 html {
   font-family: 'Trebuchet MS', 'Lucida Sans Unicode', 'Lucida Grande', 'Lucida Sans', Arial, sans-serif;
   height: 100vh;
+  overflow: hidden;
+  position: fixed;
+  width: 100vw;
 }
 body {
   -webkit-box-align: center;

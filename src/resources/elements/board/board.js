@@ -40,61 +40,72 @@ export class BoardCustomElement {
             this.board.push(row);
         }
         this.startDragListener = this._eventAggregator.subscribe('startDrag', tile => {
-            this._draggedValue = this.board[tile.y][tile.x].value;
-            this._dragTileIndex = [tile.y, tile.x];
-            this._releaseTile = false;
-            this._$tile = $(tile.element);
-            this._$tile.addClass('dragging');
-            this._startPosition = {
-                left: tile.left,
-                top: tile.top
-            };
-            this._delta = [0, 0];
-            this._oneDelta = [0, 0];
+            this._startDragHandler(tile);
         });
 
         this.doDragListener = this._eventAggregator.subscribe('doDrag', tile => {
+            this._doDragHandler(tile);
+        });
 
-            if (!this._releaseTile) {
-                this._delta[1] += tile.left;
-                this._delta[0] += tile.top;
-                let absDelta = [Math.abs(this._delta[0]), Math.abs(this._delta[1])];
-                this._oneDelta = (absDelta[1] > absDelta[0]) ? [0, this._delta[1]] : [this._delta[0], 0];
-                let signs = [Math.sign(this._oneDelta[0]), Math.sign(this._oneDelta[1])];
-                let target = [this._dragTileIndex[0] + signs[0], this._dragTileIndex[1] + signs[1]];
-                if (this._underTreshold(this._oneDelta)) {
-                    this._moveTile(this._oneDelta[1] / 1.6, this._oneDelta[0] / 1.6);
+        this.stopDragListener = this._eventAggregator.subscribe('stopDrag', () => {
+            this._stopDragHandler();
+        });
+    }
+
+    _startDragHandler(tile) {
+        this._draggedValue = this.board[tile.y][tile.x].value;
+        this._dragTileIndex = [tile.y, tile.x];
+        this._releaseTile = false;
+        this._$tile = $(tile.element);
+        this._$tile.addClass('dragging');
+        this._startPosition = {
+            left: tile.left,
+            top: tile.top
+        };
+        this._delta = [0, 0];
+        this._oneDelta = [0, 0];
+    }
+
+    _doDragHandler(tile) {
+        if (!this._releaseTile) {
+            this._delta[1] += tile.left;
+            this._delta[0] += tile.top;
+            let absDelta = [Math.abs(this._delta[0]), Math.abs(this._delta[1])];
+            this._oneDelta = (absDelta[1] > absDelta[0]) ? [0, this._delta[1]] : [this._delta[0], 0];
+            let signs = [Math.sign(this._oneDelta[0]), Math.sign(this._oneDelta[1])];
+            let target = [this._dragTileIndex[0] + signs[0], this._dragTileIndex[1] + signs[1]];
+            if (this._underTreshold(this._oneDelta)) {
+                this._moveTile(this._oneDelta[1] / 1.6, this._oneDelta[0] / 1.6);
+            } else {
+                let targetValue = this.board[target[0]][target[1]].value;
+                this._releaseTile = true;
+                if (this._draggedValue == targetValue) {
+                    // animate dragged tile to target
+                    this._moveTile(signs[1] * this._tileWidth, signs[0] * this._tileWidth);
+                    this._doubleTile(target);
+                    let tilesBehind = this._findTilesBehind(signs);
+                    // animate the tiles on the board
+                    this._moveTiles(tilesBehind, signs);
+                    setTimeout(() => {
+                        this._shiftTilesBehind(tilesBehind);
+                    }, 500);
+
                 } else {
-                    let targetValue = this.board[target[0]][target[1]].value;
-                    this._releaseTile = true;
-                    if (this._draggedValue == targetValue) {
-                        // animate dragged tile to target
-                        this._moveTile(signs[1] * this._tileWidth, signs[0] * this._tileWidth);
-                        this._doubleTile(target);
-                        let tilesBehind = this._findTilesBehind(signs);
-                        // animate the tiles on the board
-                        this._moveTiles(tilesBehind, signs);
-                        setTimeout(() => {
-                            this._shiftTilesBehind(tilesBehind);
-                        }, 500);
-
-                    } else {
-                        this._resetTile();
-                    }
+                    this._resetTile();
                 }
             }
-        });
+        }
+    }
 
-        this.stopDragListener = this._eventAggregator.subscribe('stopDrag', tile => {
-            if (this._underTreshold(this._oneDelta)) {
-                this._$tile.addClass('retracted');
-                this._moveTile(0, 0);
-            }
-            this._releaseTile = true;
-            setTimeout(() => {
-                this._$tile.removeClass('dragging retracted');
-            }, 300);
-        });
+    _stopDragHandler() {
+        if (this._underTreshold(this._oneDelta)) {
+            this._$tile.addClass('retracted');
+            this._moveTile(0, 0);
+        }
+        this._releaseTile = true;
+        setTimeout(() => {
+            this._$tile.removeClass('dragging retracted');
+        }, 300);
     }
 
     _moveTile(x, y) {

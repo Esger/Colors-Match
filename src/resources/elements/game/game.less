@@ -1,6 +1,9 @@
+@lightGrey: rgba(226,226,226,0.9);
+@darkGrey: rgba(137,137,137,0.9);
+
 game {
     align-items   : center;
-    background    : linear-gradient(to bottom, rgba(226,226,226,0.9) 0%,rgba(137,137,137,0.9) 100%);
+    background    : linear-gradient(to bottom, @lightGrey 0%, @darkGrey 100%);
     border-radius : calc(~ '2 * @{gameBorder}');
     box-shadow    : 0 3px 4px #222;
     display       : flex;

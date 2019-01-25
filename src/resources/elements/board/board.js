@@ -1,4 +1,3 @@
-
 import { inject } from 'aurelia-framework';
 import { DragService } from 'resources/services/drag-service';
 import { EventAggregator } from 'aurelia-event-aggregator';
@@ -136,48 +135,49 @@ export class BoardCustomElement {
         }
     }
 
-    _checkEqualNeigbours(board) {
-        let gameEnd = false;
-        return board.some(row => {
-            return row.some(tile => {
-                const next = row[tile.value + 1];
-                gameEnd = gameEnd || next && next.value == tile.value;
-                return gameEnd;
+    _movesHorPossible() {
+        let equals = false;
+        this.board.forEach(row => {
+            row.forEach((tile, x) => {
+                const nextTile = row[x + 1];
+                if (nextTile) {
+                    equals = equals || nextTile.value == tile.value;
+                }
             });
         });
+        return equals;
     }
 
-    _rotateBoard(board) {          // function statement
-        const N = board.length - 1;   // use a constant
-        // use arrow functions and nested map;
-        const result = board.map((row, i) =>
-            row.map((val, j) => board[N - j][i])
-        );
-        board.length = 0;       // hold original array reference
-        board.push(...result);  // Spread operator
-        return board;
+    _movesVerPossible() {
+        let equals = false;
+        this.board[0].forEach((tile, x) => {
+            this.board.forEach((row, y) => {
+                const current = row[x].value;
+                const nextRow = this.board[y + 1];
+                if (nextRow) {
+                    const next = nextRow[x].value;
+                    equals = equals || next == current;
+                }
+            });
+        });
+        return equals;
     }
 
     _checkGameEnd() {
         // wait for animation of intruding tiles
         setTimeout(() => {
-            this._gameEnd = this._checkEqualNeigbours(this.board);
-            let rotatedBoard = this._rotateBoard(this.board);
-            this._gameEnd = this._gameEnd || this._checkEqualNeigbours(rotatedBoard);
-            this._endGame();
-            for (let i = 0; i < 3; i++) {
-                rotatedBoard = this._rotateBoard(rotatedBoard);
+            if (!this._movesHorPossible() || !this._movesVerPossible()) {
+                this._endGame();
             }
         }, 300);
     }
 
     _endGame() {
-        if (this._gameEnd) {
-            $('.tile').addClass('burn');
-            setTimeout(() => {
-                $('.tile').addClass('onfire');
-            });
-        }
+        this._gameEnd = true;
+        $('.tile').addClass('burn');
+        setTimeout(() => {
+            $('.tile').addClass('onfire');
+        });
     }
 
     _stopDragHandler() {

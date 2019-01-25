@@ -47,6 +47,11 @@ board {
         z-index   : 100;
     }
 
+    &.burn {
+        // background-color: orange;
+        transition: background-color 500ms ease-out;
+    }
+
     &.correct {
         background-color: lightgreen;
     }
@@ -63,6 +68,11 @@ board {
 
     &.incorrect {
         background-color: lightcoral;
+    }
+
+    &.onfire {
+        background-color: orangered;
+        cursor          : not-allowed;
     }
 
     &.retracted {

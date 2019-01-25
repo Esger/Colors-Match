@@ -63,6 +63,10 @@ board::before {
   transition: transform 0.2s ease-out, -webkit-transform 0.2s ease-out;
   z-index: 100;
 }
+.tile.burn {
+  -webkit-transition: background-color 500ms ease-out;
+  transition: background-color 500ms ease-out;
+}
 .tile.correct {
   background-color: lightgreen;
 }
@@ -80,6 +84,10 @@ board::before {
 }
 .tile.incorrect {
   background-color: lightcoral;
+}
+.tile.onfire {
+  background-color: orangered;
+  cursor: not-allowed;
 }
 .tile.retracted {
   -webkit-transition: -webkit-transform 0.2s ease-out;
@@ -132,6 +140,7 @@ game header .score {
   font: inherit;
 }
 game header .title {
+  cursor: pointer;
   font-size: 5vmin;
   line-height: 5vmin;
 }

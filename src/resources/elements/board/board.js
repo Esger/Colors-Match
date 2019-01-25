@@ -19,26 +19,48 @@ export class BoardCustomElement {
         this.offset = this._boardSize * 2 / (this._boardSize + 1);
         this.distance = this._tileSize + this.offset;
         this._newValues = [1];
+        this._gameEnd = false;
     }
 
-    _tile(x, y) {
+    _newTile(x, y) {
         return {
             value: 1,
             id: 'tile_' + y + '-' + x
         };
     }
 
-    attached() {
-        setTimeout(() => {
-            this._tileWidth = $('.tile').width() / this.distance * (this.distance + 2);
-        });
+    _newBoard() {
+        this.board = [];
         for (let y = 0; y < this._boardSize; y++) {
             let row = [];
             for (let x = 0; x < this._boardSize; x++) {
-                row.push(this._tile(x, y));
+                row.push(this._newTile(x, y));
             }
             this.board.push(row);
         }
+        $('.tile').removeClass('incorrect correct follow attracted retracted onfire burn dragging');
+    }
+
+    attached() {
+        this._newBoard();
+
+        setTimeout(() => {
+            this._tileWidth = $('.tile').width() / this.distance * (this.distance + 2);
+        });
+        this._addListeners();
+    }
+
+    detached() {
+        this._removeListeners();
+    }
+
+    _removeListeners() {
+        this.startDragListener.dispose();
+        this.doDragListener.dispose();
+        this.stopDragListener.dispose();
+    }
+
+    _addListeners() {
         this.startDragListener = this._eventAggregator.subscribe('startDrag', tile => {
             this._startDragHandler(tile);
         });
@@ -50,20 +72,35 @@ export class BoardCustomElement {
         this.stopDragListener = this._eventAggregator.subscribe('stopDrag', () => {
             this._stopDragHandler();
         });
+
+        this.restartListener = this._eventAggregator.subscribe('restart', () => {
+            this._restartGame();
+        });
+
+    }
+
+    _restartGame() {
+        this._gameEnd = false;
+        this._releaseTile = false;
+        this._newBoard();
+        this._removeListeners();
+        this._addListeners();
     }
 
     _startDragHandler(tile) {
-        this._draggedValue = this.board[tile.y][tile.x].value;
-        this._dragTileIndex = [tile.y, tile.x];
-        this._releaseTile = false;
-        this._$tile = $(tile.element);
-        this._$tile.addClass('dragging');
-        this._startPosition = {
-            left: tile.left,
-            top: tile.top
-        };
-        this._delta = [0, 0];
-        this._oneDelta = [0, 0];
+        if (!this._gameEnd) {
+            this._draggedValue = this.board[tile.y][tile.x].value;
+            this._dragTileIndex = [tile.y, tile.x];
+            this._releaseTile = false;
+            this._$tile = $(tile.element);
+            this._$tile.addClass('dragging');
+            this._startPosition = {
+                left: tile.left,
+                top: tile.top
+            };
+            this._delta = [0, 0];
+            this._oneDelta = [0, 0];
+        }
     }
 
     _doDragHandler(tile) {
@@ -84,16 +121,61 @@ export class BoardCustomElement {
                     this._moveTile(signs[1] * this._tileWidth, signs[0] * this._tileWidth);
                     this._doubleTile(target);
                     let tilesBehind = this._findTilesBehind(signs);
-                    // animate the tiles on the board
+                    // animate the intruding tiles on the board
                     this._moveTiles(tilesBehind, signs);
                     setTimeout(() => {
                         this._shiftTilesBehind(tilesBehind);
-                    }, 500);
+                        this._checkGameEnd();
+                    }, 300);
 
                 } else {
                     this._resetTile();
                 }
             }
+        }
+    }
+
+    _checkEqualNeigbours(board) {
+        let gameEnd = false;
+        return board.some(row => {
+            return row.some(tile => {
+                const next = row[tile.value + 1];
+                gameEnd = gameEnd || next && next.value == tile.value;
+                return gameEnd;
+            });
+        });
+    }
+
+    _rotateBoard(board) {          // function statement
+        const N = board.length - 1;   // use a constant
+        // use arrow functions and nested map;
+        const result = board.map((row, i) =>
+            row.map((val, j) => board[N - j][i])
+        );
+        board.length = 0;       // hold original array reference
+        board.push(...result);  // Spread operator
+        return board;
+    }
+
+    _checkGameEnd() {
+        // wait for animation of intruding tiles
+        setTimeout(() => {
+            this._gameEnd = this._checkEqualNeigbours(this.board);
+            let rotatedBoard = this._rotateBoard(this.board);
+            this._gameEnd = this._gameEnd || this._checkEqualNeigbours(rotatedBoard);
+            this._endGame();
+            for (let i = 0; i < 3; i++) {
+                rotatedBoard = this._rotateBoard(rotatedBoard);
+            }
+        }, 300);
+    }
+
+    _endGame() {
+        if (this._gameEnd) {
+            $('.tile').addClass('burn');
+            setTimeout(() => {
+                $('.tile').addClass('onfire');
+            });
         }
     }
 
@@ -109,7 +191,7 @@ export class BoardCustomElement {
     }
 
     _moveTile(x, y) {
-        this._$tile.addClass('attracted');
+        this._$tile.addClass('attracted ');
         setTimeout(() => {
             this._$tile.css({
                 transform: 'translate(' + x + 'px, ' + y + 'px)'
@@ -209,9 +291,4 @@ export class BoardCustomElement {
         return value < thresholdDelta;
     }
 
-    detached() {
-        this.startDragListener.dispose();
-        this.doDragListener.dispose();
-        this.stopDragListener.dispose();
-    }
 }

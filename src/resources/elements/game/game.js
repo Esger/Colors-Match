@@ -21,6 +21,10 @@ export class GameCustomElement {
         });
     }
 
+    restart() {
+        this._eventAggregator.publish('restart');
+    }
+
     detached() {
         this.highSubscriber.dispose();
         this.scoreSubscriber.dispose();

@@ -1,12 +1,10 @@
 import { inject } from 'aurelia-framework';
-import { DragService } from 'resources/services/drag-service';
 import { EventAggregator } from 'aurelia-event-aggregator';
 
-@inject(DragService, EventAggregator)
+@inject(EventAggregator)
 export class BoardCustomElement {
 
-    constructor(dragService, eventAggregator) {
-        this.dragService = dragService;
+    constructor(eventAggregator) {
         this._eventAggregator = eventAggregator;
         this._boardSize = 5; // / @boardSize
         this._tileSize = 8;
@@ -24,7 +22,9 @@ export class BoardCustomElement {
     _newTile(x, y) {
         return {
             value: 1,
-            id: 'tile_' + y + '-' + x
+            id: 'tile_' + y + '-' + x,
+            x: x,
+            y: y
         };
     }
 

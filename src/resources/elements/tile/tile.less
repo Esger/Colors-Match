@@ -1,0 +1,57 @@
+.tile {
+    background-color: whitesmoke;
+    border          : 0 solid #666;
+    border-radius   : @tileCornerRadius;
+    box-shadow      : 0 2px 2px #aaa;
+    color           : #333;
+    cursor          : grab;
+    display         : block;
+    font            : normal @tileFontSize/@tileSize "Trebuchet MS", Arial, Helvetica, sans-serif;
+    height          : @tileSize;
+    left            : @tileGutterSize;
+    overflow        : hidden;
+    position        : absolute;
+    text-align      : center;
+    text-decoration : none;
+    text-shadow     : 0 1px 1px #ccc;
+    top             : @tileGutterSize;
+    width           : @tileSize;
+
+    &.attracted {
+        transition: transform .2s ease-out;
+        z-index   : 100;
+    }
+
+    &.burn {
+        // background-color: orange;
+        transition: background-color 500ms ease-out;
+    }
+
+    &.correct {
+        background-color: lightgreen;
+    }
+
+    &.dragging {
+        box-shadow: 0 3px 5px #aaa;
+        cursor    : -webkit-grabbing;
+        z-index   : 100;
+    }
+
+    &.follow {
+        transition: transform .2s ease-in;
+    }
+
+    &.incorrect {
+        background-color: lightcoral;
+    }
+
+    &.onfire {
+        background-color: orangered;
+        cursor          : not-allowed;
+    }
+
+    &.retracted {
+        transition: transform .2s ease-out;
+        z-index   : 100;
+    }
+}

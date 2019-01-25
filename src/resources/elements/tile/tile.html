@@ -1,0 +1,8 @@
+<template>
+    <div class="tile"
+         id.bind="tile.id"
+         innerhtml.bind="tile.value"
+         mousedown.delegate="dragService.startDrag(tile.x, tile.y, $event)"
+         touchstart.delegate="dragService.startDrag(tile.x, tile.y, $event)"
+         css="left: ${tile.x * distance + offset}vmin; top: ${tile.y * distance + offset}vmin;"></div>
+</template>

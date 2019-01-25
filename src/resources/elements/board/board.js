@@ -85,6 +85,7 @@ export class BoardCustomElement {
         this._newBoard();
         this._removeListeners();
         this._addListeners();
+        this._eventAggregator.publish('reset-score');
     }
 
     _startDragHandler(tile) {

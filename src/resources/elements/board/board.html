@@ -2,8 +2,8 @@
     <template repeat.for="row of board">
         <template repeat.for="tile of row">
             <div if.bind="tile.value"
-                 class="tile"
-                 id.bind="tile.id"
+                 class.bind="tile.classList"
+                 id.one-time="tile.id"
                  innerhtml.bind="tile.value"
                  mousedown.delegate="dragService.startDrag($index, $parent.$index, $event)"
                  touchstart.delegate="dragService.startDrag($index, $parent.$index, $event)"

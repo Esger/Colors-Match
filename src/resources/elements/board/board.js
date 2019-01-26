@@ -22,10 +22,31 @@ export class BoardCustomElement {
     }
 
     _newTile(x, y) {
-        return {
+        let tile = {
             value: 1,
-            id: 'tile_' + y + '-' + x
+            x: x,
+            y: y,
+            id: 'tile_' + y + '-' + x,
+            classList: 'tile',
+            offset: {
+                x: 0,
+                y: 0
+            },
+            animate: false,
+            addClass: className => {
+                tile.classList += ' ' + className;
+                console.log(tile.classList);
+            },
+            removeClass: className => {
+                let classArray = tile.classList.split(' ');
+                const classIndex = classArray.indexOf(className);
+                if (classIndex > 0) {
+                    classArray.splice(classIndex, 1);
+                    tile.classList = classArray.join(' ');
+                }
+            }
         };
+        return tile;
     }
 
     _newBoard() {
@@ -37,7 +58,7 @@ export class BoardCustomElement {
             }
             this.board.push(row);
         }
-        $('.tile').removeClass('incorrect correct follow attracted retracted onfire burn dragging');
+        // $('.tile').removeClass('incorrect correct follow attracted retracted onfire burn dragging');
     }
 
     attached() {
@@ -89,11 +110,11 @@ export class BoardCustomElement {
 
     _startDragHandler(tile) {
         if (!this._gameEnd) {
-            this._draggedValue = this.board[tile.y][tile.x].value;
+            this._$tile = $(tile.element);
+            this._draggedTile = this.board[tile.y][tile.x];
             this._dragTileIndex = [tile.y, tile.x];
             this._releaseTile = false;
-            this._$tile = $(tile.element);
-            this._$tile.addClass('dragging');
+            this._draggedTile.addClass('dragging');
             this._startPosition = {
                 left: tile.left,
                 top: tile.top
@@ -109,30 +130,40 @@ export class BoardCustomElement {
             this._delta[0] += tile.top;
             let absDelta = [Math.abs(this._delta[0]), Math.abs(this._delta[1])];
             this._oneDelta = (absDelta[1] > absDelta[0]) ? [0, this._delta[1]] : [this._delta[0], 0];
-            let signs = [Math.sign(this._oneDelta[0]), Math.sign(this._oneDelta[1])];
-            let target = [this._dragTileIndex[0] + signs[0], this._dragTileIndex[1] + signs[1]];
+            this._signs = [Math.sign(this._oneDelta[0]), Math.sign(this._oneDelta[1])];
+            let target = [this._dragTileIndex[0] + this._signs[0], this._dragTileIndex[1] + this._signs[1]];
             if (this._underTreshold(this._oneDelta)) {
-                this._moveTile(this._oneDelta[1] / 1.6, this._oneDelta[0] / 1.6);
+                this._moveTile(this._oneDelta[1] / 1.6, this._oneDelta[0] / 1.6, false, 'dragging');
             } else {
+                this._draggedTile.removeClass('dragging');
                 let targetValue = this.board[target[0]][target[1]].value;
                 this._releaseTile = true;
-                if (this._draggedValue == targetValue) {
+                if (this._draggedTile.value == targetValue) {
                     // animate dragged tile to target
-                    this._moveTile(signs[1] * this._tileWidth, signs[0] * this._tileWidth);
+                    this._moveTile(this._signs[1] * this._tileWidth, this._signs[0] * this._tileWidth, true, 'correct');
                     this._doubleTile(target);
-                    let tilesBehind = this._findTilesBehind(signs);
-                    // animate the intruding tiles on the board
-                    this._moveTiles(tilesBehind, signs);
-                    setTimeout(() => {
-                        this._shiftTilesBehind(tilesBehind);
-                        this._checkGameEnd();
-                    }, 300);
-
                 } else {
-                    this._resetTile();
+                    this._moveTile(0, 0, true, 'incorrect');
                 }
             }
         }
+    }
+
+    _stopDragHandler() {
+        this._draggedTile.removeClass('dragging');
+        if (this._underTreshold(this._oneDelta)) {
+            this._moveTile(0, 0, true, 'retracted');
+        } else {
+            let tilesBehind = this._findTilesBehind(this._signs);
+            // animate the intruding tiles on the board
+            let time = this._moveTiles(tilesBehind, this._signs);
+            console.log(time);
+            setTimeout(() => {
+                this._shiftTilesBehind(tilesBehind);
+                this._checkGameEnd();
+            }, time);
+        }
+        this._releaseTile = true;
     }
 
     _movesHorPossible() {
@@ -180,42 +211,46 @@ export class BoardCustomElement {
         });
     }
 
-    _stopDragHandler() {
-        if (this._underTreshold(this._oneDelta)) {
-            this._$tile.addClass('retracted');
-            this._moveTile(0, 0);
+    _moveTile(x, y, animate, className) {
+        if (animate) {
+            this._draggedTile.addClass(className);
+            this._$tile.on('transitionend', () => {
+                this._$tile.off('transitionend');
+                this._draggedTile.removeClass(className);
+            });
         }
-        this._releaseTile = true;
-        setTimeout(() => {
-            this._$tile.removeClass('dragging retracted');
-        }, 300);
+        this._$tile.css({
+            transform: 'translate(' + x + 'px, ' + y + 'px)'
+        });
     }
 
-    _moveTile(x, y) {
-        this._$tile.addClass('attracted ');
-        setTimeout(() => {
-            this._$tile.css({
-                transform: 'translate(' + x + 'px, ' + y + 'px)'
-            });
-            setTimeout(() => {
-                this._$tile.removeClass('attracted correct');
-            }, 200);
+    _animateTile($t, dx, dy) {
+        $t.css({
+            transform: 'translate(' + dx + 'px, ' + dy + 'px)'
+        }).on('transitionend', event => {
+            const $t = $(event.target);
+            $t.removeClass('follow').off('transitionend');
         });
     }
 
     _moveTiles(tiles, signs) {
-        tiles.forEach(tile => {
-            let $tile = $('#' + tile.id);
+        const ddt = 50;
+        let dt = 100 / tiles.length;
+        let Dt = 0;
+        // the first tile is the dragged one
+        const last = tiles.length - 1;
+        for (let i = 1; i < tiles.length; i++) {
+            const tile = tiles[i];
+            let $tile = $('#tile_' + tile[0] + '-' + tile[1]);
             $tile.addClass('follow');
             let dx = signs[1] * this._tileWidth;
             let dy = signs[0] * this._tileWidth;
-            let dt = 50;
-            setTimeout(() => {
-                $tile.css({
-                    transform: 'translate(' + dx + 'px, ' + dy + 'px)'
-                });
-            }, dt);
-        });
+            setTimeout(this._animateTile($tile, dx, dy), dt);
+            Dt += dt;
+            dt += ddt;
+        }
+
+        return Dt;
     }
 
     _withinBoundaries(target) {
@@ -228,6 +263,7 @@ export class BoardCustomElement {
     _findTilesBehind(directions) {
         let t = this._dragTileIndex.slice();
         let tilesBehind = [];
+        // if one of the directions > 0 then step = -1 (opposite direction)
         let step = directions.some(v => { return v > 0; }) ? -1 : 1;
         let max = (step > 0) ? this._boardSize : -1;
         let start = (directions[0] == 0) ? t[1] : t[0];
@@ -269,21 +305,12 @@ export class BoardCustomElement {
     }
 
     _doubleTile(pos) {
-        this._$tile.addClass('correct');
         let value = this.board[pos[0]][pos[1]].value;
         this._score += value;
         this.board[pos[0]][pos[1]].value *= 2;
         this._highestValue = (pos[0] == pos[1] && pos[0] == this._center) ? Math.max(this._highestValue, this.board[pos[0]][pos[1]].value) : this._highestValue;
         this._eventAggregator.publish('score', value);
         this._eventAggregator.publish('high', this._highestValue);
-    }
-
-    _resetTile() {
-        this._$tile.addClass('incorrect');
-        this._moveTile(0, 0);
-        setTimeout(() => {
-            this._$tile.removeClass('dragging attracted retracted incorrect');
-        }, 500);
     }
 
     _underTreshold(constrainedDistance) {

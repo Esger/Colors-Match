@@ -35,6 +35,66 @@ board::before {
   height: calc(8vmin + 2vmin / 2);
   margin-top: 2px;
 }
+.tile {
+  background-color: whitesmoke;
+  border: 0 solid #666;
+  border-radius: 1vmin;
+  -webkit-box-shadow: 0 2px 2px #aaa;
+          box-shadow: 0 2px 2px #aaa;
+  color: #333;
+  cursor: -webkit-grab;
+  cursor: grab;
+  display: block;
+  font: normal 3vmin/8vmin "Trebuchet MS", Arial, Helvetica, sans-serif;
+  height: 8vmin;
+  overflow: hidden;
+  position: absolute;
+  text-align: center;
+  text-decoration: none;
+  text-shadow: 0 1px 1px #ccc;
+  -webkit-transition: background-color 0.2s ease-in-out;
+  transition: background-color 0.2s ease-in-out;
+  width: 8vmin;
+}
+.tile.burn {
+  -webkit-transition: background-color 500ms ease-out;
+  transition: background-color 500ms ease-out;
+}
+.tile.correct {
+  background-color: lightgreen;
+  -webkit-transition: -webkit-transform 0.2s ease-out;
+  transition: -webkit-transform 0.2s ease-out;
+  transition: transform 0.2s ease-out;
+  transition: transform 0.2s ease-out, -webkit-transform 0.2s ease-out;
+  z-index: 100;
+}
+.tile.dragging {
+  background-color: palegoldenrod;
+  -webkit-box-shadow: 0 3px 5px #aaa;
+          box-shadow: 0 3px 5px #aaa;
+  cursor: -webkit-grabbing;
+  z-index: 100;
+}
+.tile.follow {
+  -webkit-transition: -webkit-transform 0.2s ease-in;
+  transition: -webkit-transform 0.2s ease-in;
+  transition: transform 0.2s ease-in;
+  transition: transform 0.2s ease-in, -webkit-transform 0.2s ease-in;
+}
+.tile.incorrect {
+  background-color: lightcoral;
+}
+.tile.onfire {
+  background-color: orangered;
+  cursor: not-allowed;
+}
+.tile.retracted {
+  -webkit-transition: -webkit-transform 0.2s ease-out;
+  transition: -webkit-transform 0.2s ease-out;
+  transition: transform 0.2s ease-out;
+  transition: transform 0.2s ease-out, -webkit-transform 0.2s ease-out;
+  z-index: 100;
+}
 game {
   -webkit-box-align: center;
       -ms-flex-align: center;
@@ -82,67 +142,6 @@ game header .title {
   cursor: pointer;
   font-size: 5vmin;
   line-height: 5vmin;
-}
-.tile {
-  background-color: whitesmoke;
-  border: 0 solid #666;
-  border-radius: 1vmin;
-  -webkit-box-shadow: 0 2px 2px #aaa;
-          box-shadow: 0 2px 2px #aaa;
-  color: #333;
-  cursor: -webkit-grab;
-  cursor: grab;
-  display: block;
-  font: normal 3vmin/8vmin "Trebuchet MS", Arial, Helvetica, sans-serif;
-  height: 8vmin;
-  left: 2vmin;
-  overflow: hidden;
-  position: absolute;
-  text-align: center;
-  text-decoration: none;
-  text-shadow: 0 1px 1px #ccc;
-  top: 2vmin;
-  width: 8vmin;
-}
-.tile.attracted {
-  -webkit-transition: -webkit-transform 0.2s ease-out;
-  transition: -webkit-transform 0.2s ease-out;
-  transition: transform 0.2s ease-out;
-  transition: transform 0.2s ease-out, -webkit-transform 0.2s ease-out;
-  z-index: 100;
-}
-.tile.burn {
-  -webkit-transition: background-color 500ms ease-out;
-  transition: background-color 500ms ease-out;
-}
-.tile.correct {
-  background-color: lightgreen;
-}
-.tile.dragging {
-  -webkit-box-shadow: 0 3px 5px #aaa;
-          box-shadow: 0 3px 5px #aaa;
-  cursor: -webkit-grabbing;
-  z-index: 100;
-}
-.tile.follow {
-  -webkit-transition: -webkit-transform 0.2s ease-in;
-  transition: -webkit-transform 0.2s ease-in;
-  transition: transform 0.2s ease-in;
-  transition: transform 0.2s ease-in, -webkit-transform 0.2s ease-in;
-}
-.tile.incorrect {
-  background-color: lightcoral;
-}
-.tile.onfire {
-  background-color: orangered;
-  cursor: not-allowed;
-}
-.tile.retracted {
-  -webkit-transition: -webkit-transform 0.2s ease-out;
-  transition: -webkit-transform 0.2s ease-out;
-  transition: transform 0.2s ease-out;
-  transition: transform 0.2s ease-out, -webkit-transform 0.2s ease-out;
-  z-index: 100;
 }
 body,
 html {

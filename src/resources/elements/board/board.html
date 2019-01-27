@@ -7,13 +7,6 @@
                   distance.one-time="distance"
                   offset.one-time="offset"
                   containerless></tile>
-            <div if.bind="tile.value"
-                 class.bind="tile.classList"
-                 id.one-time="tile.id"
-                 innerhtml.bind="tile.value"
-                 mousedown.delegate="dragService.startDrag($index, $parent.$index, $event)"
-                 touchstart.delegate="dragService.startDrag($index, $parent.$index, $event)"
-                 css="left: ${$index * distance + offset}vmin; top: ${$parent.$index * distance + offset}vmin;"></div>
         </template>
     </template>
 </template>

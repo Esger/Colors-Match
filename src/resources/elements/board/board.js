@@ -21,19 +21,70 @@ export class BoardCustomElement {
 
     _newTile(x, y) {
         let tile = {
+            animated: false,
+            classList: 'tile',
+            dragged: false,
+            id: 'tile_' + y + '-' + x,
+            isCenter: (x == y) && (x == this._center),
+            timer: undefined,
             value: 1,
+            visible: true,
             x: x,
             y: y,
-            id: 'tile_' + y + '-' + x,
-            classList: 'tile',
-            offset: {
-                x: 0,
-                y: 0
+            dx: 0,
+            dy: 0,
+            $tileCache: undefined,
+            $tile: () => {
+                if (tile.$tileCache) {
+                    return tile.$tileCache;
+                } else {
+                    tile.$tileCache = $('#' + tile.id);
+                    return tile.$tileCache;
+                }
             },
-            animate: false,
+            drag: (directions) => {
+                tile.addClass('dragged');
+                tile.animated = false;
+                setTimeout(() => {
+                    // for elastic effect
+                    tile.dy = (directions[0] / 2) + 'px';
+                    tile.dx = (directions[1] / 2) + 'px';
+                    console.log(tile.dy, tile.dx);
+                });
+                clearTimeout(tile.timer);
+                // make sure the className gets deleted again
+                tile.timer = setTimeout(() => {
+                    tile.removeClass('dragged');
+                    this.dragged = false;
+                }, 500);
+            },
+            animate: (directions, className, delay) => {
+                tile.animated = true;
+                tile.addClass(className);
+                setTimeout(() => {
+                    tile.dy = directions[0] * this.distance + 'vmin';
+                    tile.dx = directions[1] * this.distance + 'vmin';
+                    console.log(tile.dy, tile.dx);
+                });
+            },
+            doubleUp: () => {
+                tile.addClass('correct');
+                setTimeout(() => {
+                    tile.removeClass('correct');
+                }, 1000);
+                this._eventAggregator.publish('score', tile.value);
+                tile.value *= 2;
+                if (tile.isCenter) {
+                    this._eventAggregator.publish('high', tile.value);
+                }
+            },
+            hide: () => { tile.visible = false; },
+            show: () => { tile.visible = true; },
             addClass: className => {
-                tile.classList += ' ' + className;
-                console.log(tile.classList);
+                if (tile.classList.indexOf(className) < 0) {
+                    tile.classList += ' ' + className;
+                    console.log(tile.classList);
+                }
             },
             removeClass: className => {
                 let classArray = tile.classList.split(' ');
@@ -42,6 +93,9 @@ export class BoardCustomElement {
                     classArray.splice(classIndex, 1);
                     tile.classList = classArray.join(' ');
                 }
+            },
+            resetClassNames: () => {
+                tile.classList = 'tile';
             }
         };
         return tile;
@@ -63,19 +117,16 @@ export class BoardCustomElement {
         this._newBoard();
 
         setTimeout(() => {
-            this._tileWidth = $('.tile').width() / this.distance * (this.distance + 2);
+            let $tiles = $('.tile');
+            this._tileWidth = $tiles.width() / this.distance * (this.distance + 2);
+            // need to calc this in px cuz everything is in vmin
+            // this._tileDistancePx = $($tiles[1]).position().left - $tiles.first().position().left;
         });
         this._addListeners();
     }
 
     detached() {
         this._removeListeners();
-    }
-
-    _removeListeners() {
-        this.startDragListener.dispose();
-        this.doDragListener.dispose();
-        this.stopDragListener.dispose();
     }
 
     _addListeners() {
@@ -94,7 +145,13 @@ export class BoardCustomElement {
         this.restartListener = this._eventAggregator.subscribe('restart', () => {
             this._restartGame();
         });
+    }
 
+    _removeListeners() {
+        this.startDragListener.dispose();
+        this.doDragListener.dispose();
+        this.stopDragListener.dispose();
+        this.restartListener.dispose();
     }
 
     _restartGame() {
@@ -108,11 +165,9 @@ export class BoardCustomElement {
 
     _startDragHandler(tile) {
         if (!this._gameEnd) {
-            this._$tile = $(tile.element);
-            this._draggedTile = this.board[tile.y][tile.x];
-            this._dragTileIndex = [tile.y, tile.x];
+            // this._$tile = $(tile.element);
+            this._currentTile = this.board[tile.y][tile.x];
             this._releaseTile = false;
-            this._draggedTile.addClass('dragging');
             this._startPosition = {
                 left: tile.left,
                 top: tile.top
@@ -124,37 +179,37 @@ export class BoardCustomElement {
 
     _doDragHandler(tile) {
         if (!this._releaseTile) {
-            this._delta[1] += tile.left;
-            this._delta[0] += tile.top;
-            let absDelta = [Math.abs(this._delta[0]), Math.abs(this._delta[1])];
-            this._oneDelta = (absDelta[1] > absDelta[0]) ? [0, this._delta[1]] : [this._delta[0], 0];
-            this._signs = [Math.sign(this._oneDelta[0]), Math.sign(this._oneDelta[1])];
-            let target = [this._dragTileIndex[0] + this._signs[0], this._dragTileIndex[1] + this._signs[1]];
-            if (this._underTreshold(this._oneDelta)) {
-                this._moveTile(this._oneDelta[1] / 1.6, this._oneDelta[0] / 1.6, false, 'dragging');
-            } else {
-                this._draggedTile.removeClass('dragging');
-                let targetValue = this.board[target[0]][target[1]].value;
-                this._releaseTile = true;
-                if (this._draggedTile.value == targetValue) {
-                    // animate dragged tile to target
-                    this._moveTile(this._signs[1] * this._tileWidth, this._signs[0] * this._tileWidth, true, 'correct');
-                    this._doubleTile(target);
+            this._delta[1] += tile.left; // px
+            this._delta[0] += tile.top; // px
+            let absDelta = [Math.abs(this._delta[0]), Math.abs(this._delta[1])]; //px
+            this._oneDelta = (absDelta[1] > absDelta[0]) ? [0, this._delta[1]] : [this._delta[0], 0]; //px
+            this._signs = [Math.sign(this._oneDelta[0]), Math.sign(this._oneDelta[1])]; // -1 / 0 / 1
+            let targetCoordinates = [this._currentTile.y + this._signs[0], this._currentTile.x + this._signs[1]]; // coords
+            if (this._withinBoundaries(targetCoordinates)) {
+                if (this._underTreshold(this._oneDelta)) {
+                    this._currentTile.drag(this._oneDelta, 'dragging');
                 } else {
-                    this._moveTile(0, 0, true, 'incorrect');
+                    this._releaseTile = true;
+                    let targetTile = this.board[targetCoordinates[0]][targetCoordinates[1]];
+                    if (this._currentTile.value == targetTile.value) {
+                        targetTile.doubleUp();
+                        this._currentTile.animate(this._signs, 'correct');
+                    } else {
+                        this._currentTile.animate([0, 0], 'incorrect');
+                    }
                 }
             }
         }
     }
 
     _stopDragHandler() {
-        this._draggedTile.removeClass('dragging');
         if (this._underTreshold(this._oneDelta)) {
-            this._moveTile(0, 0, true, 'retracted');
+            this._currentTile.animate([0, 0], 'dragging');
         } else {
             let tilesBehind = this._findTilesBehind(this._signs);
             // animate the intruding tiles on the board
             let time = this._moveTiles(tilesBehind, this._signs);
+
             console.log(time);
             setTimeout(() => {
                 this._shiftTilesBehind(tilesBehind);
@@ -209,19 +264,6 @@ export class BoardCustomElement {
         });
     }
 
-    _moveTile(x, y, animate, className) {
-        if (animate) {
-            this._draggedTile.addClass(className);
-            this._$tile.on('transitionend', () => {
-                this._$tile.off('transitionend');
-                this._draggedTile.removeClass(className);
-            });
-        }
-        this._$tile.css({
-            transform: 'translate(' + x + 'px, ' + y + 'px)'
-        });
-    }
-
     _animateTile($t, dx, dy) {
         $t.css({
             transform: 'translate(' + dx + 'px, ' + dy + 'px)'
@@ -240,15 +282,18 @@ export class BoardCustomElement {
         for (let i = 1; i < tiles.length; i++) {
             const tile = tiles[i];
             let $tile = $('#tile_' + tile[0] + '-' + tile[1]);
-            $tile.addClass('follow');
             let dx = signs[1] * this._tileWidth;
             let dy = signs[0] * this._tileWidth;
-            setTimeout(this._animateTile($tile, dx, dy), dt);
+            tile.animate(this._signs, 'follow', dt);
+            // this._animateTile($tile, dx, dy);
             Dt += dt;
             dt += ddt;
         }
 
         return Dt;
+        let time = tilesBehind.forEach(tile => {
+        });
+
     }
 
     _withinBoundaries(target) {
@@ -259,15 +304,17 @@ export class BoardCustomElement {
 
     // find the tiles behind the moved tile from the empty place to the wall
     _findTilesBehind(directions) {
-        let t = this._dragTileIndex.slice();
         let tilesBehind = [];
-        // if one of the directions > 0 then step = -1 (opposite direction)
-        let step = directions.some(v => { return v > 0; }) ? -1 : 1;
-        let max = (step > 0) ? this._boardSize : -1;
-        let start = (directions[0] == 0) ? t[1] : t[0];
-        for (let i = start; i != max; i += step) {
-            tilesBehind.push(t);
-            t = t.map((pos, j) => { return pos - directions[j]; });
+        if (this._currentTile) {
+            let t = [this._currentTile.y, this._currentTile.x];
+            // if one of the directions > 0 then step = -1 (opposite direction)
+            let step = directions.some(v => { return v > 0; }) ? -1 : 1;
+            let max = (step > 0) ? this._boardSize : -1;
+            let start = (directions[0] == 0) ? t[1] : t[0];
+            for (let i = start; i != max; i += step) {
+                tilesBehind.push(this.board[t[0]][t[1]]);
+                t = t.map((pos, j) => { return pos - directions[j]; });
+            }
         }
         return tilesBehind;
     }
@@ -279,9 +326,9 @@ export class BoardCustomElement {
         });
         let last = tiles.length - 1;
         for (let i = 0; i < last; i++) {
-            this.board[tiles[i][0]][tiles[i][1]].value = this.board[tiles[i + 1][0]][tiles[i + 1][1]].value;
+            this.board[tiles[i].y][tiles[i].x].value = this.board[tiles[i + 1].y][tiles[i + 1].y].value;
         }
-        this.board[tiles[last][0]][tiles[last][1]].value = this._getRandomPowerOf2();
+        this.board[tiles[last].y][tiles[last].x].value = this._getRandomPowerOf2();
     }
 
     // Probability of lower number is higher
@@ -300,15 +347,6 @@ export class BoardCustomElement {
             this._newValues.push(val);
         }
         return this._newValues[Math.floor(Math.random() * (this._newValues.length - 1))];
-    }
-
-    _doubleTile(pos) {
-        let value = this.board[pos[0]][pos[1]].value;
-        this._score += value;
-        this.board[pos[0]][pos[1]].value *= 2;
-        this._highestValue = (pos[0] == pos[1] && pos[0] == this._center) ? Math.max(this._highestValue, this.board[pos[0]][pos[1]].value) : this._highestValue;
-        this._eventAggregator.publish('score', value);
-        this._eventAggregator.publish('high', this._highestValue);
     }
 
     _underTreshold(constrainedDistance) {

@@ -10,6 +10,10 @@ export class TileCustomElement {
     constructor(dragService, eventAggregator) {
         this.dragService = dragService;
         this._eventAggregator = eventAggregator;
-
     }
+
+    resetClassNames() {
+        this.tile.resetClassNames();
+    }
+
 }

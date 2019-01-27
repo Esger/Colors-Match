@@ -8,19 +8,13 @@
     display         : block;
     font            : normal @tileFontSize/@tileSize "Trebuchet MS", Arial, Helvetica, sans-serif;
     height          : @tileSize;
-    left            : @tileGutterSize;
     overflow        : hidden;
     position        : absolute;
     text-align      : center;
     text-decoration : none;
     text-shadow     : 0 1px 1px #ccc;
-    top             : @tileGutterSize;
+    transition      : background-color .2s ease-in-out;
     width           : @tileSize;
-
-    &.attracted {
-        transition: transform .2s ease-out;
-        z-index   : 100;
-    }
 
     &.burn {
         // background-color: orange;
@@ -29,12 +23,15 @@
 
     &.correct {
         background-color: lightgreen;
+        transition      : transform .2s ease-out;
+        z-index         : 100;
     }
 
     &.dragging {
-        box-shadow: 0 3px 5px #aaa;
-        cursor    : -webkit-grabbing;
-        z-index   : 100;
+        background-color: palegoldenrod;
+        box-shadow      : 0 3px 5px #aaa;
+        cursor          : -webkit-grabbing;
+        z-index         : 100;
     }
 
     &.follow {

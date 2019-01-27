@@ -1,8 +1,9 @@
 <template>
-    <div class="tile"
+    <div class.bind="tile.classList"
          id.bind="tile.id"
          innerhtml.bind="tile.value"
          mousedown.delegate="dragService.startDrag(tile.x, tile.y, $event)"
          touchstart.delegate="dragService.startDrag(tile.x, tile.y, $event)"
-         css="left: ${tile.x * distance + offset}vmin; top: ${tile.y * distance + offset}vmin;"></div>
+         transitionend.delegate="resetClassNames()"
+         css="left: ${tile.x * distance + offset}vmin; top: ${tile.y * distance + offset}vmin; transform: translate(${tile.dx}, ${tile.dy}); xtransition: ${tile.animated} ? 'transform .2s ease-in' : '';"></div>
 </template>

@@ -65,7 +65,7 @@ export class BoardCustomElement {
                     tile.dy = directions[0] * this.distance + 'vmin';
                     tile.dx = directions[1] * this.distance + 'vmin';
                     console.log(tile.dy, tile.dx);
-                });
+                }, delay);
             },
             doubleUp: () => {
                 tile.addClass('correct');
@@ -257,43 +257,47 @@ export class BoardCustomElement {
     }
 
     _endGame() {
+        let dt = 50;
+        let ddt = 50;
+        let Dt = 0;
         this._gameEnd = true;
         $('.tile').addClass('burn');
-        setTimeout(() => {
-            $('.tile').addClass('onfire');
-        });
-    }
-
-    _animateTile($t, dx, dy) {
-        $t.css({
-            transform: 'translate(' + dx + 'px, ' + dy + 'px)'
-        }).on('transitionend', event => {
-            const $t = $(event.target);
-            $t.removeClass('follow').off('transitionend');
+        this.board.forEach(row => {
+            row.forEach(tile => {
+                setTimeout(() => {
+                    tile.addClass('onfire');
+                    setTimeout(() => {
+                        tile.removeClass('burn');
+                        tile.removeClass('onfire');
+                    }, dt);
+                }, dt);
+                Dt += dt;
+                dt += ddt;
+            });
         });
     }
 
     _moveTiles(tiles, signs) {
-        const ddt = 50;
-        let dt = 100 / tiles.length;
+        const ddt = 200;
         let Dt = 0;
-        // the first tile is the dragged one
-        const last = tiles.length - 1;
-        for (let i = 1; i < tiles.length; i++) {
-            const tile = tiles[i];
-            let $tile = $('#tile_' + tile[0] + '-' + tile[1]);
-            let dx = signs[1] * this._tileWidth;
-            let dy = signs[0] * this._tileWidth;
-            tile.animate(this._signs, 'follow', dt);
-            // this._animateTile($tile, dx, dy);
-            Dt += dt;
-            dt += ddt;
+        if (tiles.length) {
+            let dt = 100 / tiles.length;
+            // the first tile is the dragged one
+            tiles[0].hide();
+            for (let i = 1; i < tiles.length; i++) {
+                const tile = tiles[i];
+                let $tile = $('#tile_' + tile[0] + '-' + tile[1]);
+                let dx = signs[1] * this._tileWidth;
+                let dy = signs[0] * this._tileWidth;
+                tile.animate(this._signs, 'follow', dt);
+                Dt += dt;
+                dt += ddt;
+            }
         }
-
+        setTimeout(() => {
+            tiles[0].show();
+        }, Dt);
         return Dt;
-        let time = tilesBehind.forEach(tile => {
-        });
-
     }
 
     _withinBoundaries(target) {

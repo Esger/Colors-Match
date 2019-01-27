@@ -1,5 +1,6 @@
 <template>
-    <div class.bind="tile.classList"
+    <div if.bind="tile.visible"
+         class.bind="tile.classList"
          id.bind="tile.id"
          innerhtml.bind="tile.value"
          mousedown.delegate="dragService.startDrag(tile.x, tile.y, $event)"

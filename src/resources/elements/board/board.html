@@ -2,8 +2,9 @@
     <require from="resources/elements/tile/tile"></require>
     <template repeat.for="row of board">
         <template repeat.for="tile of row">
-            <tile if.bind="tile.value"
-                  tile.bind="tile"
+            <tile tile.bind="tile"
+                  board-size.one-time="boardSize"
+                  center.one-time="center"
                   distance.one-time="distance"
                   offset.one-time="offset"
                   containerless></tile>

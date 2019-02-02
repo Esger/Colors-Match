@@ -7,7 +7,9 @@
             click.delegate="restart()">${title}</h1>
         <h2 class="score">${score}</h2>
     </header>
-    <board mousemove.delegate="dragService.doDrag($event)"
+    <board mousedown.delegate="dragService.startDrag(tile.x, tile.y, $event)"
+           touchstart.delegate="dragService.startDrag(tile.x, tile.y, $event)"
+           mousemove.delegate="dragService.doDrag($event)"
            touchmove.delegate="dragService.doDrag($event)"
            mouseup.delegate="dragService.stopDrag($event)"
            touchend.delegate="dragService.stopDrag($event)"></board>

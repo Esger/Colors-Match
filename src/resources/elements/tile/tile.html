@@ -1,10 +1,16 @@
 <template>
-    <div if.bind="tile.visible"
-         class.bind="tile.classList"
-         id.bind="tile.id"
+    <div class="tile 
+            ${animated ? 'animated' : ''}
+            ${dragged ? 'dragged' : ''} 
+            ${burn ? 'burn' : ''} 
+            ${correct ? 'correct' : ''}
+            ${incorrect ? 'incorrect' : ''}
+            ${locked ? 'locked' : ''}
+            ${onfire ? 'onfire' : ''}
+            ${visible ? '' : 'hide'}"
+         id.one-time="tile.id"
          innerhtml.bind="tile.value"
-         mousedown.delegate="dragService.startDrag(tile.x, tile.y, $event)"
-         touchstart.delegate="dragService.startDrag(tile.x, tile.y, $event)"
-         transitionend.delegate="resetClassNames()"
-         css="left: ${tile.x * distance + offset}vmin; top: ${tile.y * distance + offset}vmin; transform: translate(${tile.dx}, ${tile.dy}); xtransition: ${tile.animated} ? 'transform .2s ease-in' : '';"></div>
+         css="left: ${tile.x * distance + offset}vmin; 
+            top: ${tile.y * distance + offset}vmin; 
+            transform: translate(${dx}, ${dy});"></div>
 </template>

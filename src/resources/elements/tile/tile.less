@@ -1,5 +1,5 @@
 .tile {
-    background-color: whitesmoke;
+    background-color: rgba(245,245,245,1);
     border          : 0 solid #666;
     border-radius   : @tileCornerRadius;
     box-shadow      : 0 2px 2px #aaa;
@@ -13,21 +13,27 @@
     text-align      : center;
     text-decoration : none;
     text-shadow     : 0 1px 1px #ccc;
-    transition      : background-color .2s ease-in-out;
+    transition      : background-color .2s ease-in-out, opacity .2s ease-in-out;
     width           : @tileSize;
+
+    &.animated {
+        transition: background-color .2s ease-in-out, opacity .2s ease-in-out, transform .2s ease-out;
+        z-index   : 100;
+    }
 
     &.burn {
         // background-color: orange;
-        transition: background-color 500ms ease-out;
+        transition: background-color .2s ease-in-out, opacity .2s ease-in-out;
     }
 
     &.correct {
         background-color: lightgreen;
+        transform       : scale(1.05, 1.05) !important;
         transition      : transform .2s ease-out;
         z-index         : 100;
     }
 
-    &.dragging {
+    &.dragged {
         background-color: palegoldenrod;
         box-shadow      : 0 3px 5px #aaa;
         cursor          : -webkit-grabbing;
@@ -38,8 +44,17 @@
         transition: transform .2s ease-in;
     }
 
+    &.hide {
+        opacity: 0;
+    }
+
     &.incorrect {
         background-color: lightcoral;
+    }
+
+    &.locked {
+        // opacity       : .5; // temp
+        pointer-events: none;
     }
 
     &.onfire {

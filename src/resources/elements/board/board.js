@@ -6,14 +6,14 @@ export class BoardCustomElement {
 
     constructor(eventAggregator) {
         this._eventAggregator = eventAggregator;
-        this._boardSize = 5; // / @boardSize
         this._tileSize = 8;
-        this._center = Math.floor(this._boardSize / 2);
         this._highestValue = 1;
         this._score = 0;
+        this.boardSize = 5; // / @boardSize
+        this.center = Math.floor(this.boardSize / 2);
         this.board = [];
         this.showBoard = true;
-        this.offset = this._boardSize * 2 / (this._boardSize + 1);
+        this.offset = this.boardSize * 2 / (this.boardSize + 1);
         this.distance = this._tileSize + this.offset;
         this._newValues = [1];
         this._gameEnd = false;
@@ -21,88 +21,19 @@ export class BoardCustomElement {
 
     _newTile(x, y) {
         let tile = {
-            animated: false,
-            classList: 'tile',
-            dragged: false,
-            id: 'tile_' + y + '-' + x,
-            isCenter: (x == y) && (x == this._center),
-            timer: undefined,
-            value: 1,
-            visible: true,
             x: x,
             y: y,
-            dx: 0,
-            dy: 0,
-            $tileCache: undefined,
-            $tile: () => {
-                if (tile.$tileCache) {
-                    return tile.$tileCache;
-                } else {
-                    tile.$tileCache = $('#' + tile.id);
-                    return tile.$tileCache;
-                }
-            },
-            drag: (directions) => {
-                tile.addClass('dragged');
-                tile.animated = false;
-                setTimeout(() => {
-                    // for elastic effect
-                    tile.dy = (directions[0] / 2) + 'px';
-                    tile.dx = (directions[1] / 2) + 'px';
-                });
-                clearTimeout(tile.timer);
-                // make sure the className gets deleted again
-                tile.timer = setTimeout(() => {
-                    tile.removeClass('dragged');
-                    this.dragged = false;
-                }, 500);
-            },
-            animate: (directions, className, delay) => {
-                tile.animated = true;
-                tile.addClass(className);
-                setTimeout(() => {
-                    tile.dy = directions[0] * this.distance + 'vmin';
-                    tile.dx = directions[1] * this.distance + 'vmin';
-                }, delay);
-            },
-            doubleUp: () => {
-                tile.addClass('correct');
-                setTimeout(() => {
-                    tile.removeClass('correct');
-                }, 1000);
-                this._eventAggregator.publish('score', tile.value);
-                tile.value *= 2;
-                if (tile.isCenter) {
-                    this._eventAggregator.publish('high', tile.value);
-                }
-            },
-            hide: () => { tile.visible = false; },
-            show: () => { tile.visible = true; },
-            addClass: className => {
-                if (tile.classList.indexOf(className) < 0) {
-                    tile.classList += ' ' + className;
-                }
-            },
-            removeClass: className => {
-                let classArray = tile.classList.split(' ');
-                const classIndex = classArray.indexOf(className);
-                if (classIndex > 0) {
-                    classArray.splice(classIndex, 1);
-                    tile.classList = classArray.join(' ');
-                }
-            },
-            resetClassNames: () => {
-                tile.classList = 'tile';
-            }
+            id: 'tile_' + y + '-' + x,
+            value: 1
         };
         return tile;
     }
 
     _newBoard() {
         this.board = [];
-        for (let y = 0; y < this._boardSize; y++) {
+        for (let y = 0; y < this.boardSize; y++) {
             let row = [];
-            for (let x = 0; x < this._boardSize; x++) {
+            for (let x = 0; x < this.boardSize; x++) {
                 row.push(this._newTile(x, y));
             }
             this.board.push(row);
@@ -124,151 +55,123 @@ export class BoardCustomElement {
     }
 
     _addListeners() {
-        this.startDragListener = this._eventAggregator.subscribe('startDrag', tile => {
-            this._startDragHandler(tile);
+        this._moveListener = this._eventAggregator.subscribe('request-move', move => {
+            console.log('follow', move);
+            this._currentTile = this.board[move.tile.y][move.tile.x];
+            this._moveIfValid(move); // x,y,directions[y,x]
         });
-
-        this.doDragListener = this._eventAggregator.subscribe('doDrag', tile => {
-            this._doDragHandler(tile);
-        });
-
-        this.stopDragListener = this._eventAggregator.subscribe('stopDrag', () => {
-            this._stopDragHandler();
-        });
-
         this.restartListener = this._eventAggregator.subscribe('restart', () => {
             this._restartGame();
         });
     }
 
     _removeListeners() {
-        this.startDragListener.dispose();
-        this.doDragListener.dispose();
-        this.stopDragListener.dispose();
         this.restartListener.dispose();
     }
 
     _restartGame() {
         this._gameEnd = false;
-        this._releaseTile = false;
         this._newBoard();
         this._removeListeners();
         this._addListeners();
         this._eventAggregator.publish('reset-score');
     }
 
-    _startDragHandler(tile) {
-        if (!this._gameEnd) {
-            // this._$tile = $(tile.element);
-            this._currentTile = this.board[tile.y][tile.x];
-            this._releaseTile = false;
-            this._startPosition = {
-                left: tile.left,
-                top: tile.top
-            };
-            this._delta = [0, 0];
-            this._oneDelta = [0, 0];
-        }
-    }
+    _moveIfValid(move) {
+        let target = [move.tile.y + move.directions[0], move.tile.x + move.directions[1]]; // coords
+        let targetTile = this.board[target[0]][target[1]];
+        console.log('move if valid');
+        if (move.tile.value == targetTile.value) {
+            // animate the dragged tile to the target
+            move.animate = true;
+            this._eventAggregator.publish('move', move);
+            let tilesBehind = this._findTilesBehind(move);
+            // wait for animation to target
+            setTimeout(() => {
+                this._eventAggregator.publish('correct', targetTile);
+                targetTile.value *= 2;
+                this._setBackTiles(tilesBehind, move.directions);
+                // animate the intruding tiles on the board
+                this._shiftValues(tilesBehind, move.directions);
 
-    _doDragHandler(tile) {
-        if (!this._releaseTile) {
-            this._delta[1] += tile.left; // px
-            this._delta[0] += tile.top; // px
-            let absDelta = [Math.abs(this._delta[0]), Math.abs(this._delta[1])]; //px
-            this._oneDelta = (absDelta[1] > absDelta[0]) ? [0, this._delta[1]] : [this._delta[0], 0]; //px
-            this._signs = [Math.sign(this._oneDelta[0]), Math.sign(this._oneDelta[1])]; // -1 / 0 / 1
-            let targetCoordinates = [this._currentTile.y + this._signs[0], this._currentTile.x + this._signs[1]]; // coords
-            if (this._withinBoundaries(targetCoordinates)) {
-                if (this._underTreshold(this._oneDelta)) {
-                    this._currentTile.drag(this._oneDelta, 'dragging');
-                } else {
-                    this._releaseTile = true;
-                    let targetTile = this.board[targetCoordinates[0]][targetCoordinates[1]];
-                    if (this._currentTile.value == targetTile.value) {
-                        targetTile.doubleUp();
-                        this._currentTile.animate(this._signs, 'correct');
-                        let tilesBehind = this._findTilesBehind(this._signs);
-                        // animate the intruding tiles on the board
-                        let time = this._moveTiles(tilesBehind, this._signs);
+                // let time = 0;
+                let time = this._animateTiles(tilesBehind, move.directions);
 
-                        console.log('Dt', time);
-                        setTimeout(() => {
-                            this._shiftTilesBehind(tilesBehind);
-                            this._checkGameEnd();
-                        }, time);
-                        this._releaseTile = true;
-                    } else {
-                        this._currentTile.animate([0, 0], 'incorrect');
-                    }
-                }
-            }
-        }
-    }
-
-    _stopDragHandler() {
-        if (this._underTreshold(this._oneDelta)) {
-            this._currentTile.animate([0, 0], 'dragging');
+                // console.log('Dt', time);
+                setTimeout(() => {
+                    this._eventAggregator.publish('unlockTiles');
+                    this._checkGameEnd();
+                }, time);
+            }, 200);
         } else {
+            this._eventAggregator.publish('reset', move);
+            this._eventAggregator.publish('unlockTiles');
         }
     }
 
-    _moveTiles(tiles, signs) {
+    _setBackTiles(tiles, directions) {
+
+        let oppositeDirections = [-directions[0], -directions[1]];
+
+        // shift the tiles 1 place in opposite direction as moved tile 
+        for (let i = 0; i < tiles.length; i++) {
+            let vector = {
+                tile: tiles[i],
+                directions: oppositeDirections,
+                animate: false
+            };
+            this._eventAggregator.publish('move', vector);
+        }
+    }
+
+    _shiftValues(tiles, directions) {
+        // shift values of tiles one place in same direction as moved tile
+        let last = tiles.length - 1;
+        for (let i = 0; i < last; i++) {
+            this.board[tiles[i].y][tiles[i].x].value = this.board[tiles[i].y - directions[0]][tiles[i].x - directions[1]].value;
+        }
+
+        // fill outermost tile with random power of 2 smaller than highestValue
+        this.board[tiles[last].y][tiles[last].x].value = this._getRandomPowerOf2();
+    }
+
+    _animateTiles(tiles, directions) {
         const ddt = 200;
         let Dt = 0;
         let dt = 200;
         if (tiles.length) {
-            // the first tile is the dragged one
-            // setTimeout(() => {
-            // });
-            // tiles[0].hide();
-            for (let i = 1; i < tiles.length; i++) {
+            // the first [0] tile is the dragged one
+            for (let i = 0; i < tiles.length; i++) {
                 const tile = tiles[i];
-                console.log('dt', dt);
-                tile.animate(this._signs, 'follow', dt);
+                // console.log('dt', dt);
+                let vector = {
+                    tile: tile,
+                    directions: [0, 0],
+                    animate: true
+                };
+                setTimeout(() => {
+                    this._eventAggregator.publish('move', vector);
+                }, dt);
                 Dt += dt;
                 dt += ddt;
             }
         }
-        // tiles[tiles.length - 1].$tile().on('transitionend', () => {
-        //     tiles[0].show();
-        // });
         return dt;
     }
 
-    _withinBoundaries(target) {
-        let inRow = target[1] >= 0 && target[1] < this._boardSize;
-        let inCol = target[0] >= 0 && target[0] < this._boardSize;
-        return inRow && inCol;
-    }
-
     // find the tiles behind the moved tile from the empty place to the wall
-    _findTilesBehind(directions) {
+    _findTilesBehind(move) {
         let tilesBehind = [];
-        if (this._currentTile) {
-            let t = [this._currentTile.y, this._currentTile.x];
-            // if one of the directions > 0 then step = -1 (opposite direction)
-            let step = directions.some(v => { return v > 0; }) ? -1 : 1;
-            let max = (step > 0) ? this._boardSize : -1;
-            let start = (directions[0] == 0) ? t[1] : t[0];
-            for (let i = start; i != max; i += step) {
-                tilesBehind.push(this.board[t[0]][t[1]]);
-                t = t.map((pos, j) => { return pos - directions[j]; });
-            }
+        let t = [move.tile.y, move.tile.x];
+        // if one of the directions > 0 then step = -1 (opposite direction)
+        let step = move.directions.some(v => { return v > 0; }) ? -1 : 1;
+        let max = (step > 0) ? this.boardSize : -1;
+        let start = (move.directions[0] == 0) ? t[1] : t[0];
+        for (let i = start; i != max; i += step) {
+            tilesBehind.push(this.board[t[0]][t[1]]);
+            t = t.map((pos, j) => { return pos - move.directions[j]; });
         }
         return tilesBehind;
-    }
-
-    // shift the tiles behind 1 place in same direction as target and fill outermost tile with random power of 2 smaller than highestValue.
-    _shiftTilesBehind(tiles, directions) {
-        $('.tile').css({
-            transform: 'translate(0, 0)'
-        });
-        let last = tiles.length - 1;
-        for (let i = 0; i < last; i++) {
-            this.board[tiles[i].y][tiles[i].x].value = this.board[tiles[i + 1].y][tiles[i + 1].y].value;
-        }
-        this.board[tiles[last].y][tiles[last].x].value = this._getRandomPowerOf2();
     }
 
     // Probability of lower number is higher
@@ -319,38 +222,21 @@ export class BoardCustomElement {
 
     _checkGameEnd() {
         // wait for animation of intruding tiles
-        setTimeout(() => {
-            if (!this._movesHorPossible() || !this._movesVerPossible()) {
-                this._endGame();
-            }
-        }, 300);
+        if (!this._movesHorPossible() || !this._movesVerPossible()) {
+            this._endGame();
+        }
     }
 
     _endGame() {
-        let dt = 50;
-        let ddt = 50;
-        let Dt = 0;
         this._gameEnd = true;
-        $('.tile').addClass('burn');
+        this._eventAggregator.publish('burn');
         this.board.forEach(row => {
             row.forEach(tile => {
                 setTimeout(() => {
-                    tile.addClass('onfire');
-                    setTimeout(() => {
-                        tile.removeClass('burn');
-                        tile.removeClass('onfire');
-                    }, dt);
-                }, dt);
-                Dt += dt;
-                dt += ddt;
+                    this._eventAggregator.publish('onfire', tile);
+                }, Math.random() * 1500);
             });
         });
-    }
-
-    _underTreshold(constrainedDistance) {
-        let value = Math.max(Math.abs(constrainedDistance[0]), Math.abs(constrainedDistance[1]));
-        let thresholdDelta = this._tileWidth / 2;
-        return value < thresholdDelta;
     }
 
 }

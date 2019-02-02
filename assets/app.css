@@ -69,6 +69,10 @@ game header {
   line-height: 5vmin;
   margin: calc(2.5vmin / 2) 0;
   text-shadow: 0 1px 1px #fff;
+  -webkit-user-select: none;
+     -moz-user-select: none;
+      -ms-user-select: none;
+          user-select: none;
   width: 50vmin;
 }
 game header .dummy {
@@ -84,7 +88,7 @@ game header .title {
   line-height: 5vmin;
 }
 .tile {
-  background-color: whitesmoke;
+  background-color: #f5f5f5;
   border: 0 solid #666;
   border-radius: 1vmin;
   -webkit-box-shadow: 0 2px 2px #aaa;
@@ -100,23 +104,32 @@ game header .title {
   text-align: center;
   text-decoration: none;
   text-shadow: 0 1px 1px #ccc;
-  -webkit-transition: background-color 0.2s ease-in-out;
-  transition: background-color 0.2s ease-in-out;
+  -webkit-transition: background-color 0.2s ease-in-out, opacity 0.2s ease-in-out;
+  transition: background-color 0.2s ease-in-out, opacity 0.2s ease-in-out;
   width: 8vmin;
 }
+.tile.animated {
+  -webkit-transition: background-color 0.2s ease-in-out, opacity 0.2s ease-in-out, -webkit-transform 0.2s ease-out;
+  transition: background-color 0.2s ease-in-out, opacity 0.2s ease-in-out, -webkit-transform 0.2s ease-out;
+  transition: background-color 0.2s ease-in-out, opacity 0.2s ease-in-out, transform 0.2s ease-out;
+  transition: background-color 0.2s ease-in-out, opacity 0.2s ease-in-out, transform 0.2s ease-out, -webkit-transform 0.2s ease-out;
+  z-index: 100;
+}
 .tile.burn {
-  -webkit-transition: background-color 500ms ease-out;
-  transition: background-color 500ms ease-out;
+  -webkit-transition: background-color 0.2s ease-in-out, opacity 0.2s ease-in-out;
+  transition: background-color 0.2s ease-in-out, opacity 0.2s ease-in-out;
 }
 .tile.correct {
   background-color: lightgreen;
+  -webkit-transform: scale(1.05, 1.05) !important;
+          transform: scale(1.05, 1.05) !important;
   -webkit-transition: -webkit-transform 0.2s ease-out;
   transition: -webkit-transform 0.2s ease-out;
   transition: transform 0.2s ease-out;
   transition: transform 0.2s ease-out, -webkit-transform 0.2s ease-out;
   z-index: 100;
 }
-.tile.dragging {
+.tile.dragged {
   background-color: palegoldenrod;
   -webkit-box-shadow: 0 3px 5px #aaa;
           box-shadow: 0 3px 5px #aaa;
@@ -129,8 +142,14 @@ game header .title {
   transition: transform 0.2s ease-in;
   transition: transform 0.2s ease-in, -webkit-transform 0.2s ease-in;
 }
+.tile.hide {
+  opacity: 0;
+}
 .tile.incorrect {
   background-color: lightcoral;
+}
+.tile.locked {
+  pointer-events: none;
 }
 .tile.onfire {
   background-color: orangered;

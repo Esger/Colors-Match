@@ -13,6 +13,7 @@ export class DragService {
         this._dragStartPos = undefined;
         this._dragEndPos = undefined;
         this._lastZindex = 1;
+        this._dragged = false;
     }
 
     getClientPos(event) {
@@ -44,8 +45,8 @@ export class DragService {
     }
 
     doDrag(event) {
-        let clientPos = this.getClientPos(event);
         if (this._element) {
+            let clientPos = this.getClientPos(event);
             let dx = clientPos.left - this._dragPreviousPos.left;
             let dy = clientPos.top - this._dragPreviousPos.top;
             this._dragPreviousPos = clientPos;

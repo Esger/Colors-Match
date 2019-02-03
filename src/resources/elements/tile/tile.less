@@ -1,20 +1,20 @@
 .tile {
-    background-color: rgba(245,245,245,1);
-    border          : 0 solid #666;
-    border-radius   : @tileCornerRadius;
-    box-shadow      : 0 2px 2px #aaa;
-    color           : #333;
-    cursor          : grab;
-    display         : block;
-    font            : normal @tileFontSize/@tileSize "Trebuchet MS", Arial, Helvetica, sans-serif;
-    height          : @tileSize;
-    overflow        : hidden;
-    position        : absolute;
-    text-align      : center;
-    text-decoration : none;
-    text-shadow     : 0 1px 1px #ccc;
-    transition      : background-color .2s ease-in-out, opacity .2s ease-in-out;
-    width           : @tileSize;
+    // background-color: rgba(245,245,245,1);
+    border         : 0 solid #666;
+    border-radius  : @tileCornerRadius;
+    box-shadow     : 0 2px 2px #aaa;
+    color          : #333;
+    cursor         : grab;
+    display        : block;
+    font           : normal @tileFontSize/@tileSize "Trebuchet MS", Arial, Helvetica, sans-serif;
+    height         : @tileSize;
+    overflow       : hidden;
+    position       : absolute;
+    text-align     : center;
+    text-decoration: none;
+    text-shadow    : 0 1px 1px #ccc;
+    transition     : background-color .2s ease-in-out, opacity .2s ease-in-out;
+    width          : @tileSize;
 
     &.animated {
         transition: background-color .2s ease-in-out, opacity .2s ease-in-out, transform .2s ease-out;
@@ -50,6 +50,7 @@
 
     &.incorrect {
         background-color: lightcoral;
+        transform       : scale(0.95, 0.95) !important;
     }
 
     &.locked {

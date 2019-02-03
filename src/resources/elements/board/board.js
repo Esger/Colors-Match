@@ -30,6 +30,10 @@ export class BoardCustomElement {
     }
 
     _newBoard() {
+        this._highestValue = 1;
+        this._score = 0;
+        this.showBoard = false;
+
         this.board = [];
         for (let y = 0; y < this.boardSize; y++) {
             let row = [];
@@ -38,6 +42,9 @@ export class BoardCustomElement {
             }
             this.board.push(row);
         }
+        setTimeout(() => {
+            this.showBoard = true;
+        }, 200);
     }
 
     attached() {
@@ -56,7 +63,6 @@ export class BoardCustomElement {
 
     _addListeners() {
         this._moveListener = this._eventAggregator.subscribe('request-move', move => {
-            console.log('follow', move);
             this._currentTile = this.board[move.tile.y][move.tile.x];
             this._moveIfValid(move); // x,y,directions[y,x]
         });
@@ -72,15 +78,12 @@ export class BoardCustomElement {
     _restartGame() {
         this._gameEnd = false;
         this._newBoard();
-        this._removeListeners();
-        this._addListeners();
         this._eventAggregator.publish('reset-score');
     }
 
     _moveIfValid(move) {
         let target = [move.tile.y + move.directions[0], move.tile.x + move.directions[1]]; // coords
         let targetTile = this.board[target[0]][target[1]];
-        console.log('move if valid');
         if (move.tile.value == targetTile.value) {
             // animate the dragged tile to the target
             move.animate = true;
@@ -94,11 +97,14 @@ export class BoardCustomElement {
                 // animate the intruding tiles on the board
                 this._shiftValues(tilesBehind, move.directions);
 
-                // let time = 0;
                 let time = this._animateTiles(tilesBehind, move.directions);
 
-                // console.log('Dt', time);
                 setTimeout(() => {
+                    this._eventAggregator.publish('score', targetTile.value);
+                    if (targetTile.x == targetTile.y && targetTile.x == this.center) {
+                        this._highestValue = targetTile.value;
+                        this._eventAggregator.publish('high', targetTile.value);
+                    }
                     this._eventAggregator.publish('unlockTiles');
                     this._checkGameEnd();
                 }, time);
@@ -143,7 +149,6 @@ export class BoardCustomElement {
             // the first [0] tile is the dragged one
             for (let i = 0; i < tiles.length; i++) {
                 const tile = tiles[i];
-                // console.log('dt', dt);
                 let vector = {
                     tile: tile,
                     directions: [0, 0],
@@ -222,7 +227,7 @@ export class BoardCustomElement {
 
     _checkGameEnd() {
         // wait for animation of intruding tiles
-        if (!this._movesHorPossible() || !this._movesVerPossible()) {
+        if (!this._movesHorPossible() && !this._movesVerPossible()) {
             this._endGame();
         }
     }

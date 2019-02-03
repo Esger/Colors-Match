@@ -9,7 +9,6 @@ export class TileCustomElement {
     @bindable boardSize;
     @bindable distance;
     @bindable offset;
-    @bindable center;
 
     constructor(dragService, eventAggregator, element) {
         this.dragService = dragService;
@@ -28,7 +27,6 @@ export class TileCustomElement {
     }
 
     attached() {
-        this._isCenter = (this.tile.x == this.tile.y) && (this.tile.x == this.center);
         this._allowedDirections = [this._allowed(this.tile.y), this._allowed(this.tile.x)];
         this._addListeners();
     }
@@ -81,8 +79,8 @@ export class TileCustomElement {
             this.locked = false;
         });
 
-        this._resetMoveListener = this._eventAggregator.subscribe('reset', tile => {
-            if (tile.id == this.tile.id) {
+        this._resetMoveListener = this._eventAggregator.subscribe('reset', move => {
+            if (move.tile.id == this.tile.id) {
                 console.log('incorrect move');
                 this.animated = true;
                 this.visible = true;
@@ -139,7 +137,6 @@ export class TileCustomElement {
         };
         this._delta = [0, 0];
         this._oneDelta = [0, 0];
-        // console.log(this._startPosition);
     }
 
     _directionAllowed(direction, delta) {
@@ -189,11 +186,9 @@ export class TileCustomElement {
                         directions: this._directions
                     };
                     this._eventAggregator.publish('request-move', vector);
-                    console.log('allowed direction', this._directions);
                 }
             } else {
                 this.dragged = false;
-                console.log('direction not allowed');
             }
 
         }
@@ -201,12 +196,8 @@ export class TileCustomElement {
 
     _stopDragHandler() {
         if (this.dragged) {
-            console.log('stop');
             this.dragged = false;
             if (this._underTreshold(this._oneDelta)) {
-                let move = {
-
-                };
                 this._animate([0, 0]);
             }
         }

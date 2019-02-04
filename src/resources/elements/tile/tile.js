@@ -199,6 +199,7 @@ export class TileCustomElement {
             this.dragged = false;
             if (this._underTreshold(this._oneDelta)) {
                 this._animate([0, 0]);
+                this._eventAggregator.publish('unlockTiles');
             }
         }
     }

@@ -31,6 +31,7 @@ export class BoardCustomElement {
 
     _newBoard() {
         this._highestValue = 1;
+        this._newValues = [1];
         this._score = 0;
         this.showBoard = false;
 

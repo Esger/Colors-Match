@@ -143,9 +143,8 @@ export class BoardCustomElement {
     }
 
     _animateTiles(tiles, directions) {
-        const ddt = 200;
-        let Dt = 0;
-        let dt = 200;
+        const ddt = 100;
+        let dt = 100;
         if (tiles.length) {
             // the first [0] tile is the dragged one
             for (let i = 0; i < tiles.length; i++) {
@@ -158,7 +157,6 @@ export class BoardCustomElement {
                 setTimeout(() => {
                     this._eventAggregator.publish('move', vector);
                 }, dt);
-                Dt += dt;
                 dt += ddt;
             }
         }

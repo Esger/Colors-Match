@@ -1,0 +1,16 @@
+<template>
+    <require from="resources/elements/board/board"></require>
+    <header>
+        <h2 class="dummy">${score}</h2>
+        <h1 class="title"
+            title="Click to restart"
+            click.delegate="restart()">${title}</h1>
+        <h2 class="score">${score}</h2>
+    </header>
+    <board mousedown.delegate="dragService.startDrag(tile.x, tile.y, $event)"
+           touchstart.delegate="dragService.startDrag(tile.x, tile.y, $event)"
+           mousemove.delegate="dragService.doDrag($event)"
+           touchmove.delegate="dragService.doDrag($event)"
+           mouseup.delegate="dragService.stopDrag($event)"
+           touchend.delegate="dragService.stopDrag($event)"></board>
+</template>

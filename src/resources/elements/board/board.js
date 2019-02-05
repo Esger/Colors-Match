@@ -95,17 +95,17 @@ export class BoardCustomElement {
                 this._eventAggregator.publish('correct', targetTile);
                 targetTile.value *= 2;
                 this._setBackTiles(tilesBehind, move.directions);
-                // animate the intruding tiles on the board
                 this._shiftValues(tilesBehind, move.directions);
 
+                // animate the intruding tiles on the board
                 let time = this._animateTiles(tilesBehind, move.directions);
-
                 setTimeout(() => {
                     this._eventAggregator.publish('score', targetTile.value);
                     if (targetTile.x == targetTile.y && targetTile.x == this.center) {
                         this._highestValue = targetTile.value;
                         this._eventAggregator.publish('high', targetTile.value);
                     }
+                    this._afterCheck(tilesBehind);
                     this._eventAggregator.publish('unlockTiles');
                     this._checkGameEnd();
                 }, time);
@@ -113,6 +113,15 @@ export class BoardCustomElement {
         } else {
             this._eventAggregator.publish('reset', move);
             this._eventAggregator.publish('unlockTiles');
+        }
+    }
+
+    _afterCheck(tiles) {
+        let centerTile = tiles.filter(tile => {
+            return tile.x == this.center && tile.y == this.center;
+        });
+        if (centerTile.length && centerTile[0].value > this._highestValue) {
+            this._eventAggregator.publish('high', centerTile[0].value);
         }
     }
 

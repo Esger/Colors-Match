@@ -1,8 +1,9 @@
 board {
     align-items     : center;
-    background-color: white;
+    background-color: transparent;
     border-radius   : @gameBorder;
-    box-shadow      : inset 0 0 10px 0 rgba(0,0,0,0.5);
+    box-shadow      : inset 0 0 2px 0 rgba(0,0,0,0.7);
+    // box-shadow      : inset 0 0 @tileSize 0 rgba(0,0,0,0.2);
     display         : flex;
     height          : @boardSize;
     justify-content : center;
@@ -13,60 +14,12 @@ board {
     width           : @boardSize;
 
     &::before {
-        border       : 4px solid #00ff0080;
+        border       : 4px solid #ffffffbb;
         border-radius: calc(~'@{tileCornerRadius} + 2px');
         content      : '';
         display      : block;
         flex         : 0 0 calc(~ '@{tileSize} + @{tileGutterSize} / 2');
         height       : calc(~ '@{tileSize} + @{tileGutterSize} / 2');
         margin-top   : 2px;
-    }
-}
-
-.tile {
-    background-color: LemonChiffon;
-    border          : 0 solid #666;
-    border-radius   : @tileCornerRadius;
-    box-shadow      : 0 2px 2px #aaa;
-    color           : #333;
-    cursor          : grab;
-    display         : block;
-    font            : normal @tileFontSize/@tileSize "Trebuchet MS", Arial, Helvetica, sans-serif;
-    height          : @tileSize;
-    left            : @tileGutterSize;
-    overflow        : hidden;
-    position        : absolute;
-    text-align      : center;
-    text-decoration : none;
-    text-shadow     : 0 1px 1px #ccc;
-    top             : @tileGutterSize;
-    width           : @tileSize;
-
-    &.attracted {
-        transition: transform .2s ease-out;
-        z-index   : 100;
-    }
-
-    &.correct {
-        background-color: lightgreen;
-    }
-
-    &.dragging {
-        box-shadow: 0 3px 5px #aaa;
-        cursor    : -webkit-grabbing;
-        z-index   : 100;
-    }
-
-    &.follow {
-        transition: transform .2s ease-in;
-    }
-
-    &.incorrect {
-        background-color: lightcoral;
-    }
-
-    &.retracted {
-        transition: transform .2s ease-out;
-        z-index   : 100;
     }
 }

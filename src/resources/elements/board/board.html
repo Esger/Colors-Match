@@ -1,13 +1,14 @@
 <template>
-    <template repeat.for="row of board">
-        <template repeat.for="tile of row">
-            <div if.bind="tile.value"
-                 class="tile"
-                 id.bind="tile.id"
-                 innerhtml.bind="tile.value"
-                 mousedown.delegate="dragService.startDrag($index, $parent.$index, $event)"
-                 touchstart.delegate="dragService.startDrag($index, $parent.$index, $event)"
-                 css="left: ${$index * distance + offset}vmin; top: ${$parent.$index * distance + offset}vmin;"></div>
+    <require from="resources/elements/tile/tile"></require>
+    <template if.bind="showBoard">
+        <template repeat.for="row of board">
+            <template repeat.for="tile of row">
+                <tile tile.bind="tile"
+                      board-size.one-time="boardSize"
+                      distance.one-time="distance"
+                      offset.one-time="offset"
+                      containerless></tile>
+            </template>
         </template>
     </template>
 </template>

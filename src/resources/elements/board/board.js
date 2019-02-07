@@ -100,11 +100,6 @@ export class BoardCustomElement {
                 // animate the intruding tiles on the board
                 let time = this._animateTiles(tilesBehind, move.directions);
                 setTimeout(() => {
-                    this._eventAggregator.publish('score', targetTile.value);
-                    // if (targetTile.x == targetTile.y && targetTile.x == this.center) {
-                    //     this._highestValue = targetTile.value;
-                    //     this._eventAggregator.publish('high', targetTile.value);
-                    // }
                     tilesBehind.unshift(targetTile);
                     this._afterCheck(tilesBehind);
                     this._eventAggregator.publish('unlockTiles');
@@ -122,6 +117,7 @@ export class BoardCustomElement {
             return tile.x == this.center && tile.y == this.center;
         });
         if (centerTile.length && centerTile[0].value > this._highestValue) {
+            this._highestValue = centerTile[0].value;
             this._eventAggregator.publish('high', centerTile[0].value);
         }
     }

@@ -14,15 +14,17 @@ game {
     width         : calc(~ '@{boardSize} + 2 * @{gameBorder}');
 
     header {
-        display        : flex;
-        font-family    : 'Courier New', Courier, monospace;
-        font-size      : 4vmin;
-        justify-content: space-between;
-        line-height    : 5vmin;
-        margin         : calc(~'@{gameBorder} / 2') 0;
-        text-shadow    : 0 1px 1px #fff;
-        user-select    : none;
-        width          : @boardSize;
+        margin: calc(~'@{gameBorder} / 2') 0;
+        width : @boardSize;
+
+        h1 {
+            text-align : center;
+            font-family: 'Courier New', Courier, monospace;
+            font-size  : 4vmin;
+            line-height: 5vmin;
+            text-shadow: 0 1px 1px #fff;
+            user-select: none;
+        }
 
         .dummy {
             opacity: 0;

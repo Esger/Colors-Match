@@ -15,9 +15,6 @@ export class GameCustomElement {
         this.highSubscriber = this._eventAggregator.subscribe('high', value => {
             this.title = value + '+' + value;
         });
-        this.scoreSubscriber = this._eventAggregator.subscribe('score', value => {
-            this.score += value;
-        });
         this.resetScoreSubscriber = this._eventAggregator.subscribe('reset-score', value => {
             this._resetScore();
         });
@@ -25,7 +22,6 @@ export class GameCustomElement {
 
     _resetScore() {
         this.title = '1+1';
-        this.score = 0;
     }
 
     restart() {
@@ -34,7 +30,6 @@ export class GameCustomElement {
 
     detached() {
         this.highSubscriber.dispose();
-        this.scoreSubscriber.dispose();
         this.resetScoreSubscriber.dispose();
     }
 

@@ -54,22 +54,19 @@ game {
   width: calc(50vmin + 2 * 2.5vmin);
 }
 game header {
-  display: -webkit-box;
-  display: -ms-flexbox;
-  display: flex;
+  margin: calc(2.5vmin / 2) 0;
+  width: 50vmin;
+}
+game header h1 {
+  text-align: center;
   font-family: 'Courier New', Courier, monospace;
   font-size: 4vmin;
-  -webkit-box-pack: justify;
-      -ms-flex-pack: justify;
-          justify-content: space-between;
   line-height: 5vmin;
-  margin: calc(2.5vmin / 2) 0;
   text-shadow: 0 1px 1px #fff;
   -webkit-user-select: none;
      -moz-user-select: none;
       -ms-user-select: none;
           user-select: none;
-  width: 50vmin;
 }
 game header .dummy {
   opacity: 0;

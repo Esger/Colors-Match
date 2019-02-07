@@ -1,0 +1,78 @@
+help {
+    z-index: 1;
+}
+
+.closeHelp, .helpBubble {
+    position        : absolute;
+    overflow        : hidden;
+    top             : @tileGutterSize;
+    right           : @tileGutterSize;
+    width           : @tileSize;
+    height          : @tileSize;
+    border-radius   : 4vmin;
+    align-self      : flex-end;
+    justify-self    : flex-start;
+    background-color: white;
+    font-size       : 4vmin;
+    text-align      : center;
+    line-height     : @tileSize;
+
+    background-color: rgba(141, 228, 255, 0.4);
+    box-shadow      : 0 2px 2px #aaa;
+    color           : #333;
+    cursor          : help;
+    text-shadow     : 0 1px 1px #ccc;
+    transition      : all .2s ease-in-out;
+    opacity         : 1;
+
+    &.hide {
+        opacity: 0;
+    }
+
+    &:hover {
+        color: white;
+    }
+
+    &::before {
+        content: '';
+        .shiny;
+    }
+}
+
+.closeHelp {
+    background-color: rgba(141, 228, 255, 0.25);
+}
+
+.helpContent {
+    position        : absolute;
+    transition      : all 1s ease-in-out;
+    width           : calc(~'100% - 4 * @{tileSize}');
+    height          : calc(~'100% - 2 * @{tileSize}');
+    left            : 0;
+    background-color: rgba(255, 255, 255, 0.75);
+    padding         : @tileSize calc(~'2 * @{tileSize}');
+
+    &.down {
+        top    : 100vh;
+        opacity: 0;
+    }
+
+    &.up {
+        opacity: 1;
+        top    : 0;
+    }
+}
+
+// .closeHelp {
+//     position: absolute;
+//     float      : right;
+//     transition : color .2s ease-in-out;
+//     padding    : 0 2vmin;
+//     font-size  : 1.5em;
+//     line-height: 1;
+//     cursor     : pointer;
+
+//     &:hover {
+//         color: white;
+//     }
+// }

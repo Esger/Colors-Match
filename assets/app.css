@@ -323,3 +323,10 @@ body {
   border-bottom-right-radius: 100px 40px;
   border-bottom-left-radius: 100px 40px;
 }
+.qrCode {
+  position: absolute;
+  left: 2vmin;
+  bottom: 2vmin;
+  width: 8vmin;
+  height: 8vmin;
+}

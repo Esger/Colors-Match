@@ -14,15 +14,27 @@ game {
     width         : calc(~ '@{boardSize} + 2 * @{gameBorder}');
 
     header {
-        display        : flex;
-        font-family    : 'Courier New', Courier, monospace;
-        font-size      : 4vmin;
-        justify-content: space-between;
-        line-height    : 5vmin;
-        margin         : calc(~'@{gameBorder} / 2') 0;
-        text-shadow    : 0 1px 1px #fff;
-        user-select    : none;
-        width          : @boardSize;
+        margin: calc(~'@{gameBorder} / 2') 0;
+        width : @boardSize;
+
+        h1, h2 {
+            text-align : center;
+            font-family: 'Courier New', Courier, monospace;
+            font-size  : 4vmin;
+            line-height: 5vmin;
+            text-shadow: 0 1px 1px #fff;
+            user-select: none;
+        }
+
+        h2 {
+            position   : absolute;
+            top        : 2vmin;
+            color      : rgba(255,255,255,0.25);
+            text-shadow: 1px 1px 1px rgba(255, 255, 255, 0.25);
+            font-size  : 6vmin;
+            z-index    : -1;
+            width      : @boardSize;
+        }
 
         .dummy {
             opacity: 0;
@@ -78,8 +90,7 @@ game {
     }
 
     /* Linear ------------------------- */
-
-    &.linear {
+    t &.linear {
         background-size  : 100px 100%;
         background-repeat: repeat;
         background-image : -webkit-repeating-linear-gradient(left, hsla(0,0%,100%,0) 0%, hsla(0,0%,100%,0) 6%, hsla(0,0%,100%, .1) 7.5%), -webkit-repeating-linear-gradient(left, hsla(0,0%, 0%,0) 0%, hsla(0,0%, 0%,0) 4%, hsla(0,0%, 0%,.03) 4.5%), -webkit-repeating-linear-gradient(left, hsla(0,0%,100%,0) 0%, hsla(0,0%,100%,0) 1.2%, hsla(0,0%,100%,.15) 2.2%), linear-gradient(180deg, hsl(0,0%,78%) 0%, hsl(0,0%,90%) 47%, hsl(0,0%,78%) 53%, hsl(0,0%,70%)100%);

@@ -17,13 +17,23 @@ game {
         margin: calc(~'@{gameBorder} / 2') 0;
         width : @boardSize;
 
-        h1 {
+        h1, h2 {
             text-align : center;
             font-family: 'Courier New', Courier, monospace;
             font-size  : 4vmin;
             line-height: 5vmin;
             text-shadow: 0 1px 1px #fff;
             user-select: none;
+        }
+
+        h2 {
+            position   : absolute;
+            top        : 2vmin;
+            color      : rgba(255,255,255,0.25);
+            text-shadow: 1px 1px 1px rgba(255, 255, 255, 0.25);
+            font-size  : 6vmin;
+            z-index    : -1;
+            width      : @boardSize;
         }
 
         .dummy {

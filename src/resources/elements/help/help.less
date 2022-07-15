@@ -2,7 +2,8 @@ help {
     z-index: 1;
 }
 
-.closeHelp, .helpBubble {
+.closeHelp,
+.helpBubble {
     position        : absolute;
     overflow        : hidden;
     top             : @tileGutterSize;
@@ -19,7 +20,7 @@ help {
 
     background-color: rgba(141, 228, 255, 0.4);
     box-shadow      : 0 2px 2px #aaa;
-    color           : #333;
+    color           : var(--primaryColor);
     cursor          : help;
     text-shadow     : 0 1px 1px #ccc;
     transition      : all .2s ease-in-out;
@@ -43,6 +44,10 @@ help {
     background-color: rgba(141, 228, 255, 0.25);
 }
 
+weak {
+    font-weight: normal;
+}
+
 .helpContent {
     font-size       : 2em;
     position        : absolute;
@@ -52,6 +57,7 @@ help {
     left            : 0;
     background-color: rgba(255, 255, 255, 0.75);
     padding         : @tileSize calc(~'2 * @{tileSize}');
+    color           : var(--primaryColor);
 
     &.down {
         top    : 100vh;

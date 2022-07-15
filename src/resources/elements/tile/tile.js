@@ -65,7 +65,7 @@ export class TileCustomElement {
                 this.correct = true;
                 setTimeout(() => {
                     this.correct = false;
-                }, 300);
+                }, 750);
             }
         });
 

@@ -50,11 +50,6 @@ export class BoardCustomElement {
 
     attached() {
         this._newBoard();
-
-        setTimeout(() => {
-            let $tiles = $('.tile');
-            this._tileWidth = $tiles.width() / this.distance * (this.distance + 2);
-        });
         this._addListeners();
     }
 

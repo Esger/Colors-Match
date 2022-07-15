@@ -54,6 +54,7 @@ export class TileCustomElement {
                 this.onfire = true;
             }
         });
+        
         this._animateListener = this._eventAggregator.subscribe('move', move => {
             if (move.tile.id == this.tile.id) {
                 this._animate(move.directions, move.animate);

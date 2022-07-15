@@ -115,6 +115,8 @@ export class TileCustomElement {
     }
 
     _allowed(value) {
+        // value is tile x or y
+        // returns -1, 0 or 1
         switch (value) {
             case 0: return 1; // only increment allowed
             case this.boardSize - 1: return -1; // only decrement allowed
@@ -141,8 +143,8 @@ export class TileCustomElement {
     }
 
     _directionAllowed(direction, delta) {
-        let notAllowed = delta == -this._allowedDirections[direction];
-        return !notAllowed;
+        const allowed = this._allowedDirections[direction] != -delta; // 0 and delta is allowed
+        return allowed;
     }
 
     _drag(directions) {
@@ -155,24 +157,16 @@ export class TileCustomElement {
 
     _doDragHandler(tile) {
         if (this.dragged) {
-            this._delta[1] += tile.left; // px
-            this._delta[0] += tile.top;  // px
-
+            this._delta[1] += tile.dx; // px
+            this._delta[0] += tile.dy;  // px
             // absolute delta values in px to determine the largest of the two
-            let absDelta = [Math.abs(this._delta[0]), Math.abs(this._delta[1])];
-            let delta;
-            let direction; // 0 or 1 for y resp. x
+            const absDelta = [Math.abs(this._delta[0]), Math.abs(this._delta[1])];
 
-            // only the largest delta is set in px; the other is zeroed.
-            if (absDelta[1] > absDelta[0]) {
-                direction = 1; // y
-                delta = this._delta[direction]; // px
-                this._oneDelta = [0, delta];    // px
-            } else {
-                direction = 0; // x
-                delta = this._delta[direction]; // px
-                this._oneDelta = [delta, 0];    // px
-            }
+            // only the largest delta is set in px; the other is zeroed to constrain move
+            const direction = (absDelta[1] > absDelta[0]) ? 1 : 0; // x
+            const delta = this._delta[direction]; // px
+            this._oneDelta = [0, 0];    // px
+            this._oneDelta[direction] = delta;
 
             this._directions = [Math.sign(this._oneDelta[0]), Math.sign(this._oneDelta[1])];
             if (this._directionAllowed(direction, this._directions[direction])) {

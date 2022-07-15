@@ -47,15 +47,17 @@ export class DragService {
             const clientPos = this.getClientPos(event);
             const dx = clientPos.left - this._dragPreviousPos.left;
             const dy = clientPos.top - this._dragPreviousPos.top;
-            this._dragPreviousPos = clientPos;
-
-            const element = {
-                element: this._element,
-                left: dx,
-                top: dy
-            };
-
-            this._eventAggregator.publish('doDrag', element);
+            if (Math.abs(dx) + Math.abs(dy) > 0) {
+                this._dragPreviousPos = clientPos;
+    
+                const element = {
+                    element: this._element,
+                    dx: dx,
+                    dy: dy
+                };
+    
+                this._eventAggregator.publish('doDrag', element);
+            }
         }
     }
 
@@ -67,6 +69,7 @@ export class DragService {
 
             this._eventAggregator.publish('stopDrag', element);
             this._element = undefined;
+            this._dragPreviousPos = undefined;
         }
     }
 

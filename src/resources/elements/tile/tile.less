@@ -1,20 +1,20 @@
 .tile {
-    background-color: rgba(141, 228, 255, 0.4);
-    border          : 0 solid #666;
-    border-radius   : @tileCornerRadius;
-    box-shadow      : 0 2px 2px #aaa;
-    color           : #333;
-    cursor          : grab;
-    display         : block;
-    font            : normal @tileFontSize/@tileSize "Trebuchet MS", Arial, Helvetica, sans-serif;
-    height          : @tileSize;
-    overflow        : hidden;
-    position        : absolute;
-    text-align      : center;
-    text-decoration : none;
-    text-shadow     : 0 1px 1px #ccc;
-    transition      : background-color .2s ease-in-out, opacity .2s ease-in-out;
-    width           : @tileSize;
+    background-color   : var(--tileColor);
+    border             : 0 solid #666;
+    border-radius      : @tileCornerRadius;
+    box-shadow         : 0 2px 2px #aaa;
+    // color           : darken( var(--primaryColor), 90%);
+    cursor             : grab;
+    display            : block;
+    font               : normal @tileFontSize/@tileSize "Trebuchet MS", Arial, Helvetica, sans-serif;
+    height             : @tileSize;
+    overflow           : hidden;
+    position           : absolute;
+    text-align         : center;
+    text-decoration    : none;
+    text-shadow        : 0 1px 1px #ccc;
+    transition         : background-color .2s ease-in-out, opacity .2s ease-in-out;
+    width              : @tileSize;
 
     &.animated {
         transition: background-color .2s ease-in-out, opacity .2s ease-in-out, transform .2s ease-out;
@@ -22,8 +22,8 @@
     }
 
     &.burn {
-        // background-color: orange;
-        transition: background-color .2s ease-in-out, opacity .2s ease-in-out;
+        background-color: orange;
+        transition      : background-color .2s ease-in-out, opacity .2s ease-in-out;
     }
 
     &.correct {
@@ -68,8 +68,23 @@
         z-index   : 100;
     }
 
+    &::before,
+    &::after {
+        position: absolute;
+        inset   : 0;
+    }
+
     &::before {
+        content       : attr(data-value);
+        pointer-events: none;
+    }
+
+    &::after {
         .shiny;
         content: '';
+    }
+
+    span {
+        pointer-events: none;
     }
 }

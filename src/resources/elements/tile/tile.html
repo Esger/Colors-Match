@@ -9,7 +9,7 @@
             ${onfire ? 'onfire' : ''}
             ${visible ? '' : 'hide'}"
          id.one-time="tile.id"
-         innerhtml.bind="tile.value"
+         data-value.one-way="tile.value"
          css="left: ${tile.x * distance + offset}vmin; 
             top: ${tile.y * distance + offset}vmin; 
             transform: translate(${dx}, ${dy});"></div>

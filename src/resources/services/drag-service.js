@@ -17,26 +17,24 @@ export class DragService {
     }
 
     getClientPos(event) {
-        let clientX = (event.touches) ? event.touches[0].clientX : event.clientX;
-        let clientY = (event.touches) ? event.touches[0].clientY : event.clientY;
+        const clientX = (event.touches) ? event.touches[0].clientX : event.clientX;
+        const clientY = (event.touches) ? event.touches[0].clientY : event.clientY;
         return {
             left: clientX,
             top: clientY
         };
     }
 
-    startDrag(x, y, event) {
+    startDrag(event) {
         if (!this._element) {
             this._element = event.target;
             this._dragStartPos = this.getClientPos(event);
             this._dragPreviousPos = this._dragStartPos;
 
-            let element = {
+            const element = {
                 element: this._element,
                 left: this._dragStartPos.left,
-                top: this._dragStartPos.top,
-                x: x,
-                y: y
+                top: this._dragStartPos.top
             };
 
             this._eventAggregator.publish('startDrag', element);
@@ -46,31 +44,33 @@ export class DragService {
 
     doDrag(event) {
         if (this._element) {
-            let clientPos = this.getClientPos(event);
-            let dx = clientPos.left - this._dragPreviousPos.left;
-            let dy = clientPos.top - this._dragPreviousPos.top;
-            this._dragPreviousPos = clientPos;
-
-            let element = {
-                element: this._element,
-                left: dx,
-                top: dy
-            };
-
-            this._eventAggregator.publish('doDrag', element);
+            const clientPos = this.getClientPos(event);
+            const dx = clientPos.left - this._dragPreviousPos.left;
+            const dy = clientPos.top - this._dragPreviousPos.top;
+            if (Math.abs(dx) + Math.abs(dy) > 0) {
+                this._dragPreviousPos = clientPos;
+    
+                const element = {
+                    element: this._element,
+                    dx: dx,
+                    dy: dy
+                };
+    
+                this._eventAggregator.publish('doDrag', element);
+            }
         }
     }
 
     stopDrag(event) {
         if (this._element) {
-            let element = {
+            const element = {
                 element: this._element,
             };
 
             this._eventAggregator.publish('stopDrag', element);
+            this._element = undefined;
+            this._dragPreviousPos = undefined;
         }
-
-        this._element = undefined;
     }
 
 }

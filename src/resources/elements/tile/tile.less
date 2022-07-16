@@ -6,13 +6,9 @@
     // color           : darken( var(--primaryColor), 90%);
     cursor             : grab;
     display            : block;
-    font               : normal @tileFontSize/@tileSize "Trebuchet MS", Arial, Helvetica, sans-serif;
     height             : @tileSize;
     overflow           : hidden;
     position           : absolute;
-    text-align         : center;
-    text-decoration    : none;
-    text-shadow        : 0 1px 1px #ccc;
     transition         : background-color .2s ease-in-out, opacity .2s ease-in-out;
     width              : @tileSize;
 
@@ -70,21 +66,23 @@
 
     &::before,
     &::after {
-        position: absolute;
-        inset   : 0;
+        position      : absolute;
+        inset         : 0;
+        pointer-events: none;
+        touch-action  : none;
     }
 
     &::before {
-        content       : attr(data-value);
-        user-select: none;
+        content        : attr(data-value);
+        font           : normal @tileFontSize/@tileSize "Trebuchet MS", Arial, Helvetica, sans-serif;
+        text-align     : center;
+        text-decoration: none;
+        text-shadow    : 0 1px 1px #ccc;
+        user-select    : none;
     }
 
     &::after {
         .shiny;
         content: '';
-    }
-
-    span {
-        pointer-events: none;
     }
 }

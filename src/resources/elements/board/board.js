@@ -6,7 +6,7 @@ export class BoardCustomElement {
 
     constructor(eventAggregator) {
         this._eventAggregator = eventAggregator;
-        this._tileSize = 8;
+        this._tileSize = 9;
         this._highestValue = 1;
         this._score = 0;
         this.boardSize = 5; // / @boardSize

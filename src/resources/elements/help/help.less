@@ -10,7 +10,7 @@ help {
     right           : @tileGutterSize;
     width           : @tileSize;
     height          : @tileSize;
-    border-radius   : 4vmin;
+    border-radius   : 1in;
     align-self      : flex-end;
     justify-self    : flex-start;
     background-color: white;
@@ -49,8 +49,9 @@ weak {
 }
 
 .helpContent {
-    font-size       : 2em;
+    font-size       : ~'max(2em, 5vmin)';
     position        : absolute;
+    overflow        : hidden auto;
     transition      : all 1s ease-in-out;
     width           : calc(~'100% - 4 * @{tileSize}');
     height          : calc(~'100% - 2 * @{tileSize}');

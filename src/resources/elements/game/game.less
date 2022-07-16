@@ -30,8 +30,12 @@ game {
 
         h1 {
             color: var(--tileColor);
-        }
 
+            @media screen and (orientation:landscape) {
+                margin: 2vmin 0 1vmin;
+            }
+        }
+        
         h2 {
             color      : #3e3249;
             position   : absolute;
@@ -40,6 +44,9 @@ game {
             font-size  : 6vmin;
             z-index    : -1;
             width      : @boardSize;
+            @media screen and (orientation:landscape) {
+                margin: 4vmin 0 0;
+            }
         }
 
         .dummy {

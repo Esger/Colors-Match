@@ -14,7 +14,7 @@ export class ScoreService {
     }
 
     getScore() {
-        let score = localStorage.getItem('1+1-scores');
+        const score = localStorage.getItem('1+1-scores');
         if (score) {
             this.score = JSON.parse(score);
             return this.score;

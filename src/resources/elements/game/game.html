@@ -6,8 +6,8 @@
             title="Click to restart"
             click.delegate="restart()">${title}</h1>
     </header>
-    <board mousedown.delegate="dragService.startDrag(tile.x, tile.y, $event)"
-           touchstart.delegate="dragService.startDrag(tile.x, tile.y, $event)"
+    <board mousedown.delegate="dragService.startDrag($event)"
+           touchstart.delegate="dragService.startDrag($event)"
            mousemove.delegate="dragService.doDrag($event)"
            touchmove.delegate="dragService.doDrag($event)"
            mouseup.delegate="dragService.stopDrag($event)"

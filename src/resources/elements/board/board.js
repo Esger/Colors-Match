@@ -1,11 +1,16 @@
 import { inject } from 'aurelia-framework';
 import { EventAggregator } from 'aurelia-event-aggregator';
+import { MySettingsService } from 'resources/services/my-settings-service';
 
-@inject(EventAggregator)
+@inject(EventAggregator, MySettingsService)
 export class BoardCustomElement {
+    settings = {
+        version: 'v1.0', // increase if board structure changes
+    }
 
-    constructor(eventAggregator) {
+    constructor(eventAggregator, mySettingsService) {
         this._eventAggregator = eventAggregator;
+        this._settingService = mySettingsService;
         this._tileSize = 9;
         this._highestValue = 1;
         this._score = 0;
@@ -49,12 +54,23 @@ export class BoardCustomElement {
     }
 
     attached() {
-        this._newBoard();
+        const settings = this._settingService.getSettings();
+        if (!settings.board) {
+            this._newBoard();
+            this._saveBoard();  
+        } else {
+            this.board = settings.board;
+        }
         this._addListeners();
     }
 
     detached() {
         this._removeListeners();
+    }
+
+    _saveBoard() {
+        this.settings.board = this.board;
+        this._settingService.saveSettings(this.settings);
     }
 
     _addListeners() {
@@ -74,6 +90,7 @@ export class BoardCustomElement {
     _restartGame() {
         this._gameEnd = false;
         this._newBoard();
+        this._saveBoard();
         this._eventAggregator.publish('reset-score');
     }
 
@@ -99,6 +116,7 @@ export class BoardCustomElement {
                     this._afterCheck(tilesBehind);
                     this._eventAggregator.publish('unlockTiles');
                     this._checkGameEnd();
+                    this._saveBoard();
                 }, time);
             }, 200);
         } else {

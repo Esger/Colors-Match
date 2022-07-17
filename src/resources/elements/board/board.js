@@ -55,9 +55,10 @@ export class BoardCustomElement {
 
     attached() {
         const settings = this._settingService.getSettings();
-        if (!settings.board) {
+        if (!settings.board || settings.gameEnd) {
             this._newBoard();
-            this._saveBoard();  
+            this._saveSettings();  
+            this.settings.gameEnd = false;
         } else {
             this.board = settings.board;
         }
@@ -68,7 +69,7 @@ export class BoardCustomElement {
         this._removeListeners();
     }
 
-    _saveBoard() {
+    _saveSettings() {
         this.settings.board = this.board;
         this._settingService.saveSettings(this.settings);
     }
@@ -89,8 +90,9 @@ export class BoardCustomElement {
 
     _restartGame() {
         this._gameEnd = false;
+        this.settings.gameEnd = false;
         this._newBoard();
-        this._saveBoard();
+        this._saveSettings();
         this._eventAggregator.publish('reset-score');
     }
 
@@ -116,7 +118,7 @@ export class BoardCustomElement {
                     this._afterCheck(tilesBehind);
                     this._eventAggregator.publish('unlockTiles');
                     this._checkGameEnd();
-                    this._saveBoard();
+                    this._saveSettings();
                 }, time);
             }, 200);
         } else {
@@ -246,6 +248,8 @@ export class BoardCustomElement {
     _checkGameEnd() {
         // wait for animation of intruding tiles
         if (!this._movesHorPossible() && !this._movesVerPossible()) {
+            this.settings.gameEnd = true;
+            this._saveSettings();
             this._endGame();
         }
     }

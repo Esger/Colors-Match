@@ -1,11 +1,16 @@
 import { inject } from 'aurelia-framework';
 import { EventAggregator } from 'aurelia-event-aggregator';
+import { MySettingsService } from 'resources/services/my-settings-service';
 
-@inject(EventAggregator)
+@inject(EventAggregator, MySettingsService)
 export class BoardCustomElement {
+    settings = {
+        version: 'v1.0', // increase if board structure changes
+    }
 
-    constructor(eventAggregator) {
+    constructor(eventAggregator, mySettingsService) {
         this._eventAggregator = eventAggregator;
+        this._settingService = mySettingsService;
         this._tileSize = 9;
         this._highestValue = 1;
         this._score = 0;
@@ -49,12 +54,24 @@ export class BoardCustomElement {
     }
 
     attached() {
-        this._newBoard();
+        const settings = this._settingService.getSettings();
+        if (!settings.board || settings.gameEnd) {
+            this._newBoard();
+            this._saveSettings();  
+            this.settings.gameEnd = false;
+        } else {
+            this.board = settings.board;
+        }
         this._addListeners();
     }
 
     detached() {
         this._removeListeners();
+    }
+
+    _saveSettings() {
+        this.settings.board = this.board;
+        this._settingService.saveSettings(this.settings);
     }
 
     _addListeners() {
@@ -73,7 +90,9 @@ export class BoardCustomElement {
 
     _restartGame() {
         this._gameEnd = false;
+        this.settings.gameEnd = false;
         this._newBoard();
+        this._saveSettings();
         this._eventAggregator.publish('reset-score');
     }
 
@@ -99,6 +118,7 @@ export class BoardCustomElement {
                     this._afterCheck(tilesBehind);
                     this._eventAggregator.publish('unlockTiles');
                     this._checkGameEnd();
+                    this._saveSettings();
                 }, time);
             }, 200);
         } else {
@@ -228,6 +248,8 @@ export class BoardCustomElement {
     _checkGameEnd() {
         // wait for animation of intruding tiles
         if (!this._movesHorPossible() && !this._movesVerPossible()) {
+            this.settings.gameEnd = true;
+            this._saveSettings();
             this._endGame();
         }
     }

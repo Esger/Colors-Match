@@ -25,11 +25,6 @@ export class MySettingsService {
         return this._defaultSettings;
     }
 
-    resetSettings() {
-        this._settings = this._getDefaultSettings();
-        this.saveSettings(this._settings);
-    }
-
     _loadSettings() {
         const settings = JSON.parse(localStorage.getItem(this._settingsName));
         if (!settings || settings.version !== this._version) this.resetSettings()

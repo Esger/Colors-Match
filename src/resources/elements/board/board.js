@@ -110,7 +110,8 @@ export class BoardCustomElement {
             // animate the dragged tile to the target
             move.animate = true;
             this._eventAggregator.publish('move', move);
-            this._eventAggregator.publish('moves', { moves: this._moves++ });
+            this._moves++;
+            this._eventAggregator.publish('moves', { moves: this._moves });
             let tilesBehind = this._findTilesBehind(move);
             // wait for animation to target
             setTimeout(() => {

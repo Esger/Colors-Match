@@ -38,9 +38,11 @@ export class BoardCustomElement {
         this._highestValue = 1;
         this._newValues = [1];
         this._score = 0;
+        this._moves = 0;
+        this._gameEnd = false;
         this.showBoard = false;
-
         this.board = [];
+
         for (let y = 0; y < this.boardSize; y++) {
             let row = [];
             for (let x = 0; x < this.boardSize; x++) {
@@ -51,16 +53,22 @@ export class BoardCustomElement {
         setTimeout(() => {
             this.showBoard = true;
         }, 200);
+
+        this._eventAggregator.publish('reset-score');
+        this._eventAggregator.publish('moves', { moves: this._moves });
     }
 
     attached() {
         const settings = this._settingService.getSettings();
         if (!settings.board || settings.gameEnd) {
             this._newBoard();
-            this._saveSettings();  
-            this.settings.gameEnd = false;
+            this._saveSettings();
         } else {
             this.board = settings.board;
+            this._moves = settings.moves || 0;
+            this._highestValue = this.board[2][2].value;
+            this._eventAggregator.publish('high', this._highestValue);
+            this._eventAggregator.publish('moves', { moves: this._moves });
         }
         this._addListeners();
     }
@@ -71,6 +79,8 @@ export class BoardCustomElement {
 
     _saveSettings() {
         this.settings.board = this.board;
+        this.settings.gameEnd = this._gameEnd;
+        this.settings.moves = this._moves;
         this._settingService.saveSettings(this.settings);
     }
 
@@ -89,11 +99,8 @@ export class BoardCustomElement {
     }
 
     _restartGame() {
-        this._gameEnd = false;
-        this.settings.gameEnd = false;
         this._newBoard();
         this._saveSettings();
-        this._eventAggregator.publish('reset-score');
     }
 
     _moveIfValid(move) {
@@ -103,6 +110,8 @@ export class BoardCustomElement {
             // animate the dragged tile to the target
             move.animate = true;
             this._eventAggregator.publish('move', move);
+            this._moves++;
+            this._eventAggregator.publish('moves', { moves: this._moves });
             let tilesBehind = this._findTilesBehind(move);
             // wait for animation to target
             setTimeout(() => {

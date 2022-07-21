@@ -15,14 +15,17 @@ export class GameCustomElement {
 
     attached() {
         this.highScore = this._scoreService.getScore();
-        this.highSubscriber = this._eventAggregator.subscribe('high', value => {
+        this._highSubscription = this._eventAggregator.subscribe('high', value => {
             if (value > this.highScore) {
                 this.highScore = value;
                 this._scoreService.saveScore(value);
             }
             this.title = value + '+' + value;
         });
-        this.resetScoreSubscriber = this._eventAggregator.subscribe('reset-score', value => {
+        this._moveSubscription = this._eventAggregator.subscribe('moves', moves => {
+            this.moves = moves.moves;
+        })
+        this._resetScoreSubscription = this._eventAggregator.subscribe('reset-score', value => {
             this._resetScore();
         });
     }
@@ -36,8 +39,9 @@ export class GameCustomElement {
     }
 
     detached() {
-        this.highSubscriber.dispose();
-        this.resetScoreSubscriber.dispose();
+        this._highSubscription.dispose();
+        this._moveSubscription.dispose();
+        this._resetScoreSubscription.dispose();
     }
 
 }

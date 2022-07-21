@@ -1,7 +1,7 @@
 // Definitions
-@boardSize       : 50vmin; // tileCount * 10
+@boardSize       : 55vmin; // tileCount * 10
 @gameBorder      : 2.5vmin;
-@tileSize        : 8vmin;
+@tileSize        : 9vmin;
 @tileGutterSize  : 2vmin;
 @tileFontSize    : 3vmin;
 @tileCornerRadius: 1vmin;
@@ -50,6 +50,6 @@ body {
     position: absolute;
     left    : @tileGutterSize;
     bottom  : @tileGutterSize;
-    width   : 75px;
-    height  : 75px;
+    width   : ~'min(75px,10vmin)';
+    height  : ~'min(75px,10vmin)';
 }

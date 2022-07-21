@@ -14,8 +14,9 @@ game {
     width            : calc(~ '@{boardSize} + 2 * @{gameBorder}');
 
     header {
-        margin: calc(~'@{gameBorder} / 2') 0;
-        width : @boardSize;
+        position: relative;
+        margin  : calc(~'@{gameBorder} / 2') 0;
+        width   : @boardSize;
 
         h1,
         h2 {
@@ -30,6 +31,10 @@ game {
 
         h1 {
             color: var(--tileColor);
+
+            @media screen and (orientation:landscape) {
+                margin: 2vmin 0 1vmin;
+            }
         }
 
         h2 {
@@ -40,6 +45,20 @@ game {
             font-size  : 6vmin;
             z-index    : -1;
             width      : @boardSize;
+
+            @media screen and (orientation:landscape) {
+                margin: 4vmin 0 0;
+            }
+        }
+
+        h3.moves {
+            position   : absolute;
+            top        : 1vmin;
+            right      : 2vmin;
+            color      : var(--tileColor);
+            font-size  : 2vmin;
+            text-shadow: none;
+            margin     : 0;
         }
 
         .dummy {

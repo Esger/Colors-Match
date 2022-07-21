@@ -1,12 +1,17 @@
 import { inject } from 'aurelia-framework';
 import { EventAggregator } from 'aurelia-event-aggregator';
+import { MySettingsService } from 'resources/services/my-settings-service';
 
-@inject(EventAggregator)
+@inject(EventAggregator, MySettingsService)
 export class BoardCustomElement {
+    settings = {
+        version: 'v1.0', // increase if board structure changes
+    }
 
-    constructor(eventAggregator) {
+    constructor(eventAggregator, mySettingsService) {
         this._eventAggregator = eventAggregator;
-        this._tileSize = 8;
+        this._settingService = mySettingsService;
+        this._tileSize = 9;
         this._highestValue = 1;
         this._score = 0;
         this.boardSize = 5; // / @boardSize
@@ -33,9 +38,11 @@ export class BoardCustomElement {
         this._highestValue = 1;
         this._newValues = [1];
         this._score = 0;
+        this._moves = 0;
+        this._gameEnd = false;
         this.showBoard = false;
-
         this.board = [];
+
         for (let y = 0; y < this.boardSize; y++) {
             let row = [];
             for (let x = 0; x < this.boardSize; x++) {
@@ -46,15 +53,35 @@ export class BoardCustomElement {
         setTimeout(() => {
             this.showBoard = true;
         }, 200);
+
+        this._eventAggregator.publish('reset-score');
+        this._eventAggregator.publish('moves', { moves: this._moves });
     }
 
     attached() {
-        this._newBoard();
+        const settings = this._settingService.getSettings();
+        if (!settings.board || settings.gameEnd) {
+            this._newBoard();
+            this._saveSettings();
+        } else {
+            this.board = settings.board;
+            this._moves = settings.moves || 0;
+            this._highestValue = this.board[2][2].value;
+            this._eventAggregator.publish('high', this._highestValue);
+            this._eventAggregator.publish('moves', { moves: this._moves });
+        }
         this._addListeners();
     }
 
     detached() {
         this._removeListeners();
+    }
+
+    _saveSettings() {
+        this.settings.board = this.board;
+        this.settings.gameEnd = this._gameEnd;
+        this.settings.moves = this._moves;
+        this._settingService.saveSettings(this.settings);
     }
 
     _addListeners() {
@@ -72,9 +99,8 @@ export class BoardCustomElement {
     }
 
     _restartGame() {
-        this._gameEnd = false;
         this._newBoard();
-        this._eventAggregator.publish('reset-score');
+        this._saveSettings();
     }
 
     _moveIfValid(move) {
@@ -84,6 +110,8 @@ export class BoardCustomElement {
             // animate the dragged tile to the target
             move.animate = true;
             this._eventAggregator.publish('move', move);
+            this._moves++;
+            this._eventAggregator.publish('moves', { moves: this._moves });
             let tilesBehind = this._findTilesBehind(move);
             // wait for animation to target
             setTimeout(() => {
@@ -99,6 +127,7 @@ export class BoardCustomElement {
                     this._afterCheck(tilesBehind);
                     this._eventAggregator.publish('unlockTiles');
                     this._checkGameEnd();
+                    this._saveSettings();
                 }, time);
             }, 200);
         } else {
@@ -228,6 +257,8 @@ export class BoardCustomElement {
     _checkGameEnd() {
         // wait for animation of intruding tiles
         if (!this._movesHorPossible() && !this._movesVerPossible()) {
+            this.settings.gameEnd = true;
+            this._saveSettings();
             this._endGame();
         }
     }

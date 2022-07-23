@@ -14,7 +14,7 @@ export class ScoreService {
     }
 
     getScore() {
-        const score = localStorage.getItem('1+1-scores');
+        const score = localStorage.getItem('colors-match-scores');
         if (score) {
             this.score = JSON.parse(score);
             return this.score;
@@ -26,7 +26,7 @@ export class ScoreService {
     saveScore(score) {
         if (score) {
             this.score = score;
-            localStorage.setItem('1+1-scores', JSON.stringify(score));
+            localStorage.setItem('colors-match-scores', JSON.stringify(score));
         }
         this.ea.publish('updateStatus');
     }

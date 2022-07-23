@@ -31,7 +31,7 @@ export class GameCustomElement {
     }
 
     _resetScore() {
-        this.title = '1+1';
+        // this.title = 'Colors Match';
     }
 
     restart() {

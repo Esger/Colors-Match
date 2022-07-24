@@ -29,6 +29,7 @@ export class BoardCustomElement {
             x: x,
             y: y,
             id: 'tile_' + y + '-' + x,
+            color: 'transparent',
             value: 1
         };
         return tile;
@@ -106,7 +107,7 @@ export class BoardCustomElement {
     _moveIfValid(move) {
         let target = [move.tile.y + move.directions[0], move.tile.x + move.directions[1]]; // coords
         let targetTile = this.board[target[0]][target[1]];
-        if (move.tile.value == targetTile.value) {
+        if (move.tile.color == targetTile.color) {
             // animate the dragged tile to the target
             move.animate = true;
             this._eventAggregator.publish('move', move);
@@ -116,7 +117,6 @@ export class BoardCustomElement {
             // wait for animation to target
             setTimeout(() => {
                 this._eventAggregator.publish('correct', targetTile);
-                targetTile.value *= 2;
                 this._setBackTiles(tilesBehind, move.directions);
                 this._shiftValues(tilesBehind, move.directions);
 
@@ -124,7 +124,6 @@ export class BoardCustomElement {
                 let time = this._animateTiles(tilesBehind, move.directions);
                 setTimeout(() => {
                     tilesBehind.unshift(targetTile);
-                    this._afterCheck(tilesBehind);
                     this._eventAggregator.publish('unlockTiles');
                     this._checkGameEnd();
                     this._saveSettings();
@@ -133,16 +132,6 @@ export class BoardCustomElement {
         } else {
             this._eventAggregator.publish('reset', move);
             this._eventAggregator.publish('unlockTiles');
-        }
-    }
-
-    _afterCheck(tiles) {
-        let centerTile = tiles.filter(tile => {
-            return tile.x == this.center && tile.y == this.center;
-        });
-        if (centerTile.length && centerTile[0].value > this._highestValue) {
-            this._highestValue = centerTile[0].value;
-            this._eventAggregator.publish('high', centerTile[0].value);
         }
     }
 
@@ -165,11 +154,11 @@ export class BoardCustomElement {
         // shift values of tiles one place in same direction as moved tile
         let last = tiles.length - 1;
         for (let i = 0; i < last; i++) {
-            this.board[tiles[i].y][tiles[i].x].value = this.board[tiles[i].y - directions[0]][tiles[i].x - directions[1]].value;
+            this.board[tiles[i].y][tiles[i].x].color = this.board[tiles[i].y - directions[0]][tiles[i].x - directions[1]].color;
         }
 
         // fill outermost tile with random power of 2 smaller than highestValue
-        this.board[tiles[last].y][tiles[last].x].value = this._getRandomPowerOf2();
+        // this.board[tiles[last].y][tiles[last].x].value = this._getRandomPowerOf2();
     }
 
     _animateTiles(tiles, directions) {
@@ -208,31 +197,13 @@ export class BoardCustomElement {
         return tilesBehind;
     }
 
-    // Probability of lower number is higher
-    _getRandomPowerOf2() {
-        if (this._highestValue > this._newValues[this._newValues.length - 1]) {
-            this._newValues = [];
-            let max = this._highestValue;
-            let val = 1;
-            while (max > 1) {
-                for (let i = 0; i < max; i++) {
-                    this._newValues.push(val);
-                }
-                max /= 2;
-                val *= 2;
-            }
-            this._newValues.push(val);
-        }
-        return this._newValues[Math.floor(Math.random() * (this._newValues.length - 1))];
-    }
-
     _movesHorPossible() {
         let equals = false;
         this.board.forEach(row => {
             row.forEach((tile, x) => {
                 const nextTile = row[x + 1];
                 if (nextTile) {
-                    equals = equals || nextTile.value == tile.value;
+                    equals = equals || nextTile.color == tile.color;
                 }
             });
         });
@@ -243,10 +214,10 @@ export class BoardCustomElement {
         let equals = false;
         this.board[0].forEach((tile, x) => {
             this.board.forEach((row, y) => {
-                const current = row[x].value;
+                const current = row[x].color;
                 const nextRow = this.board[y + 1];
                 if (nextRow) {
-                    const next = nextRow[x].value;
+                    const next = nextRow[x].color;
                     equals = equals || next == current;
                 }
             });

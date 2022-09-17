@@ -1,6 +1,6 @@
 export class MySettingsService {
     _isMobile = sessionStorage.getItem('isMobile') == 'true';
-    _settingsName = 'colors-match';
+    _settingsName = 'one-color';
     _version = 'v1.0'; // increase when settings object changes
     _settings = undefined;
     _defaultSettings = undefined;

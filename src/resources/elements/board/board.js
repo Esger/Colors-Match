@@ -110,6 +110,7 @@ export class BoardCustomElement {
         if (move.tile.color == targetTile.color) {
             // animate the dragged tile to the target
             move.animate = true;
+            move.newColor = 'adapt'; // todo nieuwe kleur meegeven
             this._eventAggregator.publish('move', move);
             this._moves++;
             this._eventAggregator.publish('moves', { moves: this._moves });
@@ -117,7 +118,7 @@ export class BoardCustomElement {
             // wait for animation to target
             setTimeout(() => {
                 this._eventAggregator.publish('correct', targetTile);
-                this._setBackTiles(tilesBehind, move.directions);
+                this._restoreTilePositions(tilesBehind, move.directions);
                 this._shiftValues(tilesBehind, move.directions);
 
                 // animate the intruding tiles on the board
@@ -135,7 +136,7 @@ export class BoardCustomElement {
         }
     }
 
-    _setBackTiles(tiles, directions) {
+    _restoreTilePositions(tiles, directions) {
 
         let oppositeDirections = [-directions[0], -directions[1]];
 
@@ -157,8 +158,9 @@ export class BoardCustomElement {
             this.board[tiles[i].y][tiles[i].x].color = this.board[tiles[i].y - directions[0]][tiles[i].x - directions[1]].color;
         }
 
-        // fill outermost tile with random power of 2 smaller than highestValue
-        // this.board[tiles[last].y][tiles[last].x].value = this._getRandomPowerOf2();
+        // fill the new outermost tile
+        const newTile = this.board[tiles[last].y][tiles[last].x]
+        newTile.color = newTile._setRandomColor(2);
     }
 
     _animateTiles(tiles, directions) {

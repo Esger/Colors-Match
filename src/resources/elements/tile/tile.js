@@ -24,9 +24,13 @@ export class TileCustomElement {
         this.onfire = false;
         this.dx = 0;
         this.dy = 0;
+        this._colors = [`hotpink`, `crimson`, `purple`];
     }
-
+    
     attached() {
+        this.tile.color = this._setRandomColor(this._colors.length - 1);
+        this.tile._setRandomColor = this._setRandomColor;
+        this.tile._colors = this._colors;
         this._allowedDirections = [this._allowed(this.tile.y), this._allowed(this.tile.x)];
         this._addListeners();
     }
@@ -54,7 +58,7 @@ export class TileCustomElement {
                 this.onfire = true;
             }
         });
-        
+
         this._animateListener = this._eventAggregator.subscribe('move', move => {
             if (move.tile.id == this.tile.id) {
                 this._animate(move.directions, move.animate);
@@ -66,7 +70,8 @@ export class TileCustomElement {
                 this.correct = true;
                 setTimeout(() => {
                     this.correct = false;
-                }, 750);
+                    this.tile.color = this._setNextColor();
+                });
             }
         });
 
@@ -202,6 +207,16 @@ export class TileCustomElement {
     _underTreshold(constrainedDistance) {
         let value = Math.max(Math.abs(constrainedDistance[0]), Math.abs(constrainedDistance[1]));
         return value < 40;
+    }
+
+    _setRandomColor = (maxColor = this._colors.length) => {
+        const color = this._colors[Math.floor(Math.random() * maxColor)];
+        return color;
+    }
+
+    _setNextColor() {
+        const color = this._colors[(this._colors.indexOf(this.tile.color) + 1) % this._colors.length];
+        return color;
     }
 
 }

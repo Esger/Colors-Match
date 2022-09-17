@@ -1,6 +1,7 @@
 import { inject } from 'aurelia-framework';
 import { EventAggregator } from 'aurelia-event-aggregator';
 import { MySettingsService } from 'resources/services/my-settings-service';
+import ret from '../../../../scripts/vendor-bundle';
 
 @inject(EventAggregator, MySettingsService)
 export class BoardCustomElement {
@@ -29,6 +30,7 @@ export class BoardCustomElement {
             x: x,
             y: y,
             id: 'tile_' + y + '-' + x,
+            color: 'transparent',
             value: 1
         };
         return tile;
@@ -106,9 +108,10 @@ export class BoardCustomElement {
     _moveIfValid(move) {
         let target = [move.tile.y + move.directions[0], move.tile.x + move.directions[1]]; // coords
         let targetTile = this.board[target[0]][target[1]];
-        if (move.tile.value == targetTile.value) {
+        if (move.tile.color == targetTile.color) {
             // animate the dragged tile to the target
             move.animate = true;
+            move.newColor = 'adapt'; // todo nieuwe kleur meegeven
             this._eventAggregator.publish('move', move);
             this._moves++;
             this._eventAggregator.publish('moves', { moves: this._moves });
@@ -116,37 +119,25 @@ export class BoardCustomElement {
             // wait for animation to target
             setTimeout(() => {
                 this._eventAggregator.publish('correct', targetTile);
-                targetTile.value *= 2;
-                this._setBackTiles(tilesBehind, move.directions);
-                this._shiftValues(tilesBehind, move.directions);
+                this._restoreTilePositions(tilesBehind, move.directions);
+                this._shiftColors(tilesBehind, move.directions);
 
                 // animate the intruding tiles on the board
                 let time = this._animateTiles(tilesBehind, move.directions);
                 setTimeout(() => {
                     tilesBehind.unshift(targetTile);
-                    this._afterCheck(tilesBehind);
                     this._eventAggregator.publish('unlockTiles');
-                    this._checkGameEnd();
                     this._saveSettings();
+                    this._checkGameEnd();
                 }, time);
-            }, 200);
+            }, 100);
         } else {
             this._eventAggregator.publish('reset', move);
             this._eventAggregator.publish('unlockTiles');
         }
     }
 
-    _afterCheck(tiles) {
-        let centerTile = tiles.filter(tile => {
-            return tile.x == this.center && tile.y == this.center;
-        });
-        if (centerTile.length && centerTile[0].value > this._highestValue) {
-            this._highestValue = centerTile[0].value;
-            this._eventAggregator.publish('high', centerTile[0].value);
-        }
-    }
-
-    _setBackTiles(tiles, directions) {
+    _restoreTilePositions(tiles, directions) {
 
         let oppositeDirections = [-directions[0], -directions[1]];
 
@@ -161,15 +152,16 @@ export class BoardCustomElement {
         }
     }
 
-    _shiftValues(tiles, directions) {
+    _shiftColors(tiles, directions) {
         // shift values of tiles one place in same direction as moved tile
         let last = tiles.length - 1;
         for (let i = 0; i < last; i++) {
-            this.board[tiles[i].y][tiles[i].x].value = this.board[tiles[i].y - directions[0]][tiles[i].x - directions[1]].value;
+            this.board[tiles[i].y][tiles[i].x].color = this.board[tiles[i].y - directions[0]][tiles[i].x - directions[1]].color;
         }
 
-        // fill outermost tile with random power of 2 smaller than highestValue
-        this.board[tiles[last].y][tiles[last].x].value = this._getRandomPowerOf2();
+        // fill the new outermost tile
+        const newTile = this.board[tiles[last].y][tiles[last].x]
+        newTile.color = newTile._setRandomColor(newTile._colors.length - 1);
     }
 
     _animateTiles(tiles, directions) {
@@ -208,31 +200,13 @@ export class BoardCustomElement {
         return tilesBehind;
     }
 
-    // Probability of lower number is higher
-    _getRandomPowerOf2() {
-        if (this._highestValue > this._newValues[this._newValues.length - 1]) {
-            this._newValues = [];
-            let max = this._highestValue;
-            let val = 1;
-            while (max > 1) {
-                for (let i = 0; i < max; i++) {
-                    this._newValues.push(val);
-                }
-                max /= 2;
-                val *= 2;
-            }
-            this._newValues.push(val);
-        }
-        return this._newValues[Math.floor(Math.random() * (this._newValues.length - 1))];
-    }
-
     _movesHorPossible() {
         let equals = false;
         this.board.forEach(row => {
             row.forEach((tile, x) => {
                 const nextTile = row[x + 1];
                 if (nextTile) {
-                    equals = equals || nextTile.value == tile.value;
+                    equals = equals || nextTile.color == tile.color;
                 }
             });
         });
@@ -243,10 +217,10 @@ export class BoardCustomElement {
         let equals = false;
         this.board[0].forEach((tile, x) => {
             this.board.forEach((row, y) => {
-                const current = row[x].value;
+                const current = row[x].color;
                 const nextRow = this.board[y + 1];
                 if (nextRow) {
-                    const next = nextRow[x].value;
+                    const next = nextRow[x].color;
                     equals = equals || next == current;
                 }
             });
@@ -254,13 +228,25 @@ export class BoardCustomElement {
         return equals;
     }
 
+    _allEqual() { 
+        const firstColor = this.board[0][0].color;
+        const notAllEqual = this.board.some(row => row.some(tile => tile.color != firstColor));
+        return !notAllEqual;
+    }
+
     _checkGameEnd() {
         // wait for animation of intruding tiles
-        if (!this._movesHorPossible() && !this._movesVerPossible()) {
+        if (this._allEqual()) {
+            this._winGame();
+        } else if (!this._movesHorPossible() && !this._movesVerPossible()) {
             this.settings.gameEnd = true;
             this._saveSettings();
             this._endGame();
         }
+    }
+
+    _winGame() { 
+        alert('you win');
     }
 
     _endGame() {

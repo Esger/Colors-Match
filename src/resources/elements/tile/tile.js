@@ -71,7 +71,7 @@ export class TileCustomElement {
                 setTimeout(() => {
                     this.correct = false;
                     this.tile.color = this._setNextColor();
-                }, 750);
+                });
             }
         });
 

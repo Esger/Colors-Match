@@ -1,6 +1,7 @@
 import { inject } from 'aurelia-framework';
 import { EventAggregator } from 'aurelia-event-aggregator';
 import { MySettingsService } from 'resources/services/my-settings-service';
+import ret from '../../../../scripts/vendor-bundle';
 
 @inject(EventAggregator, MySettingsService)
 export class BoardCustomElement {
@@ -119,17 +120,17 @@ export class BoardCustomElement {
             setTimeout(() => {
                 this._eventAggregator.publish('correct', targetTile);
                 this._restoreTilePositions(tilesBehind, move.directions);
-                this._shiftValues(tilesBehind, move.directions);
+                this._shiftColors(tilesBehind, move.directions);
 
                 // animate the intruding tiles on the board
                 let time = this._animateTiles(tilesBehind, move.directions);
                 setTimeout(() => {
                     tilesBehind.unshift(targetTile);
                     this._eventAggregator.publish('unlockTiles');
-                    this._checkGameEnd();
                     this._saveSettings();
+                    this._checkGameEnd();
                 }, time);
-            }, 200);
+            }, 100);
         } else {
             this._eventAggregator.publish('reset', move);
             this._eventAggregator.publish('unlockTiles');
@@ -151,7 +152,7 @@ export class BoardCustomElement {
         }
     }
 
-    _shiftValues(tiles, directions) {
+    _shiftColors(tiles, directions) {
         // shift values of tiles one place in same direction as moved tile
         let last = tiles.length - 1;
         for (let i = 0; i < last; i++) {
@@ -227,13 +228,25 @@ export class BoardCustomElement {
         return equals;
     }
 
+    _allEqual() { 
+        const firstColor = this.board[0][0].color;
+        const notAllEqual = this.board.some(row => row.some(tile => tile.color != firstColor));
+        return !notAllEqual;
+    }
+
     _checkGameEnd() {
         // wait for animation of intruding tiles
-        if (!this._movesHorPossible() && !this._movesVerPossible()) {
+        if (this._allEqual()) {
+            this._winGame();
+        } else if (!this._movesHorPossible() && !this._movesVerPossible()) {
             this.settings.gameEnd = true;
             this._saveSettings();
             this._endGame();
         }
+    }
+
+    _winGame() { 
+        alert('you win');
     }
 
     _endGame() {

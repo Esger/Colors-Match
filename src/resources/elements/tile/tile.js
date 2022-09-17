@@ -28,8 +28,9 @@ export class TileCustomElement {
     }
     
     attached() {
-        this.tile.color = this._setRandomColor(2);
+        this.tile.color = this._setRandomColor(this._colors.length - 1);
         this.tile._setRandomColor = this._setRandomColor;
+        this.tile._colors = this._colors;
         this._allowedDirections = [this._allowed(this.tile.y), this._allowed(this.tile.x)];
         this._addListeners();
     }

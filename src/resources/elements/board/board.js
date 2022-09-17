@@ -160,7 +160,7 @@ export class BoardCustomElement {
 
         // fill the new outermost tile
         const newTile = this.board[tiles[last].y][tiles[last].x]
-        newTile.color = newTile._setRandomColor(2);
+        newTile.color = newTile._setRandomColor(newTile._colors.length - 1);
     }
 
     _animateTiles(tiles, directions) {

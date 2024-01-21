@@ -111,7 +111,6 @@ export class BoardCustomElement {
         if (move.tile.color == targetTile.color) {
             // animate the dragged tile to the target
             move.animate = true;
-            move.newColor = 'adapt'; // todo nieuwe kleur meegeven
             this._eventAggregator.publish('move', move);
             this._moves++;
             this._eventAggregator.publish('moves', { moves: this._moves });
@@ -156,12 +155,15 @@ export class BoardCustomElement {
         // shift values of tiles one place in same direction as moved tile
         let last = tiles.length - 1;
         for (let i = 0; i < last; i++) {
-            this.board[tiles[i].y][tiles[i].x].color = this.board[tiles[i].y - directions[0]][tiles[i].x - directions[1]].color;
+            const current = this.board[tiles[i].y][tiles[i].x];
+            const previous = this.board[tiles[i].y - directions[0]][tiles[i].x - directions[1]];
+            current.color = previous.color;
+            current.className = previous.className;
         }
 
         // fill the new outermost tile
         const newTile = this.board[tiles[last].y][tiles[last].x]
-        newTile.color = newTile._setRandomColor(newTile._colors.length - 1);
+        newTile.setRandomColor(newTile._maxColors);
     }
 
     _animateTiles(tiles, directions) {

@@ -1,5 +1,5 @@
 <template>
-    <div class="tile
+    <div class="tile ${tile.className}
             ${animated ? 'animated' : ''}
             ${dragged ? 'dragged' : ''} 
             ${burn ? 'burn' : ''} 
@@ -9,9 +9,7 @@
             ${onfire ? 'onfire' : ''}
             ${visible ? '' : 'hide'}"
          id.one-time="tile.id"
-         data-color="${tile.color}"
          css="left: ${tile.x * distance + offset}vmin; 
             top: ${tile.y * distance + offset}vmin;
-            transform: translate3d(${dx}, ${dy}, 0);
-            background-color: ${tile.color};"></div>
+            transform: translate3d(${dx}, ${dy}, 0);"></div>
 </template>

@@ -6,23 +6,20 @@ help {
 .helpBubble {
     position        : absolute;
     overflow        : hidden;
-    top             : @tileGutterSize;
-    right           : @tileGutterSize;
-    width           : @tileSize;
-    height          : @tileSize;
+    top             : 0;
+    right           : 0;
+    width           : var(--tileSize);
+    height          : var(--tileSize);
     border-radius   : 1in;
     align-self      : flex-end;
     justify-self    : flex-start;
-    background-color: white;
+    background-color: transparent;
     font-size       : 4vmin;
     text-align      : center;
-    line-height     : @tileSize;
-
-    background-color: rgba(141, 228, 255, 0.4);
-    box-shadow      : 0 2px 2px #aaa;
-    color           : var(--primaryColor);
+    line-height     : var(--tileSize);
+    color           : crimson;
     cursor          : help;
-    text-shadow     : 0 1px 1px #ccc;
+    text-shadow     : 0 1px 1px var(--hotpinkTint);
     transition      : all .2s ease-in-out;
     opacity         : 1;
 
@@ -33,15 +30,6 @@ help {
     &:hover {
         color: white;
     }
-
-    &::before {
-        content: '';
-        .shiny;
-    }
-}
-
-.closeHelp {
-    background-color: rgba(141, 228, 255, 0.25);
 }
 
 weak {
@@ -53,12 +41,25 @@ weak {
     position        : absolute;
     overflow        : hidden auto;
     transition      : all 1s ease-in-out;
-    width           : calc(~'100% - 4 * @{tileSize}');
-    height          : calc(~'100% - 2 * @{tileSize}');
+    width           : calc(100% - 4 * var(--tileSize));
+    height          : calc(100% - 2 * var(--tileSize));
     left            : 0;
-    background-color: rgba(255, 255, 255, 0.75);
-    padding         : @tileSize calc(~'2 * @{tileSize}');
+    background-color: rgba(0, 0, 0, 0.75);
+    padding         : var(--tileSize) calc(2 * var(--tileSize));
     color           : var(--primaryColor);
+
+    a {
+        color: inherit;
+    }
+
+    p {
+        font-size : 50%;
+        text-align: center;
+    }
+
+    ul {
+        margin-bottom: 20vmin;
+    }
 
     &.down {
         top    : 100vh;

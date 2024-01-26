@@ -1,14 +1,23 @@
 // Definitions
-@boardSize       : 55vmin; // tileCount * 10
-@gameBorder      : 2.5vmin;
-@tileSize        : 9vmin;
-@tileGutterSize  : 2vmin;
-@tileFontSize    : 3vmin;
-@tileCornerRadius: 1vmin;
+
 
 :root {
-    --bgColor     : #d3bbd3;
-    --primaryColor: #584667;
+
+    *,
+    *:after,
+    *::before {
+        --goldenRatio: 1.618;
+        --boardSize  : calc(100vmin / var(--goldenRatio));
+        --tileSize   : calc(var(--boardSize) / var(--goldenRatio) / 5);
+        --gameBorder : 2.5vmin;
+
+        --bgColor       : black;
+        --primaryColor  : white;
+        --hotpinkTint   : lighten(hotpink, 20%);
+        --crimsonTint   : lighten(crimson, 20%);
+        --purpleTint    : lighten(purple, 20%);
+        --tileGutterSize: 2vmin;
+    }
 }
 
 body,
@@ -26,8 +35,6 @@ body {
     justify-content : center;
     margin          : 0;
     background-color: var(--bgColor);
-    background-image: linear-gradient(-45deg, hsla(0, 0%, 0%, 0), hsla(0, 0%, 0%, .05));
-    background-size : 5px;
 }
 
 .shiny {
@@ -35,10 +42,10 @@ body {
     position                  : absolute;
     width                     : 100%;
     height                    : 50%;
-    background : linear-gradient(rgba(255, 255, 255, 0.6) 0%, rgba(255, 255, 255, 0.1) 100%);
-    background-repeat: repeat-x;
-    background-position: 50% 0;
-    box-shadow : inset 0 2px 1px rgba(255, 255, 255, 0.7);
+    background                : linear-gradient(rgba(255, 255, 255, 0.6) 0%, rgba(255, 255, 255, 0.1) 100%);
+    background-repeat         : repeat-x;
+    background-position       : 50% 0;
+    box-shadow                : inset 0 2px 1px rgba(255, 255, 255, 0.7);
     border-top-right-radius   : 30px;
     border-top-left-radius    : 30px;
     border-bottom-right-radius: 100px 40px;
@@ -47,8 +54,8 @@ body {
 
 .qrCode {
     position: absolute;
-    left    : @tileGutterSize;
-    bottom  : @tileGutterSize;
+    left    : var(--tileGutterSize);
+    bottom  : var(--tileGutterSize);
     width   : ~'min(75px,10vmin)';
     height  : ~'min(75px,10vmin)';
 }

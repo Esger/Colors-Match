@@ -12,17 +12,21 @@ export class BoardCustomElement {
     constructor(eventAggregator, mySettingsService) {
         this._eventAggregator = eventAggregator;
         this._settingService = mySettingsService;
-        this._tileSize = 9;
         this._highestValue = 1;
         this._score = 0;
-        this.boardSize = 5; // / @boardSize
-        this.center = Math.floor(this.boardSize / 2);
         this.board = [];
         this.showBoard = true;
-        this.offset = this.boardSize * 2 / (this.boardSize + 1);
-        this.distance = this._tileSize + this.offset;
         this._newValues = [1];
         this._gameEnd = false;
+    }
+
+    attached() {
+        this.boardSize = Number(getComputedStyle(document.documentElement).getPropertyValue('--boardSize'));
+        this._tileSize = Number(getComputedStyle(document.documentElement).getPropertyValue('--tileSize'));
+        this.center = Math.floor(this.boardSize / 2);
+        this.offset = this.boardSize * 2 / (this.boardSize + 1);
+        this.distance = this._tileSize + this.offset;
+
     }
 
     _newTile(x, y) {
@@ -68,8 +72,8 @@ export class BoardCustomElement {
         } else {
             this.board = settings.board;
             this._moves = settings.moves || 0;
-            this._highestValue = this.board[2][2].value;
-            this._eventAggregator.publish('high', this._highestValue);
+            // this._highestValue = this.board[2][2].value;
+            // this._eventAggregator.publish('high', this._highestValue);
             this._eventAggregator.publish('moves', { moves: this._moves });
         }
         this._addListeners();
@@ -230,7 +234,7 @@ export class BoardCustomElement {
         return equals;
     }
 
-    _allEqual() { 
+    _allEqual() {
         const firstColor = this.board[0][0].color;
         const notAllEqual = this.board.some(row => row.some(tile => tile.color != firstColor));
         return !notAllEqual;
@@ -247,7 +251,7 @@ export class BoardCustomElement {
         }
     }
 
-    _winGame() { 
+    _winGame() {
         alert('you win');
     }
 

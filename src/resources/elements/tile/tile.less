@@ -3,22 +3,22 @@
     box-shadow   : 0 2px 10px #1e1e1e;
     cursor       : grab;
     display      : block;
-    height       : @tileSize;
+    height       : var(--tileSize);
     overflow     : hidden;
     position     : absolute;
     transition   : background-image .2s ease-in-out, opacity .2s ease-in-out;
-    width        : @tileSize;
+    width        : var(--tileSize);
 
     &.tile--1 {
-        background-image: radial-gradient(lighten(hotpink, 20%) 5%, hotpink);
+        background-image: radial-gradient(var(--hotpinkTint) 5%, hotpink);
     }
 
     &.tile--2 {
-        background-image: radial-gradient(lighten(crimson, 20%) 5%, crimson);
+        background-image: radial-gradient(var(--crimsonTint) 5%, crimson);
     }
 
     &.tile--3 {
-        background-image: radial-gradient(lighten(purple, 20%) 5%, purple);
+        background-image: radial-gradient(var(--purpleTint) 5%, purple);
     }
 
     &.animated {

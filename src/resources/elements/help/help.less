@@ -4,27 +4,23 @@ help {
 
 .closeHelp,
 .helpBubble {
-    position        : absolute;
-    overflow        : hidden;
-    top             : @tileGutterSize;
-    right           : @tileGutterSize;
-    width           : @tileSize;
-    height          : @tileSize;
-    border-radius   : 1in;
-    align-self      : flex-end;
-    justify-self    : flex-start;
-    background-color: white;
-    font-size       : 4vmin;
-    text-align      : center;
-    line-height     : @tileSize;
-
-    background-color: rgba(141, 228, 255, 0.4);
-    box-shadow      : 0 2px 2px #aaa;
-    color           : var(--primaryColor);
-    cursor          : help;
-    text-shadow     : 0 1px 1px #ccc;
-    transition      : all .2s ease-in-out;
-    opacity         : 1;
+    position     : absolute;
+    overflow     : hidden;
+    top          : @tileGutterSize;
+    right        : @tileGutterSize;
+    width        : @tileSize;
+    height       : @tileSize;
+    border-radius: 1in;
+    align-self   : flex-end;
+    justify-self : flex-start;
+    font-size    : 4vmin;
+    text-align   : center;
+    line-height  : @tileSize;
+    color        : var(--primaryColor);
+    cursor       : help;
+    text-shadow  : 0 1px 1px #ccc;
+    transition   : all .2s ease-in-out;
+    opacity      : 1;
 
     &.hide {
         opacity: 0;

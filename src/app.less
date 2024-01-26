@@ -1,14 +1,22 @@
 // Definitions
-@boardSize       : 55vmin; // tileCount * 10
-@gameBorder      : 2.5vmin;
-@tileSize        : 9vmin;
-@tileGutterSize  : 2vmin;
-@tileFontSize    : 3vmin;
-@tileCornerRadius: 1vmin;
 
-:root {
-    --bgColor     : #000;
-    --primaryColor: navajowhite;
+:root * {
+
+    &,
+    &:after,
+    &::before {
+        --goldenRatio: 0.61805;
+        --boardSize  : calc(~'var(--goldenRatio) * 100vmin');
+        --tileSize   : calc(~'var(--boardSize) * var(--goldenRatio) * .2');
+        --gameBorder : 2.5vmin;
+
+        --primaryColor  : navajowhite;
+        --bgColor       : black;
+        --hotpinkTint   : lighten(hotpink, 20%);
+        --crimsonTint   : lighten(crimson, 20%);
+        --purpleTint    : lighten(purple, 20%);
+        --tileGutterSize: 2vmin;
+    }
 }
 
 body,
@@ -41,8 +49,8 @@ body {
 
 .qrCode {
     position: absolute;
-    left    : @tileGutterSize;
-    bottom  : @tileGutterSize;
+    left    : var(--tileGutterSize);
+    bottom  : var(--tileGutterSize);
     width   : ~'min(75px,10vmin)';
     height  : ~'min(75px,10vmin)';
 }

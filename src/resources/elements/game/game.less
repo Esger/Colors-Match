@@ -4,22 +4,23 @@
 game {
     align-items      : center;
     // background    : linear-gradient(to bottom, @lightGrey 0%, @darkGrey 100%);
-    border-radius    : calc(~ '2 * @{gameBorder}');
+    border-radius    : calc(~ '2 * var(--gameBorder)');
     // box-shadow    : 0 3px 4px #222;
     display          : flex;
     flex-direction   : column;
-    padding-bottom   : @gameBorder;
+    padding-bottom   : var(--gameBorder);
     position         : relative;
     transform        : scale(1.4);
-    width            : calc(~ '@{boardSize} + 2 * @{gameBorder}');
+    width            : calc(~ 'var(--boardSize) + 2 * var(--gameBorder)');
 
     header {
         position: relative;
-        margin  : calc(~'@{gameBorder} / 2') 0;
-        width   : @boardSize;
+        margin  : calc(~'var(--gameBorder) / 2') 0;
+        width   : var(--boardSize);
 
         h1,
-        h2 {
+        h2,
+        h3 {
             text-align : center;
             font-family: 'Courier New', Courier, monospace;
             font-size  : 4vmin;
@@ -30,6 +31,10 @@ game {
         }
 
         h1 {
+            cursor     : pointer;
+            font-size  : 5vmin;
+            line-height: 5vmin;
+
             @media screen and (orientation:landscape) {
                 margin: 2vmin 0 1vmin;
             }
@@ -40,7 +45,7 @@ game {
             top      : 2vmin;
             font-size: 6vmin;
             z-index  : -1;
-            width    : @boardSize;
+            width    : var(--boardSize);
 
             @media screen and (orientation:landscape) {
                 margin: 4vmin 0 0;
@@ -51,25 +56,10 @@ game {
             position   : absolute;
             top        : 1vmin;
             right      : 2vmin;
-            color      : var(--tileColor);
             font-size  : 2vmin;
             text-shadow: none;
             margin     : 0;
         }
 
-        .dummy {
-            opacity: 0;
-        }
-
-        .dummy,
-        .score {
-            font: inherit;
-        }
-
-        .title {
-            cursor     : pointer;
-            font-size  : 5vmin;
-            line-height: 5vmin;
-        }
     }
 }

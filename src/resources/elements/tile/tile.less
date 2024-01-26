@@ -3,11 +3,11 @@
     box-shadow   : 0 2px 10px #1e1e1e;
     cursor       : grab;
     display      : block;
-    height       : @tileSize;
+    height       : var(--tileSize);
     overflow     : hidden;
     position     : absolute;
     transition   : background-image .2s ease-in-out, opacity .2s ease-in-out;
-    width        : @tileSize;
+    width        : var(--tileSize);
 
     &.tile--1 {
         background-image: radial-gradient(lighten(hotpink, 20%) 5%, hotpink);

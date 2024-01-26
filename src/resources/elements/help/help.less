@@ -6,16 +6,16 @@ help {
 .helpBubble {
     position     : absolute;
     overflow     : hidden;
-    top          : @tileGutterSize;
-    right        : @tileGutterSize;
-    width        : @tileSize;
-    height       : @tileSize;
+    top          : var(--tileGutterSize);
+    right        : var(--tileGutterSize);
+    width        : var(--tileSize);
+    height       : var(--tileSize);
     border-radius: 1in;
     align-self   : flex-end;
     justify-self : flex-start;
     font-size    : 4vmin;
     text-align   : center;
-    line-height  : @tileSize;
+    line-height  : var(--tileSize);
     color        : var(--primaryColor);
     cursor       : help;
     text-shadow  : 0 1px 1px #ccc;
@@ -49,11 +49,11 @@ weak {
     position        : absolute;
     overflow        : hidden auto;
     transition      : all 1s ease-in-out;
-    width           : calc(~'100% - 4 * @{tileSize}');
-    height          : calc(~'100% - 2 * @{tileSize}');
+    width           : calc(~'100% - 4 * var(--tileSize)');
+    height          : calc(~'100% - 2 * var(--tileSize)');
     left            : 0;
     background-color: rgba(255, 255, 255, 0.75);
-    padding         : @tileSize calc(~'2 * @{tileSize}');
+    padding         : var(--tileSize) calc(~'2 * var(--tileSize)');
     color           : var(--primaryColor);
 
     &.down {

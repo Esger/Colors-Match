@@ -2,15 +2,14 @@ import { inject, bindable } from 'aurelia-framework';
 import { EventAggregator } from 'aurelia-event-aggregator';
 import { DragService } from 'resources/services/drag-service';
 
-@inject(DragService, EventAggregator, Element)
+@inject(Element, DragService, EventAggregator)
 export class TileCustomElement {
 
     @bindable tile;
     @bindable boardSize;
     @bindable distance;
-    @bindable offset;
 
-    constructor(dragService, eventAggregator, element) {
+    constructor(element, dragService, eventAggregator) {
         this.dragService = dragService;
         this._eventAggregator = eventAggregator;
         this._element = element;
@@ -26,12 +25,13 @@ export class TileCustomElement {
         this.dy = 0;
         this._maxColors = 3;
     }
-    
+
     attached() {
         this._setRandomColor();
         this.tile.maxColors = this._maxColors;
         this.tile.setRandomColor = this._setRandomColor;
         this._allowedDirections = [this._allowed(this.tile.y), this._allowed(this.tile.x)];
+        this.offset = this.boardSize * 2 / (this.boardSize + 1);
         this._addListeners();
     }
 

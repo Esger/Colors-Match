@@ -1,27 +1,22 @@
 // Definitions
 
-:root * {
+body {
+    --goldenRatio: 0.61805;
+    --boardSize  : calc(~'var(--goldenRatio) * 100vmin');
+    --tileSize   : calc(~'var(--boardSize) * var(--goldenRatio) * .2');
+    --gameBorder : 2.5vmin;
 
-    &,
-    &:after,
-    &::before {
-        --goldenRatio: 0.61805;
-        --boardSize  : calc(~'var(--goldenRatio) * 100vmin');
-        --tileSize   : calc(~'var(--boardSize) * var(--goldenRatio) * .2');
-        --gameBorder : 2.5vmin;
-
-        --primaryColor  : navajowhite;
-        --bgColor       : black;
-        --hotpinkTint   : lighten(hotpink, 20%);
-        --crimsonTint   : lighten(crimson, 20%);
-        --purpleTint    : lighten(purple, 20%);
-        --tileGutterSize: 2vmin;
-    }
+    --primaryColor  : navajowhite;
+    --bgColor       : black;
+    --hotpinkTint   : lighten(hotpink, 20%);
+    --crimsonTint   : lighten(crimson, 20%);
+    --purpleTint    : lighten(purple, 20%);
+    --tileGutterSize: 2vmin;
 }
 
 body,
 html {
-    font-family: 'Trebuchet MS', 'Lucida Sans Unicode', 'Lucida Grande', 'Lucida Sans', Arial, sans-serif;
+    font-family: 'Trebuchet MS', 'Lucida Sans Unicode', 'Lucida Grande', 'Lucida Sans', sans-serif;
     height     : 100%;
     overflow   : hidden;
     position   : fixed;

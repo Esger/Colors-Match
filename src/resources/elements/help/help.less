@@ -4,23 +4,24 @@ help {
 
 .closeHelp,
 .helpBubble {
-    position     : absolute;
-    overflow     : hidden;
-    top          : var(--tileGutterSize);
-    right        : var(--tileGutterSize);
-    width        : var(--tileSize);
-    height       : var(--tileSize);
-    border-radius: 1in;
-    align-self   : flex-end;
-    justify-self : flex-start;
-    font-size    : 4vmin;
-    text-align   : center;
-    line-height  : var(--tileSize);
-    color        : var(--primaryColor);
-    cursor       : help;
-    text-shadow  : 0 1px 1px #ccc;
-    transition   : all .2s ease-in-out;
-    opacity      : 1;
+    position        : absolute;
+    overflow        : hidden;
+    top             : 0;
+    right           : 0;
+    width           : var(--tileSize);
+    height          : var(--tileSize);
+    border-radius   : 1in;
+    align-self      : flex-end;
+    justify-self    : flex-start;
+    background-color: transparent;
+    font-size       : 4vmin;
+    text-align      : center;
+    line-height     : var(--tileSize);
+    color           : crimson;
+    cursor          : help;
+    text-shadow     : 0 1px 1px var(--hotpinkTint);
+    transition      : all .2s ease-in-out;
+    opacity         : 1;
 
     &.hide {
         opacity: 0;
@@ -36,10 +37,6 @@ help {
     }
 }
 
-.closeHelp {
-    background-color: rgba(141, 228, 255, 0.25);
-}
-
 weak {
     font-weight: normal;
 }
@@ -49,12 +46,12 @@ weak {
     position        : absolute;
     overflow        : hidden auto;
     transition      : all 1s ease-in-out;
-    width           : calc(~'100% - 4 * var(--tileSize)');
-    height          : calc(~'100% - 2 * var(--tileSize)');
+    width           : 100vw;
+    height          : 100dvh;
     left            : 0;
-    background-color: rgba(255, 255, 255, 0.75);
     padding         : var(--tileSize) calc(~'2 * var(--tileSize)');
     color           : var(--primaryColor);
+    background-color: rgba(0, 0, 0, 0.75);
 
     &.down {
         top    : 100vh;

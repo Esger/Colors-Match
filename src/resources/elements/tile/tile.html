@@ -7,7 +7,8 @@
             ${incorrect ? 'incorrect' : ''}
             ${locked ? 'locked' : ''}
             ${onfire ? 'onfire' : ''}
-            ${visible ? '' : 'hide'}"
+            ${visible ? '' : 'hide'}
+            x_${tile.x} y_${tile.y}"
          id.one-time="tile.id"
          css="left: ${tile.x * distance + offset}vmin; 
             top: ${tile.y * distance + offset}vmin;

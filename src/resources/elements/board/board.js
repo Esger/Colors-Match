@@ -1,21 +1,21 @@
 import { inject } from 'aurelia-framework';
 import { EventAggregator } from 'aurelia-event-aggregator';
 import { MySettingsService } from 'resources/services/my-settings-service';
-import ret from '../../../../scripts/vendor-bundle';
 
-@inject(EventAggregator, MySettingsService)
+@inject(Element, EventAggregator, MySettingsService)
 export class BoardCustomElement {
     settings = {
         version: 'v1.0', // increase if board structure changes
     }
 
-    constructor(eventAggregator, mySettingsService) {
+    constructor(element, eventAggregator, mySettingsService) {
+        this._element = element;
         this._eventAggregator = eventAggregator;
         this._settingService = mySettingsService;
         this._tileSize = 9;
         this._highestValue = 1;
         this._score = 0;
-        this.boardSize = 5; // / @boardSize
+        this.boardSize = 5; // tiles in one row
         this.center = Math.floor(this.boardSize / 2);
         this.board = [];
         this.showBoard = true;
@@ -26,7 +26,7 @@ export class BoardCustomElement {
     }
 
     _newTile(x, y) {
-        let tile = {
+        const tile = {
             x: x,
             y: y,
             id: 'tile_' + y + '-' + x,

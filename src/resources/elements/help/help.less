@@ -1,5 +1,5 @@
 help {
-    z-index: 1;
+    z-index: 1000;
 }
 
 .closeHelp,
@@ -52,6 +52,11 @@ weak {
     padding         : var(--tileSize) calc(~'2 * var(--tileSize)');
     color           : var(--primaryColor);
     background-color: rgba(0, 0, 0, 0.75);
+
+    p,
+    a {
+        color: inherit;
+    }
 
     &.down {
         top    : 100vh;

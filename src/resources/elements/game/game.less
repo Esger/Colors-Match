@@ -2,15 +2,11 @@
 @darkGrey : rgba(137, 137, 137, 0.9);
 
 game {
-    align-items      : center;
-    // background    : linear-gradient(to bottom, @lightGrey 0%, @darkGrey 100%);
-    border-radius    : calc(~ '2 * var(--gameBorder)');
-    // box-shadow    : 0 3px 4px #222;
-    display          : flex;
-    flex-direction   : column;
-    padding-bottom   : var(--gameBorder);
-    position         : relative;
-    width            : calc(~ 'var(--boardSize) + 2 * var(--gameBorder)');
+    align-items   : center;
+    display       : flex;
+    flex-direction: column;
+    position      : relative;
+    width         : var(--boardSize);
 
     header {
         position: relative;

@@ -5,16 +5,13 @@ game {
     align-items   : center;
     display       : flex;
     flex-direction: column;
-    padding-bottom: var(--gameBorder);
     position      : relative;
-    transform     : scale(1.4);
-    width         : calc(var(--boardSize) + 2 * var(--gameBorder));
+    width         : var(--boardSize);
 
     header {
-        display        : flex;
-        justify-content: flex-end;
-        position       : relative;
-        width          : var(--boardSize);
+        position: relative;
+        margin  : calc(~'var(--gameBorder) / 2') 0;
+        width   : var(--boardSize);
 
         h1,
         h2,
@@ -30,9 +27,13 @@ game {
         }
 
         h1 {
-            position : absolute;
-            left     : 50%;
-            translate: -50%;
+            cursor     : pointer;
+            font-size  : 5vmin;
+            line-height: 5vmin;
+
+            @media screen and (orientation:landscape) {
+                margin: 2vmin 0 1vmin;
+            }
         }
 
         h2 {
@@ -41,28 +42,19 @@ game {
             font-size: 6vmin;
             z-index  : -1;
             width    : var(--boardSize);
+
+            @media screen and (orientation:landscape) {
+                margin: 4vmin 0 0;
+            }
         }
 
         h3.moves {
+            position   : absolute;
+            top        : 1vmin;
+            right      : 2vmin;
             font-size  : 2vmin;
             text-shadow: none;
         }
 
-        .dummy {
-            opacity: 0;
-        }
-
-        .dummy,
-        .score {
-            font: inherit;
-        }
-
-        .title {
-            cursor        : pointer;
-            font-size     : 5vmin;
-            line-height   : 5vmin;
-            text-transform: uppercase;
-            letter-spacing: 5px;
-        }
     }
 }

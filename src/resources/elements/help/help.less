@@ -1,5 +1,5 @@
 help {
-    z-index: 1;
+    z-index: 200;
 }
 
 .closeHelp,
@@ -41,24 +41,16 @@ weak {
     position        : absolute;
     overflow        : hidden auto;
     transition      : all 1s ease-in-out;
-    width           : calc(100% - 4 * var(--tileSize));
-    height          : calc(100% - 2 * var(--tileSize));
+    width           : 100vw;
+    height          : 100dvh;
     left            : 0;
-    background-color: rgba(0, 0, 0, 0.75);
-    padding         : var(--tileSize) calc(2 * var(--tileSize));
+    padding         : var(--tileSize) calc(~'2 * var(--tileSize)');
     color           : var(--primaryColor);
+    background-color: rgba(0, 0, 0, 0.75);
 
+    p,
     a {
         color: inherit;
-    }
-
-    p {
-        font-size : 50%;
-        text-align: center;
-    }
-
-    ul {
-        margin-bottom: 20vmin;
     }
 
     &.down {

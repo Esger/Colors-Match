@@ -2,19 +2,23 @@ import { inject, bindable } from 'aurelia-framework';
 import { EventAggregator } from 'aurelia-event-aggregator';
 import { DragService } from 'resources/services/drag-service';
 
-@inject(DragService, EventAggregator, Element)
+@inject(Element, DragService, EventAggregator)
 export class TileCustomElement {
+    PSI = 0.61805; // golden ratio
 
     @bindable tile;
-    @bindable boardSize;
-    @bindable distance;
-    @bindable offset;
+    @bindable rowTileCount;
 
-    constructor(dragService, eventAggregator, element) {
+    constructor(element, dragService, eventAggregator) {
         this.dragService = dragService;
         this._eventAggregator = eventAggregator;
         this._element = element;
         this._allowedDirections = [];
+        this.boardSize = 100 * this.PSI;
+        this.columSize = this.boardSize / 5;
+        this.tileSize = this.columSize * .79;
+        this.extraGutter = (this.columSize - this.tileSize) / 4;
+        this.distance = this.columSize + this.extraGutter;
         this.locked = false;
         this.animated = false;
         this.correct = false;
@@ -26,7 +30,7 @@ export class TileCustomElement {
         this.dy = 0;
         this._maxColors = 3;
     }
-    
+
     attached() {
         this._setRandomColor();
         this.tile.maxColors = this._maxColors;
@@ -124,7 +128,7 @@ export class TileCustomElement {
         // returns -1, 0 or 1
         switch (value) {
             case 0: return 1; // only increment allowed
-            case this.boardSize - 1: return -1; // only decrement allowed
+            case this.rowTileCount - 1: return -1; // only decrement allowed
             default: return 0; // both allowed
         }
     }
@@ -211,12 +215,10 @@ export class TileCustomElement {
 
     _setRandomColor = (maxColors = 2) => {
         this.tile.color = Math.ceil(Math.random() * maxColors);
-        this.tile.className = 'tile--' + this.tile.color;
     }
 
     _setNextColor() {
         this.tile.color = (this.tile.color == this._maxColors) ? 1 : this.tile.color + 1;
-        this.tile.className = 'tile--' + this.tile.color;
     }
 
 }

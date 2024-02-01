@@ -1,32 +1,38 @@
 import { inject } from 'aurelia-framework';
 import { EventAggregator } from 'aurelia-event-aggregator';
 import { MySettingsService } from 'resources/services/my-settings-service';
-import ret from '../../../../scripts/vendor-bundle';
 
-@inject(EventAggregator, MySettingsService)
+@inject(Element, EventAggregator, MySettingsService)
 export class BoardCustomElement {
     settings = {
         version: 'v1.0', // increase if board structure changes
     }
 
-    constructor(eventAggregator, mySettingsService) {
+    constructor(element, eventAggregator, mySettingsService) {
+        this._element = element;
         this._eventAggregator = eventAggregator;
         this._settingService = mySettingsService;
-        this._tileSize = 9;
         this._highestValue = 1;
         this._score = 0;
-        this.boardSize = 5; // / @boardSize
-        this.center = Math.floor(this.boardSize / 2);
+        this.rowTileCount = 5; // tiles in one row
+        this.center = Math.floor(this.rowTileCount / 2);
         this.board = [];
         this.showBoard = true;
-        this.offset = this.boardSize * 2 / (this.boardSize + 1);
-        this.distance = this._tileSize + this.offset;
         this._newValues = [1];
         this._gameEnd = false;
     }
 
+    attached() {
+        this.boardSize = Number(getComputedStyle(document.documentElement).getPropertyValue('--boardSize'));
+        this._tileSize = Number(getComputedStyle(document.documentElement).getPropertyValue('--tileSize'));
+        this.center = Math.floor(this.boardSize / 2);
+        this.offset = this.boardSize * 2 / (this.boardSize + 1);
+        this.distance = this._tileSize + this.offset;
+
+    }
+
     _newTile(x, y) {
-        let tile = {
+        const tile = {
             x: x,
             y: y,
             id: 'tile_' + y + '-' + x,
@@ -45,9 +51,9 @@ export class BoardCustomElement {
         this.showBoard = false;
         this.board = [];
 
-        for (let y = 0; y < this.boardSize; y++) {
+        for (let y = 0; y < this.rowTileCount; y++) {
             let row = [];
-            for (let x = 0; x < this.boardSize; x++) {
+            for (let x = 0; x < this.rowTileCount; x++) {
                 row.push(this._newTile(x, y));
             }
             this.board.push(row);
@@ -68,8 +74,8 @@ export class BoardCustomElement {
         } else {
             this.board = settings.board;
             this._moves = settings.moves || 0;
-            this._highestValue = this.board[2][2].value;
-            this._eventAggregator.publish('high', this._highestValue);
+            // this._highestValue = this.board[2][2].value;
+            // this._eventAggregator.publish('high', this._highestValue);
             this._eventAggregator.publish('moves', { moves: this._moves });
         }
         this._addListeners();
@@ -193,7 +199,7 @@ export class BoardCustomElement {
         let t = [move.tile.y, move.tile.x];
         // if one of the directions > 0 then step = -1 (opposite direction)
         let step = move.directions.some(v => { return v > 0; }) ? -1 : 1;
-        let max = (step > 0) ? this.boardSize : -1;
+        let max = (step > 0) ? this.rowTileCount : -1;
         let start = (move.directions[0] == 0) ? t[1] : t[0];
         for (let i = start; i != max; i += step) {
             tilesBehind.push(this.board[t[0]][t[1]]);
@@ -230,7 +236,7 @@ export class BoardCustomElement {
         return equals;
     }
 
-    _allEqual() { 
+    _allEqual() {
         const firstColor = this.board[0][0].color;
         const notAllEqual = this.board.some(row => row.some(tile => tile.color != firstColor));
         return !notAllEqual;
@@ -247,7 +253,7 @@ export class BoardCustomElement {
         }
     }
 
-    _winGame() { 
+    _winGame() {
         alert('you win');
     }
 

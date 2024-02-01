@@ -12,14 +12,12 @@ export class BoardCustomElement {
         this._element = element;
         this._eventAggregator = eventAggregator;
         this._settingService = mySettingsService;
-        this.boardSize = 5; // tiles in one row
-        this._tileSize = 9;
         this._highestValue = 1;
         this._score = 0;
-        this.center = Math.floor(this.boardSize / 2);
+        this.rowTileCount = 5; // tiles in one row
+        this.center = Math.floor(this.rowTileCount / 2);
         this.board = [];
         this.showBoard = true;
-        this.distance = this._tileSize;
         this._newValues = [1];
         this._gameEnd = false;
     }
@@ -44,9 +42,9 @@ export class BoardCustomElement {
         this.showBoard = false;
         this.board = [];
 
-        for (let y = 0; y < this.boardSize; y++) {
+        for (let y = 0; y < this.rowTileCount; y++) {
             let row = [];
-            for (let x = 0; x < this.boardSize; x++) {
+            for (let x = 0; x < this.rowTileCount; x++) {
                 row.push(this._newTile(x, y));
             }
             this.board.push(row);
@@ -192,7 +190,7 @@ export class BoardCustomElement {
         let t = [move.tile.y, move.tile.x];
         // if one of the directions > 0 then step = -1 (opposite direction)
         let step = move.directions.some(v => { return v > 0; }) ? -1 : 1;
-        let max = (step > 0) ? this.boardSize : -1;
+        let max = (step > 0) ? this.rowTileCount : -1;
         let start = (move.directions[0] == 0) ? t[1] : t[0];
         for (let i = start; i != max; i += step) {
             tilesBehind.push(this.board[t[0]][t[1]]);

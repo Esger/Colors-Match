@@ -12,15 +12,14 @@ export class BoardCustomElement {
         this._element = element;
         this._eventAggregator = eventAggregator;
         this._settingService = mySettingsService;
+        this.boardSize = 5; // tiles in one row
         this._tileSize = 9;
         this._highestValue = 1;
         this._score = 0;
-        this.boardSize = 5; // tiles in one row
         this.center = Math.floor(this.boardSize / 2);
         this.board = [];
         this.showBoard = true;
-        this.offset = this.boardSize * 2 / (this.boardSize + 1);
-        this.distance = this._tileSize + this.offset;
+        this.distance = this._tileSize;
         this._newValues = [1];
         this._gameEnd = false;
     }
@@ -230,7 +229,7 @@ export class BoardCustomElement {
         return equals;
     }
 
-    _allEqual() { 
+    _allEqual() {
         const firstColor = this.board[0][0].color;
         const notAllEqual = this.board.some(row => row.some(tile => tile.color != firstColor));
         return !notAllEqual;
@@ -247,7 +246,7 @@ export class BoardCustomElement {
         }
     }
 
-    _winGame() { 
+    _winGame() {
         alert('you win');
     }
 

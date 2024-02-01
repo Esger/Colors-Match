@@ -31,7 +31,6 @@ export class TileCustomElement {
         this.tile.maxColors = this._maxColors;
         this.tile.setRandomColor = this._setRandomColor;
         this._allowedDirections = [this._allowed(this.tile.y), this._allowed(this.tile.x)];
-        this.offset = this.boardSize * 2 / (this.boardSize + 1);
         this._addListeners();
     }
 

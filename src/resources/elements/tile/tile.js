@@ -215,12 +215,10 @@ export class TileCustomElement {
 
     _setRandomColor = (maxColors = 2) => {
         this.tile.color = Math.ceil(Math.random() * maxColors);
-        this.tile.className = 'tile--' + this.tile.color;
     }
 
     _setNextColor() {
         this.tile.color = (this.tile.color == this._maxColors) ? 1 : this.tile.color + 1;
-        this.tile.className = 'tile--' + this.tile.color;
     }
 
 }

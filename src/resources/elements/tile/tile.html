@@ -12,5 +12,5 @@
          id.one-time="tile.id"
          css="left: calc(${tile.x} * var(--distance)); 
             top: calc(${tile.y} * var(--distance));
-            transform: translate3d(${dx}, ${dy}, 0);"></div>
+            transform: translate3d(calc(${dx} * var(--distance)), calc(${dy} * var(--distance)), 0);"></div>
 </template>

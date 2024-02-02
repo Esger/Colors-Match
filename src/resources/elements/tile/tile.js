@@ -4,8 +4,6 @@ import { DragService } from 'resources/services/drag-service';
 
 @inject(Element, DragService, EventAggregator)
 export class TileCustomElement {
-    PSI = 0.61805; // golden ratio
-
     @bindable tile;
     @bindable rowTileCount;
 
@@ -14,11 +12,6 @@ export class TileCustomElement {
         this._eventAggregator = eventAggregator;
         this._element = element;
         this._allowedDirections = [];
-        this.boardSize = 100 * this.PSI;
-        this.columSize = this.boardSize / 5;
-        this.tileSize = this.columSize * .8;
-        this.extraGutter = (this.columSize - this.tileSize) / 4;
-        this.distance = this.columSize + this.extraGutter;
         this.locked = false;
         this.animated = false;
         this.correct = false;
@@ -136,8 +129,8 @@ export class TileCustomElement {
     _animate(directions, animate = true) {
         this.animated = animate;
         setTimeout(() => {
-            this.dy = directions[0] * this.distance + 'vmin';
-            this.dx = directions[1] * this.distance + 'vmin';
+            this.dy = directions[0];
+            this.dx = directions[1];
         });
     }
 

@@ -4,19 +4,11 @@ help {
 
 .closeHelp,
 .helpBubble {
-    position        : absolute;
-    overflow        : hidden;
-    top             : 0;
-    right           : 0;
-    width           : var(--tileSize);
-    height          : var(--tileSize);
-    border-radius   : 1in;
+    border          : none;
     align-self      : flex-end;
     justify-self    : flex-start;
     background-color: transparent;
     font-size       : 4vmin;
-    text-align      : center;
-    line-height     : var(--tileSize);
     color           : crimson;
     cursor          : help;
     text-shadow     : 0 1px 1px var(--hotpinkTint);
@@ -26,10 +18,6 @@ help {
     &.hide {
         opacity: 0;
     }
-
-    &:hover {
-        color: white;
-    }
 }
 
 weak {
@@ -37,16 +25,26 @@ weak {
 }
 
 .helpContent {
+    position        : fixed;
+    left            : 0;
+    display         : flex;
+    z-index         : 100;
+    flex-direction  : column;
+    justify-content : space-evenly;
     font-size       : ~'max(2em, 5vmin)';
-    position        : absolute;
     overflow        : hidden auto;
-    transition      : all 1s ease-in-out;
+    transition      : all .5s ease-in-out;
     width           : 100vw;
     height          : 100dvh;
-    left            : 0;
     padding         : var(--tileSize) calc(~'2 * var(--tileSize)');
     color           : var(--primaryColor);
     background-color: rgba(0, 0, 0, 0.75);
+
+    .heading {
+        display        : flex;
+        justify-content: space-between;
+        align-items    : center;
+    }
 
     p,
     a {

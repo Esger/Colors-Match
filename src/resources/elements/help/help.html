@@ -1,14 +1,13 @@
 <template>
     <button class="helpBubble ${helpVisible ? 'hide' : ''}"
          click.delegate="showHelp()">?</button>
-    <div class="helpContent ${helpVisible ? 'up' : 'down'}">
+    <div class="helpContent ${helpVisible ? 'up' : 'down'}"
+         click.delegate="hideHelp()">
 
         <div class="heading">
             <h2>
                 How to play
             </h2>
-            <button class="closeHelp"
-                 click.delegate="hideHelp()">&times;</button>
         </div>
         <ul>
             <li>Slide matching marbles together.</li>

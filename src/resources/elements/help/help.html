@@ -1,18 +1,20 @@
 <template>
-    <div class="helpBubble ${helpVisible ? 'hide' : ''}"
-         click.delegate="showHelp()">?</div>
+    <button class="helpBubble ${helpVisible ? 'hide' : ''}"
+         click.delegate="showHelp()">?</button>
     <div class="helpContent ${helpVisible ? 'up' : 'down'}">
 
-        <h2>
-            How to play
-        </h2>
+        <div class="heading">
+            <h2>
+                How to play
+            </h2>
+            <button class="closeHelp"
+                 click.delegate="hideHelp()">&times;</button>
+        </div>
         <ul>
             <li>Slide matching marbles together.</li>
             <li>Make them all the same color to win!</li>
             <li>Click the title to restart and keep playing!</li>
         </ul>
         <p>by <a target="_blank" href="/">ashWare</a></p>
-        <div class="closeHelp"
-             click.delegate="hideHelp()">&times;</div>
     </div>
 </template>

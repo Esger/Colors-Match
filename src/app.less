@@ -1,8 +1,25 @@
 // Definitions
+/*
+ * Mixin for fluid scaling of fonts with mobile default screen widths
+ * Usage: .fluid(font-size, 14px, 16px);
+ * Or:    .fluid(margin, 14px, 16px, 300px, 600px); // min. and max. screen widths
+ */
+@root-font-size: 16px; // Adjust this if your root font size is different
+
+.fluid(@property, @min-value, @max-value, @min-vw: 300, @max-vw: 1200) {
+    @min-value-px: @min-value;
+    @max-value-px: @max-value;
+    @factor      : (1 / (@max-vw - @min-vw)) * (@max-value-px - @min-value-px);
+    @base        : unit((@min-value-px / @root-font-size - @min-vw * @factor / @root-font-size), rem);
+    @slope       : unit((100 * @factor), vw);
+
+    // @{property}: @min-value;  // Fallback niet meer nodig?
+    @{property} :~"clamp(@{min-value}, @{base} + @{slope}, @{max-value})";
+}
 
 body {
     --goldenRatio         : 0.61805;
-    --maxRelativeBoardSize: 100vmin;
+    --maxRelativeBoardSize: 95vmin;
     --minRelativeBoardSize: calc(~'var(--maxRelativeBoardSize) * var(--goldenRatio)');
     --boardSize           : var(--maxRelativeBoardSize);
 
@@ -12,7 +29,7 @@ body {
 
     --distance   : calc(~'var(--boardSize) * .2');
     --tileSize   : calc(~'var(--distance) * .8');
-    --gameBorder : 2.5vmin;
+    --tilePadding: calc(~'var(--distance) * .1');
 
     --primaryColor  : navajowhite;
     --bgColor       : black;
@@ -28,7 +45,7 @@ html {
     height     : 100%;
     overflow   : hidden;
     position   : fixed;
-    width      : 100%;
+    inset      : 0;
 }
 
 body {
@@ -37,23 +54,4 @@ body {
     display         : flex;
     justify-content : center;
     margin          : 0;
-}
-
-.shiny {
-    display                   : block;
-    position                  : absolute;
-    width                     : 100%;
-    height                    : 50%;
-    border-top-right-radius   : 30px;
-    border-top-left-radius    : 30px;
-    border-bottom-right-radius: 100px 40px;
-    border-bottom-left-radius : 100px 40px;
-}
-
-.qrCode {
-    position: absolute;
-    left    : var(--tileGutterSize);
-    bottom  : var(--tileGutterSize);
-    width   : ~'min(75px,10vmin)';
-    height  : ~'min(75px,10vmin)';
 }

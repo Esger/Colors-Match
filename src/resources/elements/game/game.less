@@ -16,6 +16,7 @@ game {
         align-items    : flex-end;
         justify-content: space-between;
         margin         : 0;
+        padding-inline : calc(~'var(--tilePadding) * 1.5');
         width          : var(--boardSize);
 
         h1,
@@ -37,8 +38,8 @@ game {
         }
 
         h1 {
-            cursor        : pointer;
-            font-size     : 5vmin;
+            cursor: pointer;
+            .fluid(font-size, 36px, 52px);
             text-transform: uppercase;
             letter-spacing: 2px;
         }
@@ -47,8 +48,12 @@ game {
             font-size: 6vmin;
         }
 
+        h3.moves,
+        button {
+            .fluid(font-size, 15px, 18px);
+        }
+
         h3.moves {
-            font-size  : 2vmin;
             text-shadow: none;
         }
 

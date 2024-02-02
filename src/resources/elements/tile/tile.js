@@ -16,7 +16,7 @@ export class TileCustomElement {
         this._allowedDirections = [];
         this.boardSize = 100 * this.PSI;
         this.columSize = this.boardSize / 5;
-        this.tileSize = this.columSize * .79;
+        this.tileSize = this.columSize * .8;
         this.extraGutter = (this.columSize - this.tileSize) / 4;
         this.distance = this.columSize + this.extraGutter;
         this.locked = false;

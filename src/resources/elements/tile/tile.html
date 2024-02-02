@@ -10,7 +10,7 @@
             ${visible ? '' : 'hide'}
             x_${tile.x} y_${tile.y}"
          id.one-time="tile.id"
-         css="left: ${tile.x * distance}vmin; 
-            top: ${tile.y * distance}vmin;
+         css="left: calc(${tile.x} * var(--distance)); 
+            top: calc(${tile.y} * var(--distance));
             transform: translate3d(${dx}, ${dy}, 0);"></div>
 </template>

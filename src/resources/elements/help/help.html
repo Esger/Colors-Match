@@ -1,19 +1,16 @@
 <template>
     <button class="helpBubble ${helpVisible ? 'hide' : ''}"
-         click.delegate="showHelp()">?</button>
+    click.delegate="showHelp()">?</button>
     <div class="helpContent ${helpVisible ? 'up' : 'down'}"
          click.delegate="hideHelp()">
-
-        <div class="heading">
-            <h2>
-                How to play
-            </h2>
+        <div>
+            <h2>How to play</h2>
+            <ul>
+                <li>Slide matching marbles together.</li>
+                <li>Match them all to win!</li>
+                <li>Click title to restart and keep playing!</li>
+            </ul>
+            <p><small><sup>&copy</sup> <a target="_blank" href="/">ashWare</a><small></p>
+            </div>
         </div>
-        <ul>
-            <li>Slide matching marbles together.</li>
-            <li>Make them all the same color to win!</li>
-            <li>Click the title to restart and keep playing!</li>
-        </ul>
-        <p>by <a target="_blank" href="/">ashWare</a></p>
-    </div>
 </template>

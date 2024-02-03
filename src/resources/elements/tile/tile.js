@@ -21,7 +21,7 @@ export class TileCustomElement {
         this.onfire = false;
         this.dx = 0;
         this.dy = 0;
-        this._maxColors = 3;
+        this._maxColors = 2;
     }
 
     attached() {

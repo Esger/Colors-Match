@@ -5,7 +5,7 @@ import { MySettingsService } from 'resources/services/my-settings-service';
 @inject(Element, EventAggregator, MySettingsService)
 export class BoardCustomElement {
     settings = {
-        version: 'v1.0', // increase if board structure changes
+        version: 'v1.1', // increase if board structure changes
     }
 
     constructor(element, eventAggregator, mySettingsService) {

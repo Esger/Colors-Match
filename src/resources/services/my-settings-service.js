@@ -1,6 +1,6 @@
 export class MySettingsService {
     _isMobile = sessionStorage.getItem('isMobile') == 'true';
-    _settingsName = '1+1';
+    _settingsName = 'one-color';
     _version = 'v1.0'; // increase when settings object changes
     _settings = undefined;
     _defaultSettings = undefined;
@@ -25,9 +25,14 @@ export class MySettingsService {
         return this._defaultSettings;
     }
 
+    resetSettings() {
+        this._settings = this._getDefaultSettings();
+        this.saveSettings(this._settings);
+    }
+
     _loadSettings() {
         const settings = JSON.parse(localStorage.getItem(this._settingsName));
-        if (!settings || settings.version !== this._version) this.resetSettings()
+        if (!settings || settings.version !== this._version) this.resetSettings();
         else this._settings = settings;
     }
 }

@@ -1,5 +1,6 @@
 <template>
-    <div class="tile
+    <div class="tile tile--${tile.color}
+            ${win ? 'win' : ''}
             ${animated ? 'animated' : ''}
             ${dragged ? 'dragged' : ''} 
             ${burn ? 'burn' : ''} 
@@ -7,10 +8,10 @@
             ${incorrect ? 'incorrect' : ''}
             ${locked ? 'locked' : ''}
             ${onfire ? 'onfire' : ''}
-            ${visible ? '' : 'hide'}"
+            ${visible ? '' : 'hide'}
+            x_${tile.x} y_${tile.y}"
          id.one-time="tile.id"
-         data-value.one-way="tile.value"
-         css="left: ${tile.x * distance + offset}vmin; 
-            top: ${tile.y * distance + offset}vmin; 
-            transform: translate3d(${dx}, ${dy}, 0);"></div>
+         css="left: calc(${tile.x} * var(--distance) + var(--tilePadding));
+            top: calc(${tile.y} * var(--distance) + var(--tilePadding));
+            transform: translate3d(calc(${dx} * var(--distance)), calc(${dy} * var(--distance)), 0);"></div>
 </template>

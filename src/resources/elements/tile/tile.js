@@ -2,15 +2,14 @@ import { inject, bindable } from 'aurelia-framework';
 import { EventAggregator } from 'aurelia-event-aggregator';
 import { DragService } from 'resources/services/drag-service';
 
-@inject(DragService, EventAggregator, Element)
+@inject(Element, DragService, EventAggregator)
 export class TileCustomElement {
-
     @bindable tile;
-    @bindable boardSize;
-    @bindable distance;
-    @bindable offset;
+    @bindable rowTileCount;
+    @bindable maxColors;
+    @bindable win;
 
-    constructor(dragService, eventAggregator, element) {
+    constructor(element, dragService, eventAggregator) {
         this.dragService = dragService;
         this._eventAggregator = eventAggregator;
         this._element = element;
@@ -27,6 +26,9 @@ export class TileCustomElement {
     }
 
     attached() {
+        this._setRandomColor();
+        this.tile.maxColors = this.maxColors;
+        this.tile.setRandomColor = this._setRandomColor;
         this._allowedDirections = [this._allowed(this.tile.y), this._allowed(this.tile.x)];
         this._addListeners();
     }
@@ -54,7 +56,7 @@ export class TileCustomElement {
                 this.onfire = true;
             }
         });
-        
+
         this._animateListener = this._eventAggregator.subscribe('move', move => {
             if (move.tile.id == this.tile.id) {
                 this._animate(move.directions, move.animate);
@@ -66,7 +68,8 @@ export class TileCustomElement {
                 this.correct = true;
                 setTimeout(() => {
                     this.correct = false;
-                }, 750);
+                    this._setNextColor();
+                });
             }
         });
 
@@ -119,7 +122,7 @@ export class TileCustomElement {
         // returns -1, 0 or 1
         switch (value) {
             case 0: return 1; // only increment allowed
-            case this.boardSize - 1: return -1; // only decrement allowed
+            case this.rowTileCount - 1: return -1; // only decrement allowed
             default: return 0; // both allowed
         }
     }
@@ -127,8 +130,8 @@ export class TileCustomElement {
     _animate(directions, animate = true) {
         this.animated = animate;
         setTimeout(() => {
-            this.dy = directions[0] * this.distance + 'vmin';
-            this.dx = directions[1] * this.distance + 'vmin';
+            this.dy = directions[0];
+            this.dx = directions[1];
         });
     }
 
@@ -202,6 +205,14 @@ export class TileCustomElement {
     _underTreshold(constrainedDistance) {
         let value = Math.max(Math.abs(constrainedDistance[0]), Math.abs(constrainedDistance[1]));
         return value < 40;
+    }
+
+    _setRandomColor = (maxColors = 2) => {
+        this.tile.color = Math.ceil(Math.random() * maxColors);
+    }
+
+    _setNextColor() {
+        this.tile.color = (this.tile.color == this.maxColors) ? 1 : this.tile.color + 1;
     }
 
 }

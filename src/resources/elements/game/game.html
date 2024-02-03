@@ -1,11 +1,17 @@
 <template>
     <require from="resources/elements/board/board"></require>
+    <require from="resources/elements/help/help"></require>
+
     <header>
-        <h2>${highScore +'+'+ highScore}</h2>
-        <h1 class="title"
+        <h3 class="moves">Moves: ${moves}<br>Level: ${level}</h3>
+        <h1 class="title ${levelClass}"
             title="Click to restart"
-            click.delegate="restart()">${title}</h1>
-        <h3 class="moves">Moves: ${moves}</h3>
+            click.delegate="restart()">
+            <span repeat.for="letter of title.split('')">${letter}</span>
+        </h1>
+        <help containerless></help>
+
+        <!-- <h2>${highScore +'+'+ highScore}</h2> -->
     </header>
     <board mousedown.delegate="dragService.startDrag($event)"
            touchstart.delegate="dragService.startDrag($event)"

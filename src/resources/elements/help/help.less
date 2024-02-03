@@ -1,47 +1,20 @@
 help {
-    z-index: 1;
+    z-index: 1000;
 }
 
-.closeHelp,
 .helpBubble {
-    position        : absolute;
-    overflow        : hidden;
-    top             : @tileGutterSize;
-    right           : @tileGutterSize;
-    width           : @tileSize;
-    height          : @tileSize;
-    border-radius   : 1in;
-    align-self      : flex-end;
-    justify-self    : flex-start;
-    background-color: white;
-    font-size       : 4vmin;
-    text-align      : center;
-    line-height     : @tileSize;
-
-    background-color: rgba(141, 228, 255, 0.4);
-    box-shadow      : 0 2px 2px #aaa;
-    color           : var(--primaryColor);
-    cursor          : help;
-    text-shadow     : 0 1px 1px #ccc;
-    transition      : all .2s ease-in-out;
-    opacity         : 1;
+    border          : none;
+    background-color: transparent;
+    .fluid(font-size, 2em, 3em);
+    color      : crimson;
+    cursor     : help;
+    text-shadow: 0 1px 1px var(--hotpinkTint);
+    transition : all .2s ease-in-out;
+    opacity    : 1;
 
     &.hide {
         opacity: 0;
     }
-
-    &:hover {
-        color: white;
-    }
-
-    &::before {
-        content: '';
-        .shiny;
-    }
-}
-
-.closeHelp {
-    background-color: rgba(141, 228, 255, 0.25);
 }
 
 weak {
@@ -49,16 +22,35 @@ weak {
 }
 
 .helpContent {
-    font-size       : ~'max(2em, 5vmin)';
-    position        : absolute;
-    overflow        : hidden auto;
-    transition      : all 1s ease-in-out;
-    width           : calc(~'100% - 4 * @{tileSize}');
-    height          : calc(~'100% - 2 * @{tileSize}');
+    position        : fixed;
     left            : 0;
-    background-color: rgba(255, 255, 255, 0.75);
-    padding         : @tileSize calc(~'2 * @{tileSize}');
+    display         : flex;
+    z-index         : 1000;
+    flex-direction  : column;
+    justify-content : center;
+    font-size       : ~'max(2em, 5vmin)';
+    overflow        : hidden auto;
+    transition      : all .5s ease-in-out;
+    width           : 100vw;
+    height          : 100dvh;
+    padding-inline  : calc(~'max(((100vw - var(--boardSize)) / 2) - var(--distance), var(--tilePadding) * 2.5)');
     color           : var(--primaryColor);
+    background-color: rgba(0, 0, 0, 0.75);
+
+    .heading {
+        display        : flex;
+        justify-content: space-between;
+        align-items    : center;
+    }
+
+    h2:hover {
+        color: crimson;
+    }
+
+    p,
+    a {
+        color: inherit;
+    }
 
     &.down {
         top    : 100vh;

@@ -2,124 +2,88 @@
 @darkGrey : rgba(137, 137, 137, 0.9);
 
 game {
-    align-items      : center;
-    // background    : linear-gradient(to bottom, @lightGrey 0%, @darkGrey 100%);
-    border-radius    : calc(~ '2 * @{gameBorder}');
-    // box-shadow    : 0 3px 4px #222;
-    display          : flex;
-    flex-direction   : column;
-    padding-bottom   : @gameBorder;
-    position         : relative;
-    transform        : scale(1.4);
-    width            : calc(~ '@{boardSize} + 2 * @{gameBorder}');
+    align-items    : center;
+    display        : flex;
+    flex-direction : column;
+    position       : relative;
+    width          : var(--boardSize);
+    justify-content: center;
+    height         : 100dvh;
 
     header {
-        position: relative;
-        margin  : calc(~'@{gameBorder} / 2') 0;
-        width   : @boardSize;
+        position       : relative;
+        display        : flex;
+        align-items    : center;
+        justify-content: space-between;
+        margin         : 0 0 6vh;
+        padding-inline : calc(~'var(--tilePadding) * 1.5');
+        width          : var(--boardSize);
 
         h1,
-        h2 {
-            text-align : center;
+        h2,
+        h3,
+        button {
             font-family: 'Courier New', Courier, monospace;
             font-size  : 4vmin;
-            line-height: 5vmin;
-            text-shadow: 0 1px 1px #fff;
+            text-shadow: 0 1px 2px var(--hotpinkTint);
             user-select: none;
-            color      : var(--primaryColor);
+            color      : crimson;
+            padding    : 0;
+            margin     : 0;
+
+            &:hover {
+                color: white;
+            }
         }
 
         h1 {
-            color: var(--tileColor);
+            cursor: pointer;
+            .fluid(font-size, 36px, 52px);
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            margin-inline : auto;
 
-            @media screen and (orientation:landscape) {
-                margin: 2vmin 0 1vmin;
+            // odd spans are purple
+            span:nth-child(2n + 1) {
+                color: hotpink;
+            }
+
+            &.level--2 {
+                span:nth-child(3n + 1) {
+                    color: purple;
+                }
+            }
+
+            &.level--3 {
+                span:nth-child(3n + 1) {
+                    color: black;
+                }
+
+                span:nth-child(4n + 1) {
+                    color: purple;
+                }
             }
         }
 
         h2 {
-            color      : #3e3249;
-            position   : absolute;
-            top        : 2vmin;
-            text-shadow: 1px 1px 1px rgba(255, 255, 255, 0.25);
-            font-size  : 6vmin;
-            z-index    : -1;
-            width      : @boardSize;
+            .fluid(font-size, 36px, 64px);
+            margin-bottom: 6vmin;
+            line-height  : 1.5;
+        }
 
-            @media screen and (orientation:landscape) {
-                margin: 4vmin 0 0;
-            }
+        h3.moves,
+        button {
+            .fluid(font-size, 15px, 18px);
         }
 
         h3.moves {
-            position   : absolute;
-            top        : 1vmin;
-            right      : 2vmin;
-            color      : var(--tileColor);
-            font-size  : 2vmin;
             text-shadow: none;
-            margin     : 0;
+            line-height: 1.2;
         }
 
-        .dummy {
-            opacity: 0;
+        li {
+            margin-bottom: 6vmin;
         }
 
-        .dummy,
-        .score {
-            font: inherit;
-        }
-
-        .title {
-            cursor     : pointer;
-            font-size  : 5vmin;
-            line-height: 5vmin;
-        }
-    }
-}
-
-/* Metal ------------------------- */
-
-.metal {
-    color      : hsla(0, 0%, 20%, 1);
-    text-shadow: hsla(0, 0%, 40%, .5) 0 -1px 0, hsla(0, 0%, 100%, .6) 0 2px 1px;
-
-    background-color: var(--primaryColor);
-    box-shadow      : inset #bbbbbb 0 0 0 4px, inset rgb(177, 177, 177) 0 -1px 5px 4px, inset rgba(0, 0, 0, 0.25) 0 -1px 0 7px, inset rgba(255, 255, 255, 0.7) 0 2px 1px 7px, rgba(0, 0, 0, 0.15) 0 -5px 6px 4px, rgba(255, 255, 255, 0.5) 0 5px 6px 4px;
-
-    transition: color .2s;
-
-    &.radial {
-        background-image: -webkit-radial-gradient(50% 0%, 8% 50%, hsla(0, 0%, 100%, .5) 0%, hsla(0, 0%, 100%, 0) 100%), -webkit-radial-gradient(50% 100%, 12% 50%, hsla(0, 0%, 100%, .6) 0%, hsla(0, 0%, 100%, 0) 100%), -webkit-radial-gradient(0% 50%, 50% 7%, hsla(0, 0%, 100%, .5) 0%, hsla(0, 0%, 100%, 0) 100%), -webkit-radial-gradient(100% 50%, 50% 5%, hsla(0, 0%, 100%, .5) 0%, hsla(0, 0%, 100%, 0) 100%), -webkit-repeating-radial-gradient(50% 50%, 100% 100%, hsla(0, 0%, 0%, 0) 0%, hsla(0, 0%, 0%, 0) 3%, hsla(0, 0%, 0%, .1) 3.5%), -webkit-repeating-radial-gradient(50% 50%, 100% 100%, hsla(0, 0%, 100%, 0) 0%, hsla(0, 0%, 100%, 0) 6%, hsla(0, 0%, 100%, .1) 7.5%), -webkit-repeating-radial-gradient(50% 50%, 100% 100%, hsla(0, 0%, 100%, 0) 0%, hsla(0, 0%, 100%, 0) 1.2%, hsla(0, 0%, 100%, .2) 2.2%), -webkit-radial-gradient(50% 50%, 200% 50%, hsla(0, 0%, 90%, 1) 5%, hsla(0, 0%, 85%, 1) 30%, hsla(0, 0%, 60%, 1) 100%);
-    }
-
-    &.radial:after,
-    &.radial:before {
-        content            : "";
-        top                : 0;
-        left               : 0;
-        position           : absolute;
-        width              : inherit;
-        height             : inherit;
-        // border-radius   : inherit;
-
-        /* fake conical gradients */
-        background-size : cover;
-        background-image: -webkit-radial-gradient(50% 0%, 10% 50%, hsla(0, 0%, 0%, .1) 0%, hsla(0, 0%, 0%, 0) 100%), -webkit-radial-gradient(50% 100%, 10% 50%, hsla(0, 0%, 0%, .1) 0%, hsla(0, 0%, 0%, 0) 100%), -webkit-radial-gradient(0% 50%, 50% 10%, hsla(0, 0%, 0%, .1) 0%, hsla(0, 0%, 0%, 0) 100%), -webkit-radial-gradient(100% 50%, 50% 06%, hsla(0, 0%, 0%, .1) 0%, hsla(0, 0%, 0%, 0) 100%);
-    }
-
-    &.radial:before {
-        transform: rotate(65deg);
-    }
-
-    &.radial:after {
-        transform: rotate(-65deg);
-    }
-
-    /* Linear ------------------------- */
-    t &.linear {
-        background-size  : 100px 100%;
-        background-repeat: repeat;
-        background-image : -webkit-repeating-linear-gradient(left, hsla(0, 0%, 100%, 0) 0%, hsla(0, 0%, 100%, 0) 6%, hsla(0, 0%, 100%, .1) 7.5%), -webkit-repeating-linear-gradient(left, hsla(0, 0%, 0%, 0) 0%, hsla(0, 0%, 0%, 0) 4%, hsla(0, 0%, 0%, .03) 4.5%), -webkit-repeating-linear-gradient(left, hsla(0, 0%, 100%, 0) 0%, hsla(0, 0%, 100%, 0) 1.2%, hsla(0, 0%, 100%, .15) 2.2%), linear-gradient(180deg, hsl(0, 0%, 78%) 0%, hsl(0, 0%, 90%) 47%, hsl(0, 0%, 78%) 53%, hsl(0, 0%, 70%)100%);
     }
 }

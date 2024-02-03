@@ -1,39 +1,64 @@
 .tile {
-    background-color   : var(--tileColor);
-    border             : 0 solid #666;
-    border-radius      : @tileCornerRadius;
-    box-shadow         : 0 2px 2px #aaa;
-    // color           : darken( var(--primaryColor), 90%);
-    cursor             : grab;
-    display            : block;
-    height             : @tileSize;
-    overflow           : hidden;
-    position           : absolute;
-    transition         : background-color .2s ease-in-out, opacity .2s ease-in-out;
-    width              : @tileSize;
+    border-radius: 9in;
+    box-shadow   : 0 2px 10px #1e1e1e;
+    cursor       : grab;
+    display      : block;
+    height       : var(--tileSize);
+    overflow     : hidden;
+    position     : absolute;
+    transition   : backround-image .2s ease-in-out, opacity .2s ease-in-out;
+    width        : var(--tileSize);
+
+    &.tile--1 {
+        background-image: radial-gradient(var(--hotpinkTint) 5%, hotpink);
+    }
+
+    &.tile--2 {
+        background-image: radial-gradient(var(--crimsonTint) 5%, crimson);
+    }
+
+    &.tile--3 {
+        background-image: radial-gradient(var(--purpleTint) 5%, purple);
+    }
+
+    &.tile--4 {
+        background-image: radial-gradient(var(--blackTint) 5%, black);
+    }
 
     &.animated {
         transition: background-color .2s ease-in-out, opacity .2s ease-in-out, transform .2s ease-out;
         z-index   : 100;
     }
 
+    &.win {
+        --successColor         : green;
+        --succesHightlightColor: lighten(green, 50%);
+        box-shadow             :
+            0 0 calc(~'var(--tileSize) * .4') 0 var(--successColor),
+            0 0 calc(~'var(--tileSize) * 0.6') 0 var(--succesHightlightColor),
+            0 0 calc(~'var(--tileSize) * .5') 0 var(--succesHightlightColor),
+            0 0 calc(~'var(--tileSize) * 0.4') 0 var(--succesHightlightColor),
+            0 0 calc(~'var(--tileSize) * .3') 0 var(--succesHightlightColor),
+            0 0 calc(~'var(--tileSize) * 0.2') 0 var(--succesHightlightColor);
+    }
+
     &.burn {
-        background-color: orange;
-        transition      : background-color .2s ease-in-out, opacity .2s ease-in-out;
+        @tileColor: orange;
+        transition: background-color .2s ease-in-out, opacity .2s ease-in-out;
     }
 
     &.correct {
-        background-color: lightgreen;
-        transform       : scale(1.05, 1.05) !important;
-        transition      : transform .2s ease-out;
-        z-index         : 100;
+        @tileColor: lightgreen;
+        transform : scale(1.05, 1.05) !important;
+        transition: transform .2s ease-out;
+        z-index   : 100;
     }
 
     &.dragged {
-        background-color: palegoldenrod;
-        box-shadow      : 0 3px 5px #aaa;
-        cursor          : -webkit-grabbing;
-        z-index         : 100;
+        @tileColor: palegoldenrod;
+        box-shadow: 0 3px 5px #aaa;
+        cursor    : -webkit-grabbing;
+        z-index   : 100;
     }
 
     &.follow {
@@ -45,8 +70,8 @@
     }
 
     &.incorrect {
-        background-color: lightcoral;
-        transform       : scale(0.95, 0.95) !important;
+        @tileColor: lightcoral;
+        transform : scale(0.95, 0.95) !important;
     }
 
     &.locked {
@@ -64,29 +89,23 @@
         z-index   : 100;
     }
 
-    &::before,
-    &::after {
-        position      : absolute;
-        inset         : 0;
-        pointer-events: none;
-        touch-action  : none;
-    }
-
     &::before {
-        content        : attr(data-value);
-        font           : normal @tileFontSize/@tileSize "Trebuchet MS", Arial, Helvetica, sans-serif;
-        text-align     : center;
-        text-decoration: none;
-        text-shadow    : 0 1px 1px #ccc;
-        user-select    : none;
+        content       : '';
+        position      : absolute;
+        inset         : 3% 12% 50% 12%;
+        border-radius : ~'50% / 59% 59% 41% 41%';
+        background    : linear-gradient(rgba(255, 255, 255, 0.9), rgba(255, 255, 255, 0.1));
+        pointer-events: none;
     }
 
     &::after {
-        .shiny;
-        content: '';
+        content       : '';
+        position      : absolute;
+        inset         : 55% 12% 3% 12%;
+        border-radius : ~'50% / 41% 41% 59% 59%';
+        background    : linear-gradient(rgba(255, 255, 255, 0.1), rgba(255, 255, 255, 0.5));
+        filter        : blur(5px);
+        pointer-events: none;
     }
 
-    &#tile_2-2::before {
-        color: forestgreen;
-    }
 }

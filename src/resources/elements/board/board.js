@@ -4,6 +4,9 @@ import { MySettingsService } from 'resources/services/my-settings-service';
 
 @inject(Element, EventAggregator, MySettingsService)
 export class BoardCustomElement {
+    maxColors = 2;
+    win = false;
+
     settings = {
         version: 'v1.1', // increase if board structure changes
     }
@@ -254,7 +257,13 @@ export class BoardCustomElement {
     }
 
     _winGame() {
-        alert('you win');
+        this.win = true;
+        setTimeout(_ => {
+            this.win = false;
+            if (this.maxColors < 4)
+                this.maxColors++;
+            setTimeout(_ => this._restartGame(), 500);
+        }, 500);
     }
 
     _endGame() {
@@ -262,7 +271,7 @@ export class BoardCustomElement {
         this._eventAggregator.publish('burn');
         this.board.forEach(row => {
             row.forEach(tile => {
-                setTimeout(() => {
+                setTimeout(_ => {
                     this._eventAggregator.publish('onfire', tile);
                 }, Math.random() * 1500);
             });

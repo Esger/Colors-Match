@@ -6,6 +6,8 @@ import { DragService } from 'resources/services/drag-service';
 export class TileCustomElement {
     @bindable tile;
     @bindable rowTileCount;
+    @bindable maxColors;
+    @bindable win;
 
     constructor(element, dragService, eventAggregator) {
         this.dragService = dragService;
@@ -21,12 +23,11 @@ export class TileCustomElement {
         this.onfire = false;
         this.dx = 0;
         this.dy = 0;
-        this._maxColors = 2;
     }
 
     attached() {
         this._setRandomColor();
-        this.tile.maxColors = this._maxColors;
+        this.tile.maxColors = this.maxColors;
         this.tile.setRandomColor = this._setRandomColor;
         this._allowedDirections = [this._allowed(this.tile.y), this._allowed(this.tile.x)];
         this._addListeners();
@@ -211,7 +212,7 @@ export class TileCustomElement {
     }
 
     _setNextColor() {
-        this.tile.color = (this.tile.color == this._maxColors) ? 1 : this.tile.color + 1;
+        this.tile.color = (this.tile.color == this.maxColors) ? 1 : this.tile.color + 1;
     }
 
 }

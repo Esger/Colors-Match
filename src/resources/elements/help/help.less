@@ -1,5 +1,5 @@
 help {
-    z-index: 200;
+    z-index: 1000;
 }
 
 .closeHelp,
@@ -8,12 +8,12 @@ help {
     align-self      : flex-end;
     justify-self    : flex-start;
     background-color: transparent;
-    font-size       : 4vmin;
-    color           : crimson;
-    cursor          : help;
-    text-shadow     : 0 1px 1px var(--hotpinkTint);
-    transition      : all .2s ease-in-out;
-    opacity         : 1;
+    .fluid(font-size, 2em, 3em);
+    color      : crimson;
+    cursor     : help;
+    text-shadow: 0 1px 1px var(--hotpinkTint);
+    transition : all .2s ease-in-out;
+    opacity    : 1;
 
     &.hide {
         opacity: 0;
@@ -28,15 +28,15 @@ weak {
     position        : fixed;
     left            : 0;
     display         : flex;
-    z-index         : 100;
+    z-index         : 1000;
     flex-direction  : column;
-    justify-content : space-evenly;
+    justify-content : center;
     font-size       : ~'max(2em, 5vmin)';
     overflow        : hidden auto;
     transition      : all .5s ease-in-out;
     width           : 100vw;
     height          : 100dvh;
-    padding         : var(--tileSize) calc(~'2 * var(--tileSize)');
+    padding-inline  : calc(~'max(((100vw - var(--boardSize)) / 2) - var(--distance), var(--tilePadding) * 2.5)');
     color           : var(--primaryColor);
     background-color: rgba(0, 0, 0, 0.75);
 
@@ -44,6 +44,10 @@ weak {
         display        : flex;
         justify-content: space-between;
         align-items    : center;
+    }
+
+    h2:hover {
+        color: crimson;
     }
 
     p,

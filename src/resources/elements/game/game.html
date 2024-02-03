@@ -6,7 +6,8 @@
         <h3 class="moves">Moves: ${moves}</h3>
         <h1 class="title"
             title="Click to restart"
-            click.delegate="restart()">uniColor
+            click.delegate="restart()">
+            <span repeat.for="letter of title.split('')">${letter}</span>
         </h1>
         <help containerless></help>
 

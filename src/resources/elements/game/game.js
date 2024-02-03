@@ -5,6 +5,7 @@ import { ScoreService } from 'resources/services/score-service';
 
 @inject(DragService, ScoreService, EventAggregator)
 export class GameCustomElement {
+    title = 'uniColor';
 
     constructor(dragService, scoreService, eventAggregator) {
         this.dragService = dragService;

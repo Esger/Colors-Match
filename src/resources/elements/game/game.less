@@ -7,7 +7,7 @@ game {
     flex-direction : column;
     position       : relative;
     width          : var(--boardSize);
-    justify-content: space-evenly;
+    justify-content: center;
     height         : 100dvh;
 
     header {
@@ -15,7 +15,8 @@ game {
         display        : flex;
         align-items    : flex-end;
         justify-content: space-between;
-        margin         : 0;
+        margin         : 0 0 6vh;
+        padding-inline : calc(~'var(--tilePadding) * 1.5');
         width          : var(--boardSize);
 
         h1,
@@ -37,19 +38,35 @@ game {
         }
 
         h1 {
-            cursor        : pointer;
-            font-size     : 5vmin;
+            cursor: pointer;
+            .fluid(font-size, 36px, 52px);
             text-transform: uppercase;
             letter-spacing: 2px;
+            margin-inline : auto;
+
+            // odd spans are purple
+            span:nth-child(2n + 1) {
+                color: hotpink;
+            }
         }
 
         h2 {
-            font-size: 6vmin;
+            .fluid(font-size, 36px, 64px);
+            margin-bottom: 6vmin;
+            line-height  : 1.5;
+        }
+
+        h3.moves,
+        button {
+            .fluid(font-size, 15px, 18px);
         }
 
         h3.moves {
-            font-size  : 2vmin;
             text-shadow: none;
+        }
+
+        li {
+            margin-bottom: 6vmin;
         }
 
     }

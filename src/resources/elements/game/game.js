@@ -6,6 +6,7 @@ import { ScoreService } from 'resources/services/score-service';
 @inject(DragService, ScoreService, EventAggregator)
 export class GameCustomElement {
     title = 'uniColor';
+    level = 1;
 
     constructor(dragService, scoreService, eventAggregator) {
         this.dragService = dragService;
@@ -26,9 +27,11 @@ export class GameCustomElement {
             this.moves = moves.moves;
         })
         this._winSubscription = this._eventAggregator.subscribe('win', level => {
+            this.level = level - 1;
             this.levelClass = 'level--' + (level - 1);
         });
         this._restartSubscription = this._eventAggregator.subscribe('restart', () => {
+            this.level = 1;
             this.levelClass = 'level--0';
         });
     }

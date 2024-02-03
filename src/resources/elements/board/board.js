@@ -262,7 +262,10 @@ export class BoardCustomElement {
             this.win = false;
             if (this.maxColors < 4)
                 this.maxColors++;
-            setTimeout(_ => this._restartGame(), 500);
+            setTimeout(_ => {
+                this._restartGame();
+                this._eventAggregator.publish('win', this.maxColors);
+            }, 500);
         }, 500);
     }
 

@@ -11,7 +11,6 @@ export class GameCustomElement {
         this.dragService = dragService;
         this._eventAggregator = eventAggregator;
         this._scoreService = scoreService;
-        this._resetScore();
     }
 
     attached() {
@@ -26,13 +25,12 @@ export class GameCustomElement {
         this._moveSubscription = this._eventAggregator.subscribe('moves', moves => {
             this.moves = moves.moves;
         })
-        this._resetScoreSubscription = this._eventAggregator.subscribe('reset-score', value => {
-            this._resetScore();
+        this._winSubscription = this._eventAggregator.subscribe('win', level => {
+            this.levelClass = 'level--' + (level - 1);
         });
-    }
-
-    _resetScore() {
-        // this.title = 'One Colors';
+        this._restartSubscription = this._eventAggregator.subscribe('restart', () => {
+            this.levelClass = 'level--0';
+        });
     }
 
     restart() {
@@ -42,7 +40,8 @@ export class GameCustomElement {
     detached() {
         this._highSubscription.dispose();
         this._moveSubscription.dispose();
-        this._resetScoreSubscription.dispose();
+        this._winSubscription.dispose();
+        this._restartSubscription.dispose();
     }
 
 }

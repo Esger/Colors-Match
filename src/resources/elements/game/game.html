@@ -3,8 +3,8 @@
     <require from="resources/elements/help/help"></require>
 
     <header>
-        <h3 class="moves">Moves: ${moves}</h3>
-        <h1 class="title"
+        <h3 class="moves">Moves: ${moves}<br>Level: ${level}</h3>
+        <h1 class="title ${levelClass}"
             title="Click to restart"
             click.delegate="restart()">
             <span repeat.for="letter of title.split('')">${letter}</span>

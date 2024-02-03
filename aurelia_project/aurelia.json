@@ -1,5 +1,5 @@
 {
-    "name": "One Color",
+    "name": "uniColor",
     "type": "project:application",
     "platform": {
         "id": "web",

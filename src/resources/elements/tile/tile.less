@@ -6,12 +6,11 @@
     height       : var(--tileSize);
     overflow     : hidden;
     position     : absolute;
-    transition   : background-image .2s ease-in-out, opacity .2s ease-in-out;
+    transition   : backround-image .2s ease-in-out, opacity .2s ease-in-out;
     width        : var(--tileSize);
 
     &.tile--1 {
-        // background-image   : radial-gradient(lighten(black, 20%) 5%, black);
-        background-image: radial-gradient(lighten(hotpink, 20%) 5%, hotpink);
+        background-image: radial-gradient(var(--hotpinkTint) 5%, hotpink);
     }
 
     &.tile--2 {
@@ -22,9 +21,25 @@
         background-image: radial-gradient(var(--purpleTint) 5%, purple);
     }
 
+    &.tile--4 {
+        background-image: radial-gradient(var(--blackTint) 5%, black);
+    }
+
     &.animated {
         transition: background-color .2s ease-in-out, opacity .2s ease-in-out, transform .2s ease-out;
         z-index   : 100;
+    }
+
+    &.win {
+        --successColor         : green;
+        --succesHightlightColor: lighten(green, 50%);
+        box-shadow             :
+            0 0 calc(~'var(--tileSize) * .4') 0 var(--successColor),
+            0 0 calc(~'var(--tileSize) * 0.6') 0 var(--succesHightlightColor),
+            0 0 calc(~'var(--tileSize) * .5') 0 var(--succesHightlightColor),
+            0 0 calc(~'var(--tileSize) * 0.4') 0 var(--succesHightlightColor),
+            0 0 calc(~'var(--tileSize) * .3') 0 var(--succesHightlightColor),
+            0 0 calc(~'var(--tileSize) * 0.2') 0 var(--succesHightlightColor);
     }
 
     &.burn {

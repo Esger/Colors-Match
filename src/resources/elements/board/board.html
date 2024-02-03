@@ -4,7 +4,9 @@
         <template repeat.for="row of board">
             <template repeat.for="tile of row">
                 <tile tile.bind="tile"
+                      max-colors.bind="maxColors"
                       row-tile-count.bind="rowTileCount"
+                      win.bind="win"
                       containerless></tile>
             </template>
         </template>

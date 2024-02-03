@@ -13,7 +13,7 @@ game {
     header {
         position       : relative;
         display        : flex;
-        align-items    : flex-end;
+        align-items    : center;
         justify-content: space-between;
         margin         : 0 0 6vh;
         padding-inline : calc(~'var(--tilePadding) * 1.5');
@@ -25,7 +25,6 @@ game {
         button {
             font-family: 'Courier New', Courier, monospace;
             font-size  : 4vmin;
-            line-height: 0;
             text-shadow: 0 1px 2px var(--hotpinkTint);
             user-select: none;
             color      : crimson;
@@ -48,6 +47,22 @@ game {
             span:nth-child(2n + 1) {
                 color: hotpink;
             }
+
+            &.level--2 {
+                span:nth-child(3n + 1) {
+                    color: purple;
+                }
+            }
+
+            &.level--3 {
+                span:nth-child(3n + 1) {
+                    color: black;
+                }
+
+                span:nth-child(4n + 1) {
+                    color: purple;
+                }
+            }
         }
 
         h2 {
@@ -63,6 +78,7 @@ game {
 
         h3.moves {
             text-shadow: none;
+            line-height: 1.2;
         }
 
         li {
